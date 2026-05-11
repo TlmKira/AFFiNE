@@ -17,6 +17,11 @@ export type EmbedIframeBlockProps = {
   caption: string | null;
   title: string | null;
   description: string | null;
+  notebookJson?: string;
+  lastSyncedAt?: number;
+  sourceMode?: 'ipynb' | 'blocks';
+  syncStatus?: 'idle' | 'synced' | 'exported' | 'error';
+  recentOutputsSummary?: string | null;
 } & Omit<GfxCommonBlockProps, 'rotate'>;
 
 export const defaultEmbedIframeProps: EmbedIframeBlockProps = {
@@ -27,6 +32,11 @@ export const defaultEmbedIframeProps: EmbedIframeBlockProps = {
   caption: null,
   title: null,
   description: null,
+  notebookJson: undefined,
+  lastSyncedAt: undefined,
+  sourceMode: undefined,
+  syncStatus: undefined,
+  recentOutputsSummary: null,
   xywh: '[0,0,0,0]',
   index: 'a0',
   lockedBySelf: false,

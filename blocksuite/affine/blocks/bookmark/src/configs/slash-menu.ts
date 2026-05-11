@@ -7,9 +7,22 @@ import {
 } from '@blocksuite/affine-widget-slash-menu';
 import { LinkIcon } from '@blocksuite/icons/lit';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
-import type { ExtensionType } from '@blocksuite/store';
+import type { BlockModel, ExtensionType } from '@blocksuite/store';
 
 import { LinkTooltip } from './tooltips';
+import { createResearchCitationBookmarkProps } from './research-citation';
+
+function getNextFootnoteIdentifier(model: BlockModel) {
+  const parent = model.store.getParent(model);
+  const citationCount =
+    parent?.children.filter(
+      child =>
+        child.flavour === 'affine:bookmark' &&
+        'footnoteIdentifier' in child.props &&
+        !!child.props.footnoteIdentifier
+    ).length ?? 0;
+  return String(citationCount + 1);
+}
 
 const bookmarkSlashMenuConfig: SlashMenuConfig = {
   items: [
@@ -49,6 +62,46 @@ const bookmarkSlashMenuConfig: SlashMenuConfig = {
             }
           })
           .catch(console.error);
+      },
+    },
+    {
+      name: '论文引用',
+      description: '从 DOI、arXiv、URL、BibTeX 或标题创建论文引用卡片。',
+      icon: LinkIcon(),
+      tooltip: {
+        figure: LinkTooltip,
+        caption: '论文引用',
+      },
+      group: '4_Content & Media@3',
+      when: ({ model }) =>
+        model.store.schema.flavourSchemaMap.has('affine:bookmark'),
+      action: ({ std, model }) => {
+        const input = window.prompt(
+          '请输入 DOI、arXiv、论文 URL、BibTeX 或论文标题'
+        );
+        if (!input?.trim()) {
+          return;
+        }
+
+        const parentModel = std.host.store.getParent(model);
+        if (!parentModel) {
+          return;
+        }
+
+        const index = parentModel.children.indexOf(model) + 1;
+        std.host.store.addBlock(
+          'affine:bookmark',
+          createResearchCitationBookmarkProps(
+            input,
+            getNextFootnoteIdentifier(model)
+          ),
+          parentModel,
+          index
+        );
+
+        if (model.text?.length === 0) {
+          model.store.deleteBlock(model);
+        }
       },
     },
   ],

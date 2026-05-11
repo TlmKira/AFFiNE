@@ -1,6 +1,9 @@
 import { addSiblingAttachmentBlocks } from '@blocksuite/affine-block-attachment';
 import { insertDatabaseBlockCommand } from '@blocksuite/affine-block-database';
-import { insertEmptyEmbedIframeCommand } from '@blocksuite/affine-block-embed';
+import {
+  createJupyterLiteBlockProps,
+  insertEmptyEmbedIframeCommand,
+} from '@blocksuite/affine-block-embed';
 import { insertImagesCommand } from '@blocksuite/affine-block-image';
 import { insertLatexBlockCommand } from '@blocksuite/affine-block-latex';
 import {
@@ -565,6 +568,66 @@ const embedToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
+      name: 'Bilibili 视频',
+      icon: EmbedIcon({ style: `color: black` }),
+      showWhen: ({ std }) =>
+        std.store.schema.flavourSchemaMap.has('affine:embed-iframe'),
+      action: async ({ std }) => {
+        const [_, { selectedModels }] = std.command.exec(
+          getSelectedModelsCommand
+        );
+        const model = selectedModels?.[0];
+        if (!model) return;
+
+        const parentModel = std.store.getParent(model);
+        if (!parentModel) return;
+
+        const index = parentModel.children.indexOf(model) + 1;
+        await toggleEmbedCardCreateModal(
+          std.host,
+          'Bilibili 视频',
+          '粘贴 BV、av 或 player.bilibili.com 视频链接。',
+          { mode: 'page', parentModel, index },
+          ({ mode }) => {
+            if (mode === 'edgeless') {
+              const gfx = std.get(GfxControllerIdentifier);
+              gfx.tool.setTool(DefaultTool);
+            }
+          }
+        );
+        if (model.text?.length === 0) {
+          std.store.deleteBlock(model);
+        }
+      },
+    },
+    {
+      name: 'Jupyter Notebook',
+      icon: EmbedIcon({ style: `color: black` }),
+      showWhen: ({ std }) =>
+        std.store.schema.flavourSchemaMap.has('affine:embed-iframe'),
+      action: ({ std }) => {
+        const [_, { selectedModels }] = std.command.exec(
+          getSelectedModelsCommand
+        );
+        const model = selectedModels?.[0];
+        if (!model) return;
+
+        const result = std.store.addSiblingBlocks(
+          model,
+          [
+            {
+              flavour: 'affine:embed-iframe',
+              ...createJupyterLiteBlockProps(),
+            },
+          ],
+          'after'
+        );
+        if (model.text?.length === 0 && result.length) {
+          std.store.deleteBlock(model);
+        }
+      },
+    },
+    {
       name: 'GitHub',
       icon: GithubIcon({ style: `color: black` }),
       showWhen: ({ std }) =>
@@ -735,7 +798,7 @@ const documentGroupFrameToolGroup: DynamicKeyboardToolPanelGroup = ({
   if (items.length === 0) return null;
 
   return {
-  name: '文档分组与画框',
+    name: '文档分组与画框',
     items,
   };
 };

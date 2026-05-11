@@ -43,6 +43,10 @@ import { keyed } from 'lit/directives/keyed.js';
 import * as Y from 'yjs';
 
 import { BookmarkBlockComponent } from '../bookmark-block';
+import {
+  formatResearchCitation,
+  isResearchCitationModel,
+} from './research-citation';
 
 const trackBaseProps = {
   category: 'bookmark',
@@ -320,6 +324,74 @@ const builtinToolbarConfig = {
             const index = parent?.children.indexOf(model);
 
             ctx.store.addBlock(flavour, props, parent, index);
+          },
+        },
+        {
+          id: 'copy-bibtex',
+          label: '复制 BibTeX',
+          icon: CopyIcon(),
+          when(ctx) {
+            const model = ctx.getCurrentModelByType(BookmarkBlockModel);
+            return !!model && isResearchCitationModel(model);
+          },
+          run(ctx) {
+            const model = ctx.getCurrentModelByType(BookmarkBlockModel);
+            if (!model) return;
+            navigator.clipboard
+              .writeText(formatResearchCitation(model, 'bibtex'))
+              .then(() => toast(ctx.host, '已复制 BibTeX'))
+              .catch(console.error);
+          },
+        },
+        {
+          id: 'copy-apa',
+          label: '复制 APA',
+          icon: CopyIcon(),
+          when(ctx) {
+            const model = ctx.getCurrentModelByType(BookmarkBlockModel);
+            return !!model && isResearchCitationModel(model);
+          },
+          run(ctx) {
+            const model = ctx.getCurrentModelByType(BookmarkBlockModel);
+            if (!model) return;
+            navigator.clipboard
+              .writeText(formatResearchCitation(model, 'apa'))
+              .then(() => toast(ctx.host, '已复制 APA'))
+              .catch(console.error);
+          },
+        },
+        {
+          id: 'copy-gbt',
+          label: '复制 GB/T 7714',
+          icon: CopyIcon(),
+          when(ctx) {
+            const model = ctx.getCurrentModelByType(BookmarkBlockModel);
+            return !!model && isResearchCitationModel(model);
+          },
+          run(ctx) {
+            const model = ctx.getCurrentModelByType(BookmarkBlockModel);
+            if (!model) return;
+            navigator.clipboard
+              .writeText(formatResearchCitation(model, 'gbt'))
+              .then(() => toast(ctx.host, '已复制 GB/T 7714'))
+              .catch(console.error);
+          },
+        },
+        {
+          id: 'copy-markdown-footnote',
+          label: '复制 Markdown 脚注',
+          icon: CopyIcon(),
+          when(ctx) {
+            const model = ctx.getCurrentModelByType(BookmarkBlockModel);
+            return !!model && isResearchCitationModel(model);
+          },
+          run(ctx) {
+            const model = ctx.getCurrentModelByType(BookmarkBlockModel);
+            if (!model) return;
+            navigator.clipboard
+              .writeText(formatResearchCitation(model, 'markdown'))
+              .then(() => toast(ctx.host, '已复制 Markdown 脚注'))
+              .catch(console.error);
           },
         },
       ],

@@ -27,6 +27,7 @@ export type IframeOptions = {
   allow?: string;
   allowFullscreen?: boolean;
   containerBorderRadius?: number;
+  credentialless?: boolean;
   sandbox?: string;
 };
 

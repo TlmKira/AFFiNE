@@ -366,8 +366,11 @@ export class EmbedIframeBlockComponent extends CaptionedBlockComponent<EmbedIfra
       referrerpolicy,
       scrolling,
       allowFullscreen,
+      credentialless,
       sandbox,
-    } = this.iframeOptions ?? {};
+    } = (this.iframeOptions ?? {}) as IframeOptions & {
+      credentialless?: boolean;
+    };
     const width = `${widthPercent}%`;
     // if the block is in the surface, use 100% as the height
     // otherwise, use the heightInNote
@@ -384,7 +387,7 @@ export class EmbedIframeBlockComponent extends CaptionedBlockComponent<EmbedIfra
         ?allowfullscreen=${allowFullscreen}
         loading="lazy"
         frameborder="0"
-        credentialless
+        ?credentialless=${credentialless ?? true}
         sandbox=${sandboxValue}
         src=${ifDefined(iframeUrl)}
         allow=${ifDefined(allow)}
