@@ -7,6 +7,7 @@ import {
   SelfhostLicenseService,
   WorkspaceSubscriptionService,
 } from '@affine/core/modules/cloud';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 import { WorkspacePermissionService } from '@affine/core/modules/permissions';
 import { WorkspaceQuotaService } from '@affine/core/modules/quota';
 import { UrlService } from '@affine/core/modules/url';
@@ -413,13 +414,15 @@ const ActionModal = ({
         <Trans
           i18nKey="com.affine.settings.workspace.license.activate-modal.tips"
           components={{
-            1: (
+            1: PRIVATE_SERVICE_URLS.website ? (
               <a
-                href="https://affine.pro/pricing/?type=selfhost#table"
+                href={PRIVATE_SERVICE_URLS.website}
                 target="_blank"
                 rel="noreferrer"
                 style={{ color: cssVarV2('text/link') }}
               />
+            ) : (
+              <span style={{ color: cssVarV2('text/link') }} />
             ),
           }}
         />

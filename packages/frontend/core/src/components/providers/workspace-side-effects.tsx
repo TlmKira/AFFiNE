@@ -20,6 +20,7 @@ import {
   GlobalDialogService,
   WorkspaceDialogService,
 } from '@affine/core/modules/dialogs';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { DocsService } from '@affine/core/modules/doc';
 import { EditorSettingService } from '@affine/core/modules/editor-setting';
 import { useRegisterNavigationCommands } from '@affine/core/modules/navigation/view/use-register-navigation-commands';
@@ -127,8 +128,12 @@ export const WorkspaceSideEffects = () => {
 
   useEffect(() => {
     const disposable = AIProvider.slots.requestUpgradePlan.subscribe(() => {
+      if (!SHOW_PRICING_PLANS) {
+        return;
+      }
+
       workspaceDialogService.open('setting', {
-        activeTab: 'billing',
+        activeTab: SHOW_PRICING_PLANS ? 'billing' : 'account',
       });
       track.$.paywall.aiAction.viewPlans();
     });

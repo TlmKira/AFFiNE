@@ -7,6 +7,7 @@ import {
   toast,
 } from '@affine/component';
 import { useQuery } from '@affine/core/components/hooks/use-query';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import { WorkspacePermissionService } from '@affine/core/modules/permissions';
 import {
@@ -220,8 +221,8 @@ export const EditorAnalyticsPanel = ({
     membersPageSize < MAX_MEMBERS_PAGE_SIZE;
   const openTeamPricing = useCallback(() => {
     workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'workspace:storage',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'cloudPricingPlan' : undefined,
     });
   }, [workspaceDialogService]);
   const showTeamPlanToast = useCallback(() => {
@@ -257,7 +258,7 @@ export const EditorAnalyticsPanel = ({
                       key={option}
                       selected={effectiveWindowDays === option}
                       suffixIcon={
-                        isLocked ? (
+                        SHOW_PRICING_PLANS && isLocked ? (
                           <button
                             type="button"
                             className={styles.lockButton}

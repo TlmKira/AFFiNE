@@ -171,38 +171,46 @@ export const resolveInitialSession = async ({
     return undefined;
   }
 
-  const sessionId = getSessionIdFromUrl(workbench);
+  try {
+    const sessionId = getSessionIdFromUrl(workbench);
 
-  const pinSessions = await sessionService.getSessions(
-    doc.workspace.id,
-    undefined,
-    {
-      pinned: true,
-      limit: 1,
-    }
-  );
-
-  if (Array.isArray(pinSessions) && pinSessions[0]) {
-    return pinSessions[0];
-  }
-
-  if (sessionId) {
-    const session = await sessionService.getSession(
+    const pinSessions = await sessionService.getSessions(
       doc.workspace.id,
-      sessionId
+      undefined,
+      {
+        pinned: true,
+        limit: 1,
+      }
     );
-    return session ?? null;
-  }
 
-  const docSessions = await sessionService.getSessions(
-    doc.workspace.id,
-    doc.id,
-    {
-      action: false,
-      fork: false,
-      limit: 1,
+    if (Array.isArray(pinSessions) && pinSessions[0]) {
+      return pinSessions[0];
     }
-  );
 
-  return docSessions?.[0] ?? null;
+    if (sessionId) {
+      const session = await sessionService.getSession(
+        doc.workspace.id,
+        sessionId
+      );
+      return session ?? null;
+    }
+
+    const docSessions = await sessionService.getSessions(
+      doc.workspace.id,
+      doc.id,
+      {
+        action: false,
+        fork: false,
+        limit: 1,
+      }
+    );
+
+    return docSessions?.[0] ?? null;
+  } catch (error) {
+    console.warn(
+      'Failed to resolve AI chat session, fallback to empty.',
+      error
+    );
+    return null;
+  }
 };

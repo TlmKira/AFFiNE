@@ -10,7 +10,7 @@ export const embedFigmaSlashMenuConfig: SlashMenuConfig = {
   items: [
     {
       name: 'Figma',
-      description: 'Embed a Figma document.',
+      description: '嵌入一个 Figma 文档。',
       icon: FigmaDuotoneIcon(),
       tooltip: {
         figure: FigmaTooltip,
@@ -30,7 +30,7 @@ export const embedFigmaSlashMenuConfig: SlashMenuConfig = {
           await toggleEmbedCardCreateModal(
             host,
             'Figma',
-            'The added Figma link will be displayed as an embed view.',
+            '添加的 Figma 链接将显示为嵌入视图。',
             { mode: 'page', parentModel, index },
             ({ mode }) => {
               if (mode === 'edgeless') {

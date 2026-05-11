@@ -8,9 +8,10 @@ import {
   ServersService,
 } from '@affine/core/modules/cloud';
 import type { DialogComponentProps } from '@affine/core/modules/dialogs';
-import type {
-  SettingTab,
-  WORKSPACE_DIALOG_SCHEMA,
+import {
+  SHOW_PRICING_PLANS,
+  type SettingTab,
+  type WORKSPACE_DIALOG_SCHEMA,
 } from '@affine/core/modules/dialogs/constant';
 import { GlobalContextService } from '@affine/core/modules/global-context';
 import { createIsland, type Island } from '@affine/core/utils/island';
@@ -53,6 +54,27 @@ interface SettingProps extends ModalProps {
 const isWorkspaceSetting = (key: string): boolean =>
   key.startsWith('workspace:');
 
+const normalizeHiddenPricingState = (
+  state: SettingState,
+  isSelfhosted: boolean
+): SettingState => {
+  if (SHOW_PRICING_PLANS) {
+    return state;
+  }
+
+  if (state.activeTab === 'plans' || state.activeTab === 'billing') {
+    return { activeTab: 'appearance' };
+  }
+
+  if (state.activeTab === 'workspace:billing') {
+    return {
+      activeTab: isSelfhosted ? 'workspace:license' : 'workspace:storage',
+    };
+  }
+
+  return state;
+};
+
 const CenteredLoading = () => {
   return (
     <div className={style.centeredLoading}>
@@ -91,6 +113,10 @@ const SettingModalInner = ({
     currentServer.config$.selector(
       c => c.type === ServerDeploymentType.Selfhosted
     )
+  );
+  const safeSettingState = useMemo(
+    () => normalizeHiddenPricingState(settingState, isSelfhosted),
+    [isSelfhosted, settingState]
   );
 
   const modalContentRef = useRef<HTMLDivElement>(null);
@@ -173,19 +199,18 @@ const SettingModalInner = ({
 
   useEffect(() => {
     if (
-      isSelfhosted &&
-      (settingState.activeTab === 'plans' ||
-        settingState.activeTab === 'workspace:billing')
+      safeSettingState.activeTab !== settingState.activeTab ||
+      safeSettingState.scrollAnchor !== settingState.scrollAnchor
     ) {
-      setSettingState({ activeTab: 'workspace:license' });
+      setSettingState(safeSettingState);
     }
-  }, [isSelfhosted, settingState.activeTab]);
+  }, [safeSettingState, settingState]);
 
   useEffect(() => {
-    if (settingState.scrollAnchor) {
+    if (safeSettingState.scrollAnchor) {
       flushSync(() => {
         const target = modalContentRef.current?.querySelector(
-          `#${settingState.scrollAnchor}`
+          `#${safeSettingState.scrollAnchor}`
         );
         if (target) {
           target.scrollIntoView();
@@ -193,14 +218,14 @@ const SettingModalInner = ({
       });
     }
     modalContentWrapperRef.current?.scrollTo({ top: 0 });
-  }, [settingState]);
+  }, [safeSettingState]);
   return (
     <FrameworkScope
       key={`setting-modal-${currentServerId}-${currentLanguageKey}`}
       scope={currentServer.scope}
     >
       <SettingSidebar
-        activeTab={settingState.activeTab}
+        activeTab={safeSettingState.activeTab}
         onTabChange={onTabChange}
       />
       <SubPageContext.Provider value={contextValue}>
@@ -215,19 +240,19 @@ const SettingModalInner = ({
             <div className={style.centerContainer}>
               <div ref={modalContentRef} className={style.content}>
                 <Suspense fallback={<WorkspaceDetailSkeleton />}>
-                  {settingState.activeTab === 'account' &&
+                  {safeSettingState.activeTab === 'account' &&
                   loginStatus === 'authenticated' ? (
                     <AccountSetting onChangeSettingState={setSettingState} />
-                  ) : isWorkspaceSetting(settingState.activeTab) ? (
+                  ) : isWorkspaceSetting(safeSettingState.activeTab) ? (
                     <WorkspaceSetting
-                      activeTab={settingState.activeTab}
-                      scrollAnchor={settingState.scrollAnchor}
+                      activeTab={safeSettingState.activeTab}
+                      scrollAnchor={safeSettingState.scrollAnchor}
                       onCloseSetting={onCloseSetting}
                       onChangeSettingState={setSettingState}
                     />
-                  ) : !isWorkspaceSetting(settingState.activeTab) ? (
+                  ) : !isWorkspaceSetting(safeSettingState.activeTab) ? (
                     <GeneralSetting
-                      activeTab={settingState.activeTab}
+                      activeTab={safeSettingState.activeTab}
                       onChangeSettingState={setSettingState}
                     />
                   ) : null}

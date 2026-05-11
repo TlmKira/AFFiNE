@@ -268,7 +268,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
     const success = await copyText(removeMarkdownComments(changedMarkdown));
     if (success) {
       this.notificationService.notify({
-        title: 'Copied to clipboard',
+        title: '\u5df2\u590d\u5236\u5230\u526a\u8d34\u677f',
         accent: 'success',
         onClose: function (): void {},
       });
@@ -278,7 +278,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
   renderToolCall() {
     return html`
       <tool-call-card
-        .name=${'Editing the document'}
+        .name=${'\u6b63\u5728\u7f16\u8f91\u6587\u6863'}
         .icon=${EditIcon()}
       ></tool-call-card>
     `;
@@ -301,15 +301,11 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
             return html`
               <div class="doc-edit-tool-result-card-diff-replace">
                 <div class="doc-edit-tool-result-card-diff original">
-                  <div class="doc-edit-tool-result-card-diff-title">
-                    Original
-                  </div>
+                  <div class="doc-edit-tool-result-card-diff-title">原文</div>
                   <div>${this.renderSantizedText(oldBlock?.content ?? '')}</div>
                 </div>
                 <div class="doc-edit-tool-result-card-diff modified">
-                  <div class="doc-edit-tool-result-card-diff-title">
-                    Modified
-                  </div>
+                  <div class="doc-edit-tool-result-card-diff-title">修改后</div>
                   <div>${this.renderSantizedText(patch.content)}</div>
                 </div>
               </div>
@@ -318,14 +314,14 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
             const oldBlock = oldBlockMap.get(patch.id);
             return html`
               <div class="doc-edit-tool-result-card-diff deleted">
-                <div class="doc-edit-tool-result-card-diff-title">Deleted</div>
+                <div class="doc-edit-tool-result-card-diff-title">已删除</div>
                 <div>${this.renderSantizedText(oldBlock?.content ?? '')}</div>
               </div>
             `;
           } else if (patch.op === 'insert') {
             return html`
               <div class="doc-edit-tool-result-card-diff insert">
-                <div class="doc-edit-tool-result-card-diff-title">Inserted</div>
+                <div class="doc-edit-tool-result-card-diff-title">已插入</div>
                 <div>${this.renderSantizedText(patch.block.content)}</div>
               </div>
             `;
@@ -370,14 +366,14 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
                     <button @click=${() => this._toggleCollapse()}>
                       ${this.isCollapsed ? ExpandFullIcon() : ExpandCloseIcon()}
                       <affine-tooltip>
-                        ${this.isCollapsed ? 'Expand' : 'Collapse'}
+                        ${this.isCollapsed ? '\u5c55\u5f00' : '\u6536\u8d77'}
                       </affine-tooltip>
                     </button>
                     <button @click=${() => this._handleCopy(changedContent)}>
                       ${CopyIcon()}
-                      <affine-tooltip>Copy</affine-tooltip>
+                      <affine-tooltip>复制</affine-tooltip>
                     </button>
-                    <button @click=${() => this._handleApply(op)}>Apply</button>
+                    <button @click=${() => this._handleApply(op)}>应用</button>
                   </div>
                 </div>
                 <div class="doc-edit-tool-result-card-content">
@@ -390,7 +386,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
                       ${CloseIcon({
                         style: `color: ${unsafeCSSVarV2('icon/secondary')}`,
                       })}
-                      Reject
+                      拒绝
                     </button>
                     <button
                       class="doc-edit-tool-result-accept"
@@ -399,7 +395,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
                       ${DoneIcon({
                         style: `color: ${unsafeCSSVarV2('icon/activated')}`,
                       })}
-                      Accept
+                      接受
                     </button>
                   </div>
                 </div>
@@ -412,7 +408,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
 
     return html`
       <tool-call-failed
-        .name=${'Document editing failed'}
+        .name=${'\u6587\u6863\u7f16\u8f91\u5931\u8d25'}
         .icon=${EditIcon()}
       ></tool-call-failed>
     `;

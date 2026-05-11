@@ -15,6 +15,7 @@ import {
   type WorkspaceMetadata,
   WorkspacesService,
 } from '@affine/core/modules/workspace';
+import { buildShowcaseWorkspace } from '@affine/core/utils/first-app-data';
 import { ZipTransformer } from '@blocksuite/affine/widgets/linked-doc';
 import {
   FrameworkScope,
@@ -24,10 +25,18 @@ import {
   useServices,
 } from '@toeverything/infra';
 import type { PropsWithChildren, ReactElement } from 'react';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   matchPath,
   useLocation,
+  useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
@@ -59,6 +68,203 @@ declare global {
 }
 
 globalThis.Y = _Y;
+
+const WORKSPACE_LOADING_TIMEOUT = 8000;
+
+const useLoadingTimeout = (active: boolean, resetKey: string) => {
+  const [timedOut, setTimedOut] = useState(false);
+
+  useEffect(() => {
+    if (!active) {
+      setTimedOut(false);
+      return;
+    }
+
+    setTimedOut(false);
+    const timer = window.setTimeout(() => {
+      setTimedOut(true);
+    }, WORKSPACE_LOADING_TIMEOUT);
+
+    return () => window.clearTimeout(timer);
+  }, [active, resetKey]);
+
+  return timedOut;
+};
+
+const WorkspaceLoadingTimeoutFallback = ({
+  workspaceId,
+  reason,
+}: {
+  workspaceId?: string;
+  reason: 'workspace-list' | 'root-doc';
+}) => {
+  const navigate = useNavigate();
+  const workspacesService = useService(WorkspacesService);
+  const [creating, setCreating] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleCreateLocalWorkspace = useCallback(async () => {
+    if (creating) {
+      return;
+    }
+
+    setCreating(true);
+    setErrorMessage(null);
+    try {
+      const { meta, defaultDocId } = await buildShowcaseWorkspace(
+        workspacesService,
+        'local',
+        '本地预览工作区'
+      );
+      navigate(`/workspace/${meta.id}/${defaultDocId ?? 'all'}`, {
+        replace: true,
+      });
+    } catch (error) {
+      console.error('Failed to create local fallback workspace', error);
+      setErrorMessage('新建本地 workspace 失败，请稍后重试或先返回首页。');
+    } finally {
+      setCreating(false);
+    }
+  }, [creating, navigate, workspacesService]);
+
+  const detail =
+    reason === 'workspace-list'
+      ? '当前 workspace 没有从本地列表中解析出来，可能是旧缓存、远端同步型 workspace，或列表加载请求被后端连接失败阻塞。'
+      : '当前 workspace 已找到，但根文档数据迟迟未就绪，可能是远端同步数据缺失、旧本地数据异常，或前端预览没有连接后端。';
+
+  return (
+    <AppContainer fallback>
+      <main
+        style={{
+          alignItems: 'center',
+          display: 'flex',
+          height: '100%',
+          justifyContent: 'center',
+          padding: 24,
+        }}
+      >
+        <section
+          style={{
+            border: '1px solid var(--affine-border-color)',
+            borderRadius: 8,
+            boxShadow: 'var(--affine-shadow-1)',
+            maxWidth: 560,
+            padding: 24,
+            width: 'min(100%, 560px)',
+          }}
+        >
+          <h1
+            style={{
+              fontSize: 20,
+              fontWeight: 600,
+              lineHeight: 1.4,
+              margin: 0,
+            }}
+          >
+            工作区加载超时
+          </h1>
+          <p
+            style={{
+              color: 'var(--affine-text-secondary-color)',
+              lineHeight: 1.7,
+              margin: '12px 0 0',
+            }}
+          >
+            后端未连接或本地数据加载失败。当前只运行前端预览，远端工作区、同步、分享和
+            AI 可能无法加载；本地 workspace 数据不会被清空。
+          </p>
+          <p
+            style={{
+              color: 'var(--affine-text-secondary-color)',
+              lineHeight: 1.7,
+              margin: '8px 0 0',
+            }}
+          >
+            {detail}
+          </p>
+          {workspaceId ? (
+            <code
+              style={{
+                background: 'var(--affine-hover-color)',
+                borderRadius: 4,
+                display: 'block',
+                fontSize: 12,
+                marginTop: 12,
+                overflowWrap: 'anywhere',
+                padding: '8px 10px',
+              }}
+            >
+              workspace: {workspaceId}
+            </code>
+          ) : null}
+          {errorMessage ? (
+            <p
+              style={{
+                color: 'var(--affine-error-color)',
+                lineHeight: 1.6,
+                margin: '12px 0 0',
+              }}
+            >
+              {errorMessage}
+            </p>
+          ) : null}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 8,
+              marginTop: 20,
+            }}
+          >
+            <button
+              onClick={() => navigate('/', { replace: true })}
+              style={{
+                border: '1px solid var(--affine-border-color)',
+                borderRadius: 6,
+                cursor: 'pointer',
+                height: 36,
+                padding: '0 14px',
+              }}
+              type="button"
+            >
+              返回首页
+            </button>
+            <button
+              disabled={creating}
+              onClick={handleCreateLocalWorkspace}
+              style={{
+                background: 'var(--affine-primary-color)',
+                border: '1px solid var(--affine-primary-color)',
+                borderRadius: 6,
+                color: 'var(--affine-pure-white)',
+                cursor: creating ? 'default' : 'pointer',
+                height: 36,
+                opacity: creating ? 0.7 : 1,
+                padding: '0 14px',
+              }}
+              type="button"
+            >
+              {creating ? '正在创建...' : '新建本地 workspace'}
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                border: '1px solid var(--affine-border-color)',
+                borderRadius: 6,
+                cursor: 'pointer',
+                height: 36,
+                padding: '0 14px',
+              }}
+              type="button"
+            >
+              重新加载
+            </button>
+          </div>
+        </section>
+      </main>
+    </AppContainer>
+  );
+};
 
 export const Component = (): ReactElement => {
   const {
@@ -109,6 +315,10 @@ export const Component = (): ReactElement => {
   const meta = useMemo(() => {
     return workspaces.find(({ id }) => id === params.workspaceId);
   }, [workspaces, params.workspaceId]);
+  const workspaceListTimedOut = useLoadingTimeout(
+    !meta && !workspaceNotFound,
+    `${params.workspaceId ?? ''}:${listLoading}:${meta?.id ?? ''}`
+  );
 
   // if listLoading is false, we can show 404 page, otherwise we should show loading page.
   useEffect(() => {
@@ -214,6 +424,14 @@ export const Component = (): ReactElement => {
     );
   }
   if (!meta) {
+    if (workspaceListTimedOut) {
+      return (
+        <WorkspaceLoadingTimeoutFallback
+          reason="workspace-list"
+          workspaceId={params.workspaceId}
+        />
+      );
+    }
     return <AppContainer fallback />;
   }
 
@@ -266,6 +484,10 @@ const WorkspacePage = ({ meta }: { meta: WorkspaceMetadata }) => {
     [workspace]
   );
   const isRootDocReady = useLiveData(rootDocReady$) ?? false;
+  const rootDocTimedOut = useLoadingTimeout(
+    !!workspace && !isRootDocReady,
+    `${meta.id}:${workspace?.id ?? ''}:${isRootDocReady}`
+  );
 
   useEffect(() => {
     if (workspace) {
@@ -332,6 +554,21 @@ const WorkspacePage = ({ meta }: { meta: WorkspaceMetadata }) => {
   }
 
   if (!isRootDocReady) {
+    if (rootDocTimedOut) {
+      return (
+        <FrameworkScope scope={workspace.scope}>
+          <DNDContextProvider>
+            <OpenInAppGuard>
+              <WorkspaceLoadingTimeoutFallback
+                reason="root-doc"
+                workspaceId={workspace.id}
+              />
+            </OpenInAppGuard>
+          </DNDContextProvider>
+        </FrameworkScope>
+      );
+    }
+
     return (
       <FrameworkScope scope={workspace.scope}>
         <DNDContextProvider>

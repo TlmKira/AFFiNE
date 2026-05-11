@@ -336,10 +336,8 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
               data-session-id=${session.sessionId}
             >
               <div class="ai-session-title">
-                ${session.title || 'New chat'}
-                <affine-tooltip .offsetX=${60}>
-                  Click to open this chat
-                </affine-tooltip>
+                ${session.title || '\u65b0\u5bf9\u8bdd'}
+                <affine-tooltip .offsetX=${60}> 点击打开此对话 </affine-tooltip>
               </div>
               ${session.docId
                 ? this.renderSessionDoc(session.docId, session.sessionId)
@@ -352,7 +350,7 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
                 }}
               >
                 ${DeleteIcon()}
-                <affine-tooltip>Delete</affine-tooltip>
+                <affine-tooltip>删除</affine-tooltip>
               </div>
             </div>
           `;
@@ -374,14 +372,14 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
     >
       ${docIcon}
       <span class="doc-title"> ${this.docDisplayConfig.getTitle(docId)} </span>
-      <affine-tooltip>Open this doc</affine-tooltip>
+      <affine-tooltip>打开此文档</affine-tooltip>
     </div>`;
   }
 
   private renderLoading() {
     return html`
       <div class="loading-container">
-        <div class="loading-title">Loading history...</div>
+        <div class="loading-title">正在加载历史...</div>
       </div>
     `;
   }
@@ -389,7 +387,7 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
   private renderEmpty() {
     return html`
       <div class="empty-container">
-        <div class="empty-title">Empty history</div>
+        <div class="empty-title">暂无历史</div>
       </div>
     `;
   }
@@ -415,11 +413,17 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
 
     const groupedSessions = this.groupSessionsByTime(otherSessions);
     return html`
-      ${this.renderSessionGroup('Current document', currentDocSessions)}
-      ${this.renderSessionGroup('Today', groupedSessions.today)}
-      ${this.renderSessionGroup('Last 7 days', groupedSessions.last7Days)}
-      ${this.renderSessionGroup('Last 30 days', groupedSessions.last30Days)}
-      ${this.renderSessionGroup('Older', groupedSessions.older)}
+      ${this.renderSessionGroup('\u5f53\u524d\u6587\u6863', currentDocSessions)}
+      ${this.renderSessionGroup('\u4eca\u5929', groupedSessions.today)}
+      ${this.renderSessionGroup(
+        '\u6700\u8fd1 7 \u5929',
+        groupedSessions.last7Days
+      )}
+      ${this.renderSessionGroup(
+        '\u6700\u8fd1 30 \u5929',
+        groupedSessions.last30Days
+      )}
+      ${this.renderSessionGroup('\u66f4\u65e9', groupedSessions.older)}
     `;
   }
 

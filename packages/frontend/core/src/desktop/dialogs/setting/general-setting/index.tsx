@@ -1,5 +1,8 @@
 import { UserFeatureService } from '@affine/core/modules/cloud/services/user-feature';
-import type { SettingTab } from '@affine/core/modules/dialogs/constant';
+import {
+  SHOW_PRICING_PLANS,
+  type SettingTab,
+} from '@affine/core/modules/dialogs/constant';
 import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { MeetingSettingsService } from '@affine/core/modules/media/services/meeting-settings';
 import { useI18n } from '@affine/i18n';
@@ -108,7 +111,7 @@ export const useGeneralSettingList = (): GeneralSettingList => {
       });
     }
 
-    if (hasPaymentFeature) {
+    if (SHOW_PRICING_PLANS && hasPaymentFeature) {
       settings.splice(4, 0, {
         key: 'plans',
         title: t['com.affine.payment.title'](),
@@ -181,9 +184,17 @@ export const GeneralSetting = ({
     case 'about':
       return <AboutAffine />;
     case 'plans':
-      return <AFFiNEPricingPlans />;
+      return SHOW_PRICING_PLANS ? (
+        <AFFiNEPricingPlans />
+      ) : (
+        <AppearanceSettings />
+      );
     case 'billing':
-      return <BillingSettings onChangeSettingState={onChangeSettingState} />;
+      return SHOW_PRICING_PLANS ? (
+        <BillingSettings onChangeSettingState={onChangeSettingState} />
+      ) : (
+        <AppearanceSettings />
+      );
     case 'experimental-features':
       return <ExperimentalFeatures />;
     case 'backup':

@@ -1,10 +1,16 @@
 import { useI18n } from '@affine/i18n';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 import { ArrowRightBigIcon } from '@blocksuite/icons/rc';
 
 import * as styles from './share-footer.css';
 
 export const ShareFooter = () => {
   const t = useI18n();
+
+  if (!PRIVATE_SERVICE_URLS.website) {
+    return null;
+  }
+
   return (
     <div className={styles.footerContainer}>
       <div className={styles.footer}>
@@ -13,7 +19,7 @@ export const ShareFooter = () => {
         </div>
         <a
           className={styles.getStartLink}
-          href="https://affine.pro/"
+          href={PRIVATE_SERVICE_URLS.website}
           target="_blank"
           rel="noreferrer"
         >

@@ -16,7 +16,7 @@ export const renderSortBar = (props: DataViewWidgetProps) => {
   if (count === 0) {
     return;
   }
-  const text = count === 1 ? html`1 Sort` : html`${count} Sorts`;
+  const text = count === 1 ? html`1 项排序` : html`${count} 项排序`;
   const click = (event: MouseEvent) => {
     popSortRoot(popupTargetFromElement(event.currentTarget as HTMLElement), {
       sortUtils: createSortUtils(sortTrait, props.dataViewLogic.eventTrace),

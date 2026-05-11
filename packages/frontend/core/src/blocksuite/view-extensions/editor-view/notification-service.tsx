@@ -74,11 +74,11 @@ export class NotificationServiceImpl implements NotificationService {
       this.openConfirmModal({
         title: toReactNode(title),
         description: description,
-        confirmText: confirmText ?? 'Confirm',
+        confirmText: confirmText ?? '\u786e\u8ba4',
         confirmButtonOptions: {
           variant: 'primary',
         },
-        cancelText: cancelText ?? 'Cancel',
+        cancelText: cancelText ?? '\u53d6\u6d88',
         onConfirm: () => {
           resolve(value);
         },

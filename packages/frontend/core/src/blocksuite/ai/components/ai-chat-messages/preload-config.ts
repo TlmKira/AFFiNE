@@ -16,7 +16,7 @@ import TidyMindMapV3 from './templates/TidyMindMapV3.zip';
 export const AIPreloadConfig = [
   {
     icon: LanguageIcon(),
-    text: 'Read a foreign language article with AI',
+    text: '\u7528 AI \u9605\u8bfb\u5916\u6587\u6587\u7ae0',
     testId: 'read-foreign-language-article-with-ai',
     handler: () => {
       AIProvider.slots.requestInsertTemplate.next({
@@ -27,7 +27,7 @@ export const AIPreloadConfig = [
   },
   {
     icon: MindmapIcon(),
-    text: 'Tidy an article with AI MindMap Action',
+    text: '\u7528 AI \u601d\u7ef4\u5bfc\u56fe\u6574\u7406\u6587\u7ae0',
     testId: 'tidy-an-article-with-ai-mindmap-action',
     handler: () => {
       AIProvider.slots.requestInsertTemplate.next({
@@ -38,7 +38,7 @@ export const AIPreloadConfig = [
   },
   {
     icon: ImageIcon(),
-    text: 'Add illustrations to the article',
+    text: '\u4e3a\u6587\u7ae0\u6dfb\u52a0\u63d2\u56fe',
     testId: 'add-illustrations-to-the-article',
     handler: () => {
       AIProvider.slots.requestInsertTemplate.next({
@@ -49,7 +49,7 @@ export const AIPreloadConfig = [
   },
   {
     icon: PenIcon(),
-    text: 'Complete writing with AI',
+    text: '\u7528 AI \u5b8c\u6210\u5199\u4f5c',
     testId: 'complete-writing-with-ai',
     handler: () => {
       AIProvider.slots.requestInsertTemplate.next({
@@ -60,7 +60,7 @@ export const AIPreloadConfig = [
   },
   {
     icon: SendIcon(),
-    text: 'Freely communicate with AI',
+    text: '\u4e0e AI \u81ea\u7531\u5bf9\u8bdd',
     testId: 'freely-communicate-with-ai',
     handler: () => {
       AIProvider.slots.requestInsertTemplate.next({

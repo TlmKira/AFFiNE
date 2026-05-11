@@ -12,9 +12,9 @@ import { LatexTooltip } from './tooltips';
 export const latexSlashMenuConfig: SlashMenuConfig = {
   items: [
     {
-      name: 'Inline equation',
+      name: '行内公式',
       group: '0_Basic@8',
-      description: 'Create a inline equation.',
+      description: '创建一个行内公式。',
       icon: TeXIcon(),
       tooltip: {
         figure: LatexTooltip(
@@ -22,7 +22,7 @@ export const latexSlashMenuConfig: SlashMenuConfig = {
           'E=mc^2',
           false
         ),
-        caption: 'Inline equation',
+        caption: '行内公式',
       },
       searchAlias: ['inlineMath, inlineEquation', 'inlineLatex'],
       action: ({ std }) => {
@@ -34,16 +34,16 @@ export const latexSlashMenuConfig: SlashMenuConfig = {
       },
     },
     {
-      name: 'Equation',
-      description: 'Create a equation block.',
+      name: '公式块',
+      description: '创建一个公式块。',
       icon: TeXIcon(),
       tooltip: {
         figure: LatexTooltip(
-          'Create a equation via LaTeX.',
+          '通过 LaTeX 创建公式。',
           String.raw`\frac{a}{b} \pm \frac{c}{d} = \frac{ad \pm bc}{bd}`,
           true
         ),
-        caption: 'Equation',
+        caption: '公式块',
       },
       searchAlias: ['mathBlock, equationBlock', 'latexBlock'],
       group: '4_Content & Media@10',

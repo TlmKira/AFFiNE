@@ -168,10 +168,11 @@ export class DocComposeTool extends ArtifactTool<
         });
         if (docId) {
           const open = await this.notificationService.confirm({
-            title: 'Open the doc you just created',
-            message: 'Doc saved successfully! Would you like to open it now?',
-            cancelText: 'Cancel',
-            confirmText: 'Open',
+            title: '\u6253\u5f00\u521a\u521b\u5efa\u7684\u6587\u6863',
+            message:
+              '\u6587\u6863\u5df2\u4fdd\u5b58\u3002\u8981\u73b0\u5728\u6253\u5f00\u5417\uff1f',
+            cancelText: '\u53d6\u6d88',
+            confirmText: '\u6253\u5f00',
           });
           if (open) {
             refNodeSlots?.docLinkClicked.next({
@@ -181,11 +182,13 @@ export class DocComposeTool extends ArtifactTool<
             });
           }
         } else {
-          this.notificationService.toast('Failed to create document');
+          this.notificationService.toast(
+            '\u521b\u5efa\u6587\u6863\u5931\u8d25'
+          );
         }
       } catch (e) {
         console.error(e);
-        this.notificationService.toast('Failed to create document');
+        this.notificationService.toast('\u521b\u5efa\u6587\u6863\u5931\u8d25');
       }
     };
 
@@ -198,9 +201,9 @@ export class DocComposeTool extends ArtifactTool<
               height: '20',
               style: `color: ${unsafeCSSVarV2('icon/primary')}`,
             })}
-            Save as doc
+            保存为文档
           </button>
-          <icon-button @click=${copyMarkdown} title="Copy markdown">
+          <icon-button @click=${copyMarkdown} title="复制 Markdown">
             ${CopyIcon({ width: '20', height: '20' })}
           </icon-button>
         `;
@@ -214,7 +217,7 @@ export class DocComposeTool extends ArtifactTool<
       (this.data.result as any).type === 'error'
     ) {
       return html`<tool-call-failed
-        .name=${'Doc compose failed'}
+        .name=${'\u6587\u6863\u751f\u6210\u5931\u8d25'}
         .icon=${ToolIcon()}
       ></tool-call-failed>`;
     }

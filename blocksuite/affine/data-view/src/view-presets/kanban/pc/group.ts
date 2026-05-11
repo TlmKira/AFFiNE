@@ -135,7 +135,7 @@ export class KanbanGroup extends SignalWatcher(
     const ele = e.currentTarget as HTMLElement;
     popFilterableSimpleMenu(popupTargetFromElement(ele), [
       menu.action({
-        name: 'Ungroup',
+        name: '取消分组',
         hide: () => this.group.value == null,
         select: () => {
           this.group.rows.forEach(row => {
@@ -145,7 +145,7 @@ export class KanbanGroup extends SignalWatcher(
         },
       }),
       menu.action({
-        name: 'Delete Cards',
+        name: '删除卡片',
         select: () => {
           this.view.rowsDelete(this.group.rows.map(row => row.rowId));
           this.requestUpdate();

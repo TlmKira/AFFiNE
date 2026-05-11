@@ -34,16 +34,18 @@ const MemberPreview = ({
         size={20}
       />
       <div className={memberName}>
-        {userInfo.removed ? 'Deleted user' : userInfo.name || 'Unnamed'}
+        {userInfo.removed
+          ? '\u5df2\u5220\u9664\u7528\u6237'
+          : userInfo.name || '\u672a\u547d\u540d'}
       </div>
     </div>
   );
 };
 const MemberGroupView = (props: GroupRenderProps<string | null, {}>) => {
   const tType = props.group.tType;
-  if (!t.user.is(tType)) return 'Ungroup';
+  if (!t.user.is(tType)) return '\u672a\u5206\u7ec4';
   const memberId = props.group.value;
-  if (memberId == null) return 'Ungroup';
+  if (memberId == null) return '\u672a\u5206\u7ec4';
 
   return (
     <MemberPreview
@@ -55,9 +57,10 @@ const MemberGroupView = (props: GroupRenderProps<string | null, {}>) => {
 
 const MultiMemberGroupView = (props: GroupRenderProps<string | null, {}>) => {
   const tType = props.group.tType;
-  if (!t.array.is(tType) || !t.user.is(tType.element)) return 'Ungroup';
+  if (!t.array.is(tType) || !t.user.is(tType.element))
+    return '\u672a\u5206\u7ec4';
   const memberId = props.group.value;
-  if (memberId == null) return 'Ungroup';
+  if (memberId == null) return '\u672a\u5206\u7ec4';
 
   return (
     <MemberPreview
@@ -77,7 +80,7 @@ export const groupByConfigList = [
         if (userService) {
           const userInfo = userService.userInfo$(value).value;
           if (userInfo && !userInfo?.removed) {
-            return userInfo.name ?? 'Unnamed';
+            return userInfo.name ?? '\u672a\u547d\u540d';
           }
         }
       }
@@ -113,7 +116,7 @@ export const groupByConfigList = [
         if (userService) {
           const userInfo = userService.userInfo$(value).value;
           if (userInfo && !userInfo?.removed) {
-            return userInfo.name ?? 'Unnamed';
+            return userInfo.name ?? '\u672a\u547d\u540d';
           }
         }
       }

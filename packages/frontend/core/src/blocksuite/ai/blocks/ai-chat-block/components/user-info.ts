@@ -105,11 +105,11 @@ export function UserInfoTemplate(
 
   const userInfoTemplate = isUser
     ? html`<user-info
-        .userName=${userInfo.userName ?? 'You'}
+        .userName=${userInfo.userName ?? '\u4f60'}
         .avatarUrl=${userInfo.avatarUrl}
       ></user-info>`
     : html`<user-info
-        .userName=${'AFFiNE AI'}
+        .userName=${'AI \u52a9\u624b'}
         .avatarIcon=${AffineAIIcon}
       ></user-info>`;
 

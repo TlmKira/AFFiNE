@@ -71,7 +71,7 @@ export class DocSemanticSearchResult extends WithDisposable(ShadowlessElement) {
 
   renderToolCall() {
     return html`<tool-call-card
-      .name=${`Finding semantically related pages for "${this.data.args.query}"`}
+      .name=${`\u6b63\u5728\u67e5\u627e\u4e0e\u201c${this.data.args.query}\u201d\u8bed\u4e49\u76f8\u5173\u7684\u9875\u9762`}
       .icon=${AiEmbeddingIcon()}
       .width=${this.width}
     ></tool-call-card>`;
@@ -86,17 +86,17 @@ export class DocSemanticSearchResult extends WithDisposable(ShadowlessElement) {
       return html`<tool-call-failed
         .name=${getToolErrorDisplayName(
           isToolError(result) ? result : null,
-          'Semantic search failed',
+          '\u8bed\u4e49\u641c\u7d22\u5931\u8d25',
           {
             'Workspace Sync Required':
-              'Enable workspace sync to search documents',
+              '\u8bf7\u5148\u542f\u7528\u5de5\u4f5c\u533a\u540c\u6b65\u540e\u518d\u641c\u7d22\u6587\u6863',
           }
         )}
         .icon=${AiEmbeddingIcon()}
       ></tool-call-failed>`;
     }
     return html`<tool-result-card
-      .name=${`Found semantically related pages for "${this.data.args.query}"`}
+      .name=${`\u5df2\u627e\u5230\u4e0e\u201c${this.data.args.query}\u201d\u8bed\u4e49\u76f8\u5173\u7684\u9875\u9762`}
       .icon=${AiEmbeddingIcon()}
       .width=${this.width}
       .results=${result

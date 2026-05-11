@@ -159,7 +159,7 @@ export class FramesSettingMenu extends WithDisposable(LitElement) {
         </div>
       </div>
       <div class="frames-setting-menu-item action">
-        <div class="action-label">Hide toolbar</div>
+        <div class="action-label">隐藏工具栏</div>
         <div class="toggle-button">
           <toggle-switch
             .on=${this.hideToolbar}

@@ -8,6 +8,7 @@ import { baseTheme } from '@toeverything/theme';
 import { css, html, LitElement, nothing, unsafeCSS } from 'lit';
 import { property } from 'lit/decorators.js';
 
+import { PRIVATE_SERVICE_SUPPORT_EMAIL } from '@affine/core/modules/brand/constant';
 import {
   type AIError,
   AIProvider,
@@ -131,7 +132,7 @@ export class AIErrorWrapper extends SignalWatcher(WithDisposable(LitElement)) {
                     (this._showDetailContent.value =
                       !this._showDetailContent.value)}
                 >
-                  <span>Show detail</span>
+                  <span>查看详情</span>
                   <span
                     class="toggle ${this._showDetailContent.value
                       ? 'down'
@@ -174,7 +175,7 @@ export class AIErrorWrapper extends SignalWatcher(WithDisposable(LitElement)) {
   accessor errorMessage: string = '';
 
   @property({ attribute: false })
-  accessor actionText: string = 'Contact us';
+  accessor actionText: string = '\u8054\u7cfb\u6211\u4eec';
 
   @property({ attribute: false })
   accessor actionTooltip: string = '';
@@ -188,16 +189,16 @@ export class AIErrorWrapper extends SignalWatcher(WithDisposable(LitElement)) {
 
 const PaymentRequiredErrorRenderer = (host?: EditorHost | null) => html`
   <ai-error-wrapper
-    .text=${"You've reached the current usage cap for AFFiNE AI. You can subscribe to AFFiNE AI(with free 7-day-trial) to continue the AI experience!"}
-    .actionText=${'Upgrade'}
-    .onClick=${() => AIProvider.slots.requestUpgradePlan.next({ host })}
+    .text=${'\u5df2\u8fbe\u5230\u5f53\u524d AI \u4f7f\u7528\u4e0a\u9650\u3002\u8bf7\u8054\u7cfb\u7ba1\u7406\u5458\u5f00\u901a\u6216\u8c03\u6574\u79c1\u6709\u670d\u52a1\u914d\u989d\u3002'}
+    .actionText=${'\u77e5\u9053\u4e86'}
+    .onClick=${() => {}}
   ></ai-error-wrapper>
 `;
 
 const LoginRequiredErrorRenderer = (host?: EditorHost | null) => html`
   <ai-error-wrapper
-    .text=${'You need to login to AFFiNE Cloud to continue using AFFiNE AI.'}
-    .actionText=${'Login'}
+    .text=${'\u9700\u8981\u767b\u5f55\u79c1\u6709\u670d\u52a1\u540e\u624d\u80fd\u7ee7\u7eed\u4f7f\u7528 AI\u3002'}
+    .actionText=${'\u767b\u5f55'}
     .onClick=${() => AIProvider.slots.requestLogin.next({ host })}
   ></ai-error-wrapper>
 `;
@@ -210,19 +211,19 @@ type ErrorProps = {
 };
 
 const generalErrorText =
-  'An error occurred, If this issue persists please let us know.';
+  '\u53d1\u751f\u9519\u8bef\u3002\u5982\u679c\u95ee\u9898\u6301\u7eed\uff0c\u8bf7\u8054\u7cfb\u6211\u4eec\u3002';
 
 const GeneralErrorRenderer = (props: ErrorProps = {}) => {
   const onClick = () => {
-    window.open('mailto:support@toeverything.info', '_blank');
+    window.open(`mailto:${PRIVATE_SERVICE_SUPPORT_EMAIL}`, '_blank');
   };
 
   return html`<ai-error-wrapper
     .text=${props.text ?? generalErrorText}
     .errorMessage=${props.errorMessage ?? ''}
     .showDetailPanel=${!!props.errorMessage}
-    .actionText=${props.actionText ?? 'Contact us'}
-    .actionTooltip=${props.actionTooltip ?? 'support@toeverything.info'}
+    .actionText=${props.actionText ?? '\u8054\u7cfb\u6211\u4eec'}
+    .actionTooltip=${props.actionTooltip ?? PRIVATE_SERVICE_SUPPORT_EMAIL}
     .onClick=${onClick}
   ></ai-error-wrapper>`;
 };

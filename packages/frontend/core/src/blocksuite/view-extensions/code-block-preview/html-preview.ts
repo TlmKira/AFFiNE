@@ -118,31 +118,26 @@ export class HTMLPreview extends SignalWatcher(
         ${choose(this.state, [
           [
             'loading',
-            () =>
-              html`<div class="html-preview-loading">
-                Rendering the code...
-              </div>`,
+            () => html`<div class="html-preview-loading">正在渲染代码...</div>`,
           ],
           [
             'error',
             () =>
               html`<div class="html-preview-error">
-                Failed to render the preview. Please check your HTML code for
-                errors.
+                预览渲染失败。请检查 HTML 代码是否有错误。
               </div>`,
           ],
           [
             'fallback',
             () =>
               html`<div class="html-preview-fallback">
-                This feature is not supported in your browser. Please download
-                the AFFiNE Desktop App to use it.
+                当前浏览器不支持此功能。
               </div>`,
           ],
         ])}
         <iframe
           class="html-preview-iframe"
-          title="HTML Preview"
+          title="HTML 预览"
           style=${styleMap({
             display: this.state === 'finish' ? undefined : 'none',
           })}

@@ -5,6 +5,7 @@ import { css, html, LitElement, nothing, unsafeCSS } from 'lit';
 import { property } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
 
+import { PRIVATE_SERVICE_SUPPORT_EMAIL } from '@affine/core/modules/brand/constant';
 import { type AIItemGroupConfig } from '../../../../components/ai-item/types.js';
 import { AIErrorType } from '../../../../provider';
 import type { AIPanelErrorConfig, CopyConfig } from '../../type.js';
@@ -146,14 +147,14 @@ export class AIPanelError extends WithDisposable(LitElement) {
           AIErrorType.Unauthorized,
           () =>
             html` <div class="error-info">
-                You need to login to AFFiNE Cloud to continue using AFFiNE AI.
+                需要登录私有服务后才能继续使用 AI。
               </div>
               <div class="action-button-group">
                 <div @click=${this.config.cancel} class="action-button">
-                  <span>Cancel</span>
+                  <span>取消</span>
                 </div>
                 <div @click=${this.config.login} class="action-button primary">
-                  <span>Login</span>
+                  <span>登录</span>
                 </div>
               </div>`,
         ],
@@ -161,19 +162,14 @@ export class AIPanelError extends WithDisposable(LitElement) {
           AIErrorType.PaymentRequired,
           () =>
             html` <div class="error-info">
-                You've reached the current usage cap for AFFiNE AI. You can
-                subscribe to AFFiNE AI(with free 7-day-trial) to continue the AI
-                experience!
+                已达到当前 AI 使用上限。请联系管理员开通或调整私有服务配额。
               </div>
               <div class="action-button-group">
                 <div @click=${this.config.cancel} class="action-button">
-                  <span>Cancel</span>
+                  <span>取消</span>
                 </div>
-                <div
-                  @click=${this.config.upgrade}
-                  class="action-button primary"
-                >
-                  <span>Upgrade</span>
+                <div @click=${this.config.cancel} class="action-button primary">
+                  <span>知道了</span>
                 </div>
               </div>`,
         ],
@@ -183,12 +179,12 @@ export class AIPanelError extends WithDisposable(LitElement) {
         const tip = this.config.error?.message;
         const error = tip
           ? html`<span class="error-tip">
-              An error occurred
+              发生错误
               <affine-tooltip tip-position="bottom-start">
                 ${tip}
               </affine-tooltip>
             </span>`
-          : 'An error occurred';
+          : '\u53d1\u751f\u9519\u8bef';
         return html`
           <style>
             .error-tip {
@@ -196,10 +192,9 @@ export class AIPanelError extends WithDisposable(LitElement) {
             }
           </style>
           <div class="error-info">
-            ${error}. Please try again later. If this issue persists, please let
-            us know at
-            <a href="mailto:support@toeverything.info">
-              support@toeverything.info
+            ${error}。请稍后重试。如果问题持续，请联系
+            <a href="mailto:${PRIVATE_SERVICE_SUPPORT_EMAIL}">
+              ${PRIVATE_SERVICE_SUPPORT_EMAIL}
             </a>
           </div>
         `;
@@ -209,7 +204,7 @@ export class AIPanelError extends WithDisposable(LitElement) {
     return html`
       <div class="error" data-testid="ai-error">
         <div class="answer-tip">
-          <div class="answer-label">Answer</div>
+          <div class="answer-label">回答</div>
           <slot></slot>
         </div>
         ${errorTemplate}

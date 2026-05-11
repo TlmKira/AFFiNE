@@ -10,11 +10,11 @@ export const embedGithubSlashMenuConfig: SlashMenuConfig = {
   items: [
     {
       name: 'GitHub',
-      description: 'Link to a GitHub repository.',
+      description: '链接到 GitHub 仓库。',
       icon: GithubDuotoneIcon(),
       tooltip: {
         figure: GithubRepoTooltip,
-        caption: 'GitHub Repo',
+        caption: 'GitHub 仓库',
       },
       group: '4_Content & Media@7',
       when: ({ model }) =>
@@ -30,7 +30,7 @@ export const embedGithubSlashMenuConfig: SlashMenuConfig = {
           await toggleEmbedCardCreateModal(
             host,
             'GitHub',
-            'The added GitHub issue or pull request link will be displayed as a card view.',
+            '添加的 GitHub issue 或 pull request 链接将显示为卡片视图。',
             { mode: 'page', parentModel, index },
             ({ mode }) => {
               if (mode === 'edgeless') {

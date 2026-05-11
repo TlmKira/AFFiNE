@@ -7,7 +7,7 @@ import { css, html, type PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 
-const DEFAULT_TAB_TITLE = 'New chat';
+const DEFAULT_TAB_TITLE = '\u65b0\u5bf9\u8bdd';
 const TITLE_MAX_LENGTH = 28;
 
 function truncate(text: string): string {

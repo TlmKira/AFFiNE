@@ -7,6 +7,7 @@ import {
   AuthInput,
 } from '@affine/component/auth-components';
 import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 import { ServersService } from '@affine/core/modules/cloud';
 import { UserFriendlyError } from '@affine/error';
 import { Trans, useI18n } from '@affine/i18n';
@@ -146,20 +147,22 @@ export const AddSelfhostedStep = ({
         </Button>
       </AuthContent>
       <AuthFooter>
-        <div className={styles.authMessage}>
-          <Trans
-            i18nKey="com.affine.auth.sign.add-selfhosted.description"
-            components={{
-              1: (
-                <a
-                  href="https://docs.affine.pro/docs/self-host-affine"
-                  target="_blank"
-                  rel="noreferrer"
-                />
-              ),
-            }}
-          />
-        </div>
+        {PRIVATE_SERVICE_URLS.docs ? (
+          <div className={styles.authMessage}>
+            <Trans
+              i18nKey="com.affine.auth.sign.add-selfhosted.description"
+              components={{
+                1: (
+                  <a
+                    href={PRIVATE_SERVICE_URLS.docs}
+                    target="_blank"
+                    rel="noreferrer"
+                  />
+                ),
+              }}
+            />
+          </div>
+        ) : null}
         <Back changeState={changeState} />
       </AuthFooter>
     </AuthContainer>

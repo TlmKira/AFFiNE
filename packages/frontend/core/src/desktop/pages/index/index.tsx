@@ -1,5 +1,6 @@
 import { DefaultServerService } from '@affine/core/modules/cloud';
 import { DesktopApiService } from '@affine/core/modules/desktop-api';
+import { PRIVATE_SERVICE_WORKSPACE_NAME } from '@affine/core/modules/brand/constant';
 import { WorkspacesService } from '@affine/core/modules/workspace';
 import {
   buildShowcaseWorkspace,
@@ -75,7 +76,11 @@ export const Component = ({
     if (createOnceRef.current) return;
     createOnceRef.current = true;
     // TODO: support selfhosted
-    buildShowcaseWorkspace(workspacesService, 'affine-cloud', 'AFFiNE Cloud')
+    buildShowcaseWorkspace(
+      workspacesService,
+      'affine-cloud',
+      PRIVATE_SERVICE_WORKSPACE_NAME
+    )
       .then(({ meta, defaultDocId }) => {
         if (defaultDocId) {
           jumpToPage(meta.id, defaultDocId);

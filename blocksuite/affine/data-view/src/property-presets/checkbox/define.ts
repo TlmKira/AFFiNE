@@ -20,7 +20,7 @@ const FALSE_VALUES = new Set([
 ]);
 
 export const checkboxPropertyModelConfig = checkboxPropertyType.modelConfig({
-  name: 'Checkbox',
+  name: '复选框',
   kanbanGroup: {
     enabled: true,
     mutable: true,

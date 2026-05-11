@@ -1,4 +1,5 @@
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import track from '@affine/track';
 import type { Container } from '@blocksuite/affine/global/di';
 import {
@@ -19,9 +20,13 @@ export function patchFileSizeLimitExtension(framework: FrameworkProvider) {
     maxFileSize = 2 * 1024 * 1024 * 1024;
 
     onOverFileSize() {
+      if (!SHOW_PRICING_PLANS) {
+        return;
+      }
+
       workspaceDialogService.open('setting', {
-        activeTab: 'plans',
-        scrollAnchor: 'cloudPricingPlan',
+        activeTab: SHOW_PRICING_PLANS ? 'plans' : 'appearance',
+        scrollAnchor: SHOW_PRICING_PLANS ? 'cloudPricingPlan' : undefined,
       });
       track.$.paywall.storage.viewPlans();
     }

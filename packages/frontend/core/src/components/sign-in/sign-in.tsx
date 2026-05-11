@@ -8,6 +8,7 @@ import {
 } from '@affine/component/auth-components';
 import { OAuth } from '@affine/core/components/affine/auth/oauth';
 import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 import { AuthService, ServerService } from '@affine/core/modules/cloud';
 import type { AuthSessionStatus } from '@affine/core/modules/cloud/entities/session';
 import { ServerDeploymentType } from '@affine/graphql';
@@ -179,13 +180,15 @@ export const SignInStep = ({
 
         {!isSelfhosted && (
           <>
-            <div className={style.authMessage}>
-              {/*prettier-ignore*/}
-              <Trans i18nKey="com.affine.auth.sign.message">
-                By clicking &quot;Continue with Google/Email&quot; above, you acknowledge that
-                you agree to AFFiNE&apos;s <a href="https://affine.pro/terms" target="_blank" rel="noreferrer">Terms of Conditions</a> and <a href="https://affine.pro/privacy" target="_blank" rel="noreferrer">Privacy Policy</a>.
-            </Trans>
-            </div>
+            {PRIVATE_SERVICE_URLS.terms && PRIVATE_SERVICE_URLS.privacy ? (
+              <div className={style.authMessage}>
+                {/*prettier-ignore*/}
+                <Trans i18nKey="com.affine.auth.sign.message">
+                  By clicking &quot;Continue with Google/Email&quot; above, you acknowledge that
+                  you agree to AFFiNE&apos;s <a href={PRIVATE_SERVICE_URLS.terms} target="_blank" rel="noreferrer">Terms of Conditions</a> and <a href={PRIVATE_SERVICE_URLS.privacy} target="_blank" rel="noreferrer">Privacy Policy</a>.
+                </Trans>
+              </div>
+            ) : null}
             <div className={style.skipDivider}>
               <div className={style.skipDividerLine} />
               <span className={style.skipDividerText}>or</span>

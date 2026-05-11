@@ -11,7 +11,7 @@ import zod from 'zod';
 
 export const createdByColumnType = propertyType('created-by');
 export const createdByPropertyModelConfig = createdByColumnType.modelConfig({
-  name: 'Created By',
+  name: '创建者',
   kanbanGroup: {
     enabled: true,
     mutable: false,

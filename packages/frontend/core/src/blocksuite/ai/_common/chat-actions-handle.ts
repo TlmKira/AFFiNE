@@ -194,12 +194,12 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
   if (!notification) return Promise.resolve(undefined);
 
   return notification.prompt({
-    title: 'Create linked doc',
-    message: 'Enter a title for the new doc.',
-    placeholder: 'Untitled',
+    title: '\u521b\u5efa\u5173\u8054\u6587\u6863',
+    message: '\u8bf7\u8f93\u5165\u65b0\u6587\u6863\u6807\u9898\u3002',
+    placeholder: '\u672a\u547d\u540d',
     autofill,
-    confirmText: 'Confirm',
-    cancelText: 'Cancel',
+    confirmText: '\u786e\u8ba4',
+    cancelText: '\u53d6\u6d88',
   });
 }
 
@@ -254,7 +254,7 @@ async function insertBelowBlock(
 
 export const PAGE_INSERT = {
   icon: InsertBelowIcon({ width: '20px', height: '20px' }),
-  title: 'Insert',
+  title: '\u63d2\u5165',
   showWhen: (host: EditorHost) => {
     if (host.std.store.readonly$.value) {
       return false;
@@ -262,7 +262,7 @@ export const PAGE_INSERT = {
 
     return true;
   },
-  toast: 'Successfully inserted',
+  toast: '\u5df2\u63d2\u5165',
   handler: async (
     host: EditorHost,
     content: string,
@@ -335,8 +335,8 @@ export const EDGELESS_INSERT = {
 
 const SAVE_AS_BLOCK: ChatAction = {
   icon: BlockIcon({ width: '20px', height: '20px' }),
-  title: 'Save as block',
-  toast: 'Successfully saved chat to a block',
+  title: '\u4fdd\u5b58\u4e3a\u5757',
+  toast: '\u5df2\u5c06\u804a\u5929\u4fdd\u5b58\u4e3a\u5757',
   showWhen: (host: EditorHost) => {
     if (host.std.store.readonly$.value) {
       return false;
@@ -368,10 +368,10 @@ const SAVE_AS_BLOCK: ChatAction = {
       docModeService.setEditorMode('edgeless' as DocMode);
       // Notify user to switch to edgeless mode
       notificationService?.notify({
-        title: 'Save chat to a block',
+        title: '\u4fdd\u5b58\u804a\u5929\u4e3a\u5757',
         accent: 'info',
         message:
-          'This feature is not available in the page editor. Switch to edgeless mode.',
+          '\u6b64\u529f\u80fd\u5728\u9875\u9762\u7f16\u8f91\u5668\u4e2d\u4e0d\u53ef\u7528\uff0c\u5df2\u5207\u6362\u5230\u767d\u677f\u6a21\u5f0f\u3002',
         onClose: function (): void {},
       });
     }
@@ -419,7 +419,7 @@ const SAVE_AS_BLOCK: ChatAction = {
     } catch (err) {
       console.error(err);
       notificationService?.notify({
-        title: 'Failed to save chat to a block',
+        title: '\u4fdd\u5b58\u804a\u5929\u5757\u5931\u8d25',
         accent: 'error',
         onClose: function (): void {},
       });
@@ -430,14 +430,14 @@ const SAVE_AS_BLOCK: ChatAction = {
 
 const ADD_TO_EDGELESS_AS_NOTE = {
   icon: EdgelessIcon({ width: '20px', height: '20px' }),
-  title: 'Add to edgeless as note',
+  title: '\u6dfb\u52a0\u5230\u767d\u677f\u4e3a\u7b14\u8bb0',
   showWhen: (host: EditorHost) => {
     if (host.std.store.readonly$.value) {
       return false;
     }
     return true;
   },
-  toast: 'New note created',
+  toast: '\u5df2\u521b\u5efa\u65b0\u7b14\u8bb0',
   handler: async (host: EditorHost, content: string): Promise<boolean> => {
     reportResponse('result:add-note');
     const { store } = host;
@@ -471,9 +471,9 @@ const ADD_TO_EDGELESS_AS_NOTE = {
 
 export const SAVE_AS_DOC = {
   icon: PageIcon({ width: '20px', height: '20px' }),
-  title: 'Save as doc',
+  title: '\u4fdd\u5b58\u4e3a\u6587\u6863',
   showWhen: () => true,
-  toast: 'New doc created',
+  toast: '\u5df2\u521b\u5efa\u65b0\u6587\u6863',
   handler: (host: EditorHost, content: string) => {
     reportResponse('result:add-page');
     const doc = host.store.workspace.createDoc();
@@ -509,14 +509,14 @@ export const SAVE_AS_DOC = {
 
 const CREATE_AS_LINKED_DOC = {
   icon: LinkedPageIcon({ width: '20px', height: '20px' }),
-  title: 'Create as a linked doc',
+  title: '\u521b\u5efa\u4e3a\u5173\u8054\u6587\u6863',
   showWhen: (host: EditorHost) => {
     if (host.std.store.readonly$.value) {
       return false;
     }
     return true;
   },
-  toast: 'New doc created',
+  toast: '\u5df2\u521b\u5efa\u65b0\u6587\u6863',
   handler: async (host: EditorHost, content: string) => {
     reportResponse('result:add-page');
 

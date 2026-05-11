@@ -94,7 +94,7 @@ export class GeneratingPlaceholder extends WithDisposable(LitElement) {
         }
       </style>
       ${this.showHeader
-        ? html`<div class="generating-header">Answer</div>`
+        ? html`<div class="generating-header">回答</div>`
         : nothing}
       <div class="generating-body">
         <div class="generating-icon">${LoadingIcon()}</div>

@@ -2,6 +2,7 @@ import { Tabs, Tooltip, useConfirmModal } from '@affine/component';
 import { Button } from '@affine/component/ui/button';
 import { Menu } from '@affine/component/ui/menu';
 import { ServerService } from '@affine/core/modules/cloud';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import { WorkspacePermissionService } from '@affine/core/modules/permissions';
 import { WorkspaceQuotaService } from '@affine/core/modules/quota';
@@ -89,35 +90,36 @@ export const ShareMenuContent = (props: ShareMenuProps) => {
       return;
     }
     workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'workspace:storage',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'cloudPricingPlan' : undefined,
     });
     return;
   }, [isOwner, workspaceDialogService]);
 
   const openPaywallModal = useCallback(() => {
+    const canUpgrade = SHOW_PRICING_PLANS && isOwner;
     openConfirmModal({
       title:
         t[
-          `com.affine.share-menu.paywall.${isOwner ? 'owner' : 'member'}.title`
+          `com.affine.share-menu.paywall.${canUpgrade ? 'owner' : 'member'}.title`
         ](),
       description:
         t[
-          `com.affine.share-menu.paywall.${isOwner ? 'owner' : 'member'}.description`
+          `com.affine.share-menu.paywall.${canUpgrade ? 'owner' : 'member'}.description`
         ](),
       confirmText:
         t[
-          `com.affine.share-menu.paywall.${isOwner ? 'owner' : 'member'}.confirm`
+          `com.affine.share-menu.paywall.${canUpgrade ? 'owner' : 'member'}.confirm`
         ](),
-      onConfirm: onConfirm,
+      onConfirm: canUpgrade ? onConfirm : undefined,
       cancelText: t['Cancel'](),
       cancelButtonOptions: {
         style: {
-          visibility: isOwner ? 'visible' : 'hidden',
+          visibility: canUpgrade ? 'visible' : 'hidden',
         },
       },
       confirmButtonOptions: {
-        variant: isOwner ? 'primary' : 'custom',
+        variant: canUpgrade ? 'primary' : 'custom',
       },
     });
   }, [isOwner, onConfirm, openConfirmModal, t]);

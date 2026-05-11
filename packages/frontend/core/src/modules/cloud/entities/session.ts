@@ -116,7 +116,8 @@ export class AuthSession extends Entity {
       if (UserFriendlyError.fromAny(e).is('UNSUPPORTED_CLIENT_VERSION')) {
         return null;
       }
-      throw e;
+      console.warn('Failed to fetch auth session, fallback to signed out.', e);
+      return null;
     }
   }
 

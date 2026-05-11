@@ -1,6 +1,8 @@
 import { Button, IconButton, Modal } from '@affine/component';
 import { useBlurRoot } from '@affine/core/components/hooks/use-blur-root';
 import { AuthService, SubscriptionService } from '@affine/core/modules/cloud';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import { Trans, useI18n } from '@affine/i18n';
 import { track } from '@affine/track';
@@ -42,21 +44,23 @@ const getPlayList = (t: Translate): Array<PlayListItem> => [
   {
     video: '/onboarding/ai-onboarding.general.5.mp4',
     title: t['com.affine.ai-onboarding.general.5.title'](),
-    desc: (
+    desc: PRIVATE_SERVICE_URLS.ai ? (
       <Trans
         i18nKey="com.affine.ai-onboarding.general.5.description"
-        values={{ link: 'ai.affine.pro' }}
+        values={{ link: PRIVATE_SERVICE_URLS.ai }}
         components={{
           a: (
             <a
               className={styles.link}
-              href="https://ai.affine.pro"
+              href={PRIVATE_SERVICE_URLS.ai}
               target="_blank"
               rel="noreferrer"
             />
           ),
         }}
       />
+    ) : (
+      t['com.affine.ai-onboarding.local.message']()
     ),
   },
 ];
@@ -111,8 +115,8 @@ export const AIOnboardingGeneral = () => {
   }, []);
   const goToPricingPlans = useCallback(() => {
     workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'aiPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'account',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'aiPricingPlan' : undefined,
     });
     track.$.aiOnboarding.dialog.viewPlans();
     closeAndDismiss();
@@ -220,11 +224,13 @@ export const AIOnboardingGeneral = () => {
           <Trans
             i18nKey="com.affine.ai-onboarding.general.privacy"
             components={{
-              a: (
+              a: PRIVATE_SERVICE_URLS.terms ? (
                 <a
                   className={styles.privacyLink}
-                  href="https://affine.pro/terms#ai"
+                  href={`${PRIVATE_SERVICE_URLS.terms}#ai`}
                 />
+              ) : (
+                <span className={styles.privacyLink} />
               ),
             }}
           />
@@ -250,9 +256,11 @@ export const AIOnboardingGeneral = () => {
                 </Button>
               ) : (
                 <div className={styles.subscribeActions}>
-                  <Button size="large" onClick={goToPricingPlans}>
-                    {t['com.affine.ai-onboarding.general.purchase']()}
-                  </Button>
+                  {SHOW_PRICING_PLANS ? (
+                    <Button size="large" onClick={goToPricingPlans}>
+                      {t['com.affine.ai-onboarding.general.purchase']()}
+                    </Button>
+                  ) : null}
                   <Button
                     size="large"
                     onClick={closeAndDismiss}

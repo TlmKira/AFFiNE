@@ -81,7 +81,7 @@ export class BlockDiffPlaygroundModal extends WithDisposable(LitElement) {
     this.markdown = (e.target as HTMLTextAreaElement).value;
   };
 
-  private readonly handleClear = () => {
+  private readonly handle清空 = () => {
     this.markdown = '';
     this.diffService.setChangedMarkdown('');
   };
@@ -91,7 +91,7 @@ export class BlockDiffPlaygroundModal extends WithDisposable(LitElement) {
     return markdown;
   }
 
-  private readonly handleConfirm = async () => {
+  private readonly handle确认 = async () => {
     const originalMarkdown = await this.getOriginalMarkdown();
     this.diffService.setOriginalMarkdown(originalMarkdown);
     this.diffService.setChangedMarkdown(this.markdown);
@@ -109,11 +109,11 @@ export class BlockDiffPlaygroundModal extends WithDisposable(LitElement) {
   override render() {
     return html`
       <div class="playground-modal">
-        <div class="playground-modal-title">Block Diff Playground</div>
+        <div class="playground-modal-title">块差异调试</div>
         <div class="playground-modal-content">
           <textarea
             class="playground-textarea"
-            placeholder="Please input the markdown you want to apply."
+            placeholder="请输入要应用的 Markdown。"
             .value=${this.markdown}
             @input=${this.handleInput}
             @focus=${(e: FocusEvent) => e.stopPropagation()}
@@ -133,13 +133,13 @@ export class BlockDiffPlaygroundModal extends WithDisposable(LitElement) {
               class="playground-btn"
               @click=${this.handleInsertCurrentMarkdown}
             >
-              Insert Current Doc MD
+              插入当前文档 Markdown
             </button>
-            <button class="playground-btn" @click=${this.handleClear}>
-              Clear
+            <button class="playground-btn" @click=${this.handle清空}>
+              清空
             </button>
-            <button class="playground-btn primary" @click=${this.handleConfirm}>
-              Confirm
+            <button class="playground-btn primary" @click=${this.handle确认}>
+              确认
             </button>
           </div>
         </div>
@@ -214,7 +214,7 @@ export class BlockDiffPlayground extends WidgetComponent {
         <div
           class="playground-fab"
           @click=${this.handleOpen}
-          title="Block Diff Playground"
+          title="块差异调试"
         >
           🧪
         </div>

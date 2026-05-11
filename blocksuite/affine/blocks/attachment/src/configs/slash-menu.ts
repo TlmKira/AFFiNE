@@ -8,12 +8,12 @@ import { AttachmentTooltip, PDFTooltip } from './tooltips';
 export const attachmentSlashMenuConfig: SlashMenuConfig = {
   items: [
     {
-      name: 'Attachment',
-      description: 'Attach a file to document.',
+      name: '附件',
+      description: '向文档添加文件附件。',
       icon: FileIcon(),
       tooltip: {
         figure: AttachmentTooltip,
-        caption: 'Attachment',
+        caption: '附件',
       },
       searchAlias: ['file'],
       group: '4_Content & Media@3',
@@ -33,7 +33,7 @@ export const attachmentSlashMenuConfig: SlashMenuConfig = {
     },
     {
       name: 'PDF',
-      description: 'Upload a PDF to document.',
+      description: '向文档上传 PDF 文件。',
       icon: ExportToPdfIcon(),
       tooltip: {
         figure: PDFTooltip,

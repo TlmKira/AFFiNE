@@ -76,7 +76,7 @@ export function AiSlashMenuConfigExtension() {
   let index = 0;
   const AIMenuItems: SlashMenuItem[] = [
     {
-      name: 'Ask AI',
+      name: '\u95ee\u95ee AI',
       icon: AIStarIcon,
       when: showWhenWrapper(),
       action: ({ std }) => {
@@ -90,36 +90,38 @@ export function AiSlashMenuConfigExtension() {
       },
     },
     ...AIItems.filter(({ name }) =>
-      ['Fix spelling', 'Fix grammar'].includes(name)
+      ['\u4fee\u6b63\u62fc\u5199', '\u4fee\u6b63\u8bed\u6cd5'].includes(name)
     ).map<SlashMenuActionItem>(item => ({
       ...actionItemWrapper(item),
-      name: `${item.name} from above`,
-      group: `1_AFFiNE AI@${index++}`,
+      name: `${item.name}\uff08\u57fa\u4e8e\u4e0a\u6587\uff09`,
+      group: `1_AI\u52a9\u624b@${index++}`,
     })),
 
     ...AIItems.filter(({ name }) =>
-      ['Summarize', 'Continue writing'].includes(name)
+      ['\u603b\u7ed3\u8981\u70b9', '\u7ee7\u7eed\u5199\u4f5c'].includes(name)
     ).map<SlashMenuActionItem>(item => ({
       ...actionItemWrapper(item),
-      group: `1_AFFiNE AI@${index++}`,
+      group: `1_AI\u52a9\u624b@${index++}`,
     })),
 
     {
-      name: 'Action with above',
+      name: '\u5bf9\u4e0a\u6587\u6267\u884c\u64cd\u4f5c',
       icon: iconWrapper(MoreHorizontalIcon({ width: '24px', height: '24px' })),
-      group: `1_AFFiNE AI@${index++}`,
+      group: `1_AI\u52a9\u624b@${index++}`,
       subMenu: [
         ...AIItems.filter(({ name }) =>
-          ['Translate to', 'Change tone to'].includes(name)
+          ['\u7ffb\u8bd1\u4e3a', '\u8bed\u6c14\u8c03\u6574\u4e3a'].includes(
+            name
+          )
         ).map(subMenuWrapper),
 
         ...AIItems.filter(({ name }) =>
           [
-            'Improve writing',
-            'Make it longer',
-            'Make it shorter',
-            'Generate outline',
-            'Find actions',
+            '\u4f18\u5316\u5199\u4f5c',
+            '\u6269\u5199\u5185\u5bb9',
+            '\u7cbe\u7b80\u5185\u5bb9',
+            '\u751f\u6210\u5927\u7eb2',
+            '\u63d0\u53d6\u884c\u52a8\u9879',
           ].includes(name)
         ).map(actionItemWrapper),
       ],

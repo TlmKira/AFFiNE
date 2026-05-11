@@ -162,7 +162,9 @@ const MemberPreview = ({
         size={24}
       />
       <div className={styles.memberName}>
-        {userInfo.removed ? 'Deleted user' : userInfo.name || 'Unnamed'}
+        {userInfo.removed
+          ? '\u5df2\u5220\u9664\u7528\u6237'
+          : userInfo.name || '\u672a\u547d\u540d'}
       </div>
     </div>
   );

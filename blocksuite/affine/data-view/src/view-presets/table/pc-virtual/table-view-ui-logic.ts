@@ -180,7 +180,7 @@ export class VirtualTableViewUILogic extends DataViewUILogicBase<
     return html` <div style="display:flex;">
       <div class="${dv.hover} ${dv.round8} ${styles.addGroup}" @click="${add}">
         <div class="${dv.icon16}" style="display:flex;">${AddCursorIcon()}</div>
-        <div>New Group</div>
+        <div>新建分组</div>
       </div>
     </div>`;
   };

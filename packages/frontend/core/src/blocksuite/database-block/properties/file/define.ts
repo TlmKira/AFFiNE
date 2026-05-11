@@ -20,7 +20,7 @@ export type FileCellJsonValueType = zod.TypeOf<
   typeof FileCellJsonValueTypeSchema
 >;
 export const filePropertyModelConfig = fileColumnType.modelConfig({
-  name: 'Attachment',
+  name: '附件',
   propertyData: {
     schema: zod.object({}),
     default: () => ({}),

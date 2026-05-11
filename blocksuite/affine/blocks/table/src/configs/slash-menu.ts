@@ -11,12 +11,12 @@ export const tableSlashMenuConfig: SlashMenuConfig = {
   disableWhen: ({ model }) => model.flavour === 'affine:table',
   items: [
     {
-      name: 'Table',
-      description: 'Create a simple table.',
+      name: '表格',
+      description: '创建一个简单表格。',
       icon: TableIcon(),
       tooltip: {
         figure: tableTooltip,
-        caption: 'Table',
+        caption: '表格',
       },
       group: '4_Content & Media@0',
       when: ({ model }) =>

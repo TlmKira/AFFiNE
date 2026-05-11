@@ -139,7 +139,7 @@ export class EdgelessNavigatorSettingButton extends WithDisposable(LitElement) {
         </div>
 
         <div class="item-container">
-          <div class="text">Hide toolbar</div>
+          <div class="text">隐藏工具栏</div>
 
           <toggle-switch
             .on=${this.hideToolbar}

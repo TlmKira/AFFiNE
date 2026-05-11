@@ -37,6 +37,10 @@ import {
   NavigationPanelOrganize,
   NavigationPanelTags,
 } from '../../desktop/components/navigation-panel';
+import {
+  PRIVATE_SERVICE_URLS,
+  SHOW_DESKTOP_APP_DOWNLOAD,
+} from '../../modules/brand/constant';
 import { WorkbenchService } from '../../modules/workbench';
 import { WorkspaceNavigator } from '../workspace-selector';
 import {
@@ -246,16 +250,22 @@ export const RootAppSidebar = memo((): ReactElement => {
           </MenuItem>
           <InviteMembersButton />
           <TemplateDocEntrance />
-          <ExternalMenuLinkItem
-            href="https://affine.pro/blog?tag=Release+Note"
-            icon={<JournalIcon />}
-            label={t['com.affine.app-sidebar.learn-more']()}
-          />
+          {PRIVATE_SERVICE_URLS.releaseNotes ? (
+            <ExternalMenuLinkItem
+              href={PRIVATE_SERVICE_URLS.releaseNotes}
+              icon={<JournalIcon />}
+              label={t['com.affine.app-sidebar.learn-more']()}
+            />
+          ) : null}
         </CollapsibleSection>
       </SidebarScrollableContainer>
       <SidebarContainer className={bottomContainer}>
         <SidebarAudioPlayer />
-        {BUILD_CONFIG.isElectron ? <UpdaterButton /> : <AppDownloadButton />}
+        {BUILD_CONFIG.isElectron ? (
+          <UpdaterButton />
+        ) : SHOW_DESKTOP_APP_DOWNLOAD ? (
+          <AppDownloadButton />
+        ) : null}
       </SidebarContainer>
     </AppSidebar>
   );

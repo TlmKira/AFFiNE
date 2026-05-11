@@ -175,7 +175,7 @@ const builtinToolbarConfig = {
     {
       placement: ActionPlacement.More,
       id: 'c.delete',
-      label: 'Delete',
+      label: '删除',
       icon: DeleteIcon(),
       variant: 'destructive',
       run(ctx) {

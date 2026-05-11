@@ -126,7 +126,7 @@ export class ChatActionList extends LitElement {
               class="action"
               @click=${async () => {
                 if (
-                  action.title === 'Insert below' &&
+                  action.title === '\u5411\u4e0b\u63d2\u5165' &&
                   this._selectionValue.length === 1 &&
                   this._selectionValue[0].type === 'database'
                 ) {

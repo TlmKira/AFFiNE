@@ -144,11 +144,11 @@ export class ChatPanelAddPopover extends SignalWatcher(
   }
 
   private readonly tcGroup: MenuGroup = {
-    name: 'Tag & Collection',
+    name: '\u6807\u7b7e\u4e0e\u7cbe\u9009',
     items: [
       {
         key: 'tags',
-        name: 'Tags',
+        name: '\u6807\u7b7e',
         testId: 'ai-chat-with-tags',
         icon: TagsIcon(),
         action: () => {
@@ -157,7 +157,7 @@ export class ChatPanelAddPopover extends SignalWatcher(
       },
       {
         key: 'collections',
-        name: 'Collections',
+        name: '\u7cbe\u9009',
         testId: 'ai-chat-with-collections',
         icon: CollectionsIcon(),
         action: () => {
@@ -187,18 +187,18 @@ export class ChatPanelAddPopover extends SignalWatcher(
   };
 
   private readonly uploadGroup: MenuGroup = {
-    name: 'Upload',
+    name: '\u4e0a\u4f20',
     items: [
       {
         key: 'images',
-        name: 'Upload images',
+        name: '\u4e0a\u4f20\u56fe\u7247',
         testId: 'ai-chat-with-images',
         icon: ImageIcon(),
         action: this._addImageChip,
       },
       {
         key: 'files',
-        name: 'Upload files (pdf, txt, csv)',
+        name: '\u4e0a\u4f20\u6587\u4ef6\uff08pdf\u3001txt\u3001csv\uff09',
         testId: 'ai-chat-with-files',
         icon: UploadIcon(),
         action: this._addFileChip,
@@ -234,7 +234,7 @@ export class ChatPanelAddPopover extends SignalWatcher(
       }
       const more = {
         key: `${group.name} More`,
-        name: resolveSignal(group.overflowText) ?? 'more',
+        name: resolveSignal(group.overflowText) ?? '\u66f4\u591a',
         icon: MoreHorizontalIcon(),
         action: () => {
           this._resetMaxDisplay(group);
@@ -326,11 +326,11 @@ export class ChatPanelAddPopover extends SignalWatcher(
   private _getPlaceholder() {
     switch (this._mode) {
       case AddPopoverMode.Tags:
-        return 'Search tags';
+        return '\u641c\u7d22\u6807\u7b7e';
       case AddPopoverMode.Collections:
-        return 'Search collections';
+        return '\u641c\u7d22\u7cbe\u9009';
       default:
-        return 'Search docs, tags, collections';
+        return '\u641c\u7d22\u6587\u6863\u3001\u6807\u7b7e\u548c\u7cbe\u9009';
     }
   }
 
@@ -339,7 +339,7 @@ export class ChatPanelAddPopover extends SignalWatcher(
   }
 
   private _renderNoResult() {
-    return html`<div class="no-result">No Result</div>`;
+    return html`<div class="no-result">无结果</div>`;
   }
 
   private _renderMenuGroup(groups: MenuGroup[]) {

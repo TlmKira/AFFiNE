@@ -70,7 +70,7 @@ export class AIFinishTip extends WithDisposable(LitElement) {
   override render() {
     return html`<div class="finish-tip">
       ${WarningIcon}
-      <div class="text">AI outputs can be misleading or wrong</div>
+      <div class="text">AI 输出可能具有误导性或不准确</div>
       ${this.copy?.allowed
         ? html`<div class="right">
             ${this.copied
@@ -85,12 +85,12 @@ export class AIFinishTip extends WithDisposable(LitElement) {
                     if (this.copied) {
                       this.host.std
                         .getOptional(NotificationProvider)
-                        ?.toast('Copied to clipboard');
+                        ?.toast('\u5df2\u590d\u5236\u5230\u526a\u8d34\u677f');
                     }
                   }}
                 >
                   ${CopyIcon}
-                  <affine-tooltip>Copy</affine-tooltip>
+                  <affine-tooltip>复制</affine-tooltip>
                 </div>`}
           </div>`
         : nothing}

@@ -184,13 +184,15 @@ export class ChatCopyMore extends WithDisposable(LitElement) {
               @click=${async () => {
                 const success = await copyText(content);
                 if (success) {
-                  this._notifySuccess('Copied to clipboard');
+                  this._notifySuccess(
+                    '\u5df2\u590d\u5236\u5230\u526a\u8d34\u677f'
+                  );
                 }
               }}
               data-testid="action-copy-button"
             >
               ${CopyIcon({ width: '20px', height: '20px' })}
-              <affine-tooltip>Copy</affine-tooltip>
+              <affine-tooltip>复制</affine-tooltip>
             </div>`
           : nothing}
         ${isLast
@@ -200,7 +202,7 @@ export class ChatCopyMore extends WithDisposable(LitElement) {
               data-testid="action-retry-button"
             >
               ${ResetIcon({ width: '20px', height: '20px' })}
-              <affine-tooltip .autoShift=${true}>Retry</affine-tooltip>
+              <affine-tooltip .autoShift=${true}>重试</affine-tooltip>
             </div>`
           : nothing}
         ${showMoreIcon && host

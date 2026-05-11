@@ -330,13 +330,13 @@ export class PlaygroundChat extends SignalWatcher(
         <div class="chat-panel-title-text">
           ${isEmbedding
             ? html`<span data-testid="chat-panel-embedding-progress"
-                >Embedding ${done}/${total}</span
+                >正在索引 ${done}/${total}</span
               >`
-            : 'AFFiNE AI'}
+            : 'AI \u52a9\u624b'}
         </div>
         <div class="chat-panel-add" @click=${this.addChat}>
           ${NewPageIcon()}
-          <affine-tooltip>Add chat</affine-tooltip>
+          <affine-tooltip>新增对话</affine-tooltip>
         </div>
         <ai-history-clear
           .doc=${this.doc}

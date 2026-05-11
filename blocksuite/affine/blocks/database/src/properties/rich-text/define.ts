@@ -18,7 +18,7 @@ export const toYText = (text?: RichTextCellType): undefined | Text['yText'] => {
 };
 
 export const richTextPropertyModelConfig = richTextColumnType.modelConfig({
-  name: 'Text',
+  name: '文本',
   propertyData: {
     schema: zod.object({}),
     default: () => ({}),

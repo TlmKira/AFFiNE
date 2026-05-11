@@ -375,9 +375,9 @@ export class MermaidPreview extends SignalWatcher(
               html`<div class="mermaid-preview-loading">
                 <div style="text-align: center; padding: 20px;">
                   <div style="margin-bottom: 8px;">
-                    Rendering Mermaid diagram...
+                    正在渲染 Mermaid 图表...
                   </div>
-                  <div style="font-size: 10px; opacity: 0.6;">Please wait</div>
+                  <div style="font-size: 10px; opacity: 0.6;">请稍候</div>
                 </div>
               </div>`,
           ],
@@ -386,11 +386,9 @@ export class MermaidPreview extends SignalWatcher(
             () =>
               html`<div class="mermaid-preview-error">
                 <div style="text-align: center; padding: 20px;">
-                  <div style="margin-bottom: 8px;">
-                    Failed to render diagram
-                  </div>
+                  <div style="margin-bottom: 8px;">图表渲染失败</div>
                   <div style="font-size: 10px; opacity: 0.6;">
-                    Please check if your Mermaid code has syntax errors
+                    请检查 Mermaid 代码是否存在语法错误
                   </div>
                 </div>
               </div>`,
@@ -400,9 +398,9 @@ export class MermaidPreview extends SignalWatcher(
             () =>
               html`<div class="mermaid-preview-fallback">
                 <div style="text-align: center; padding: 20px;">
-                  <div style="margin-bottom: 8px;">Mermaid preview feature</div>
+                  <div style="margin-bottom: 8px;">Mermaid 预览功能</div>
                   <div style="font-size: 10px; opacity: 0.6;">
-                    This feature is not supported in your browser
+                    当前浏览器不支持此功能
                   </div>
                 </div>
               </div>`,

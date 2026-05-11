@@ -16,6 +16,7 @@ import {
 import { useLiveData, useService } from '@toeverything/infra';
 import { useCallback, useState } from 'react';
 
+import { PRIVATE_SERVICE_URLS } from '../../brand/constant';
 import { type DocRecord, DocsService } from '../../doc';
 import { DocDisplayMetaService } from '../../doc-display-meta';
 import { WorkbenchLink, WorkbenchService } from '../../workbench';
@@ -64,14 +65,16 @@ const Empty = () => {
         {t['com.affine.template-list.empty']()}
       </span>
       <div className={styles.space} />
-      <a
-        href="https://affine.pro/blog/how-to-use-template"
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.link}
-      >
-        <IconButton icon={<DualLinkIcon />} />
-      </a>
+      {PRIVATE_SERVICE_URLS.templateGuide ? (
+        <a
+          href={PRIVATE_SERVICE_URLS.templateGuide}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.link}
+        >
+          <IconButton icon={<DualLinkIcon />} />
+        </a>
+      ) : null}
     </div>
   );
 };

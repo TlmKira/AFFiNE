@@ -2,7 +2,7 @@ import { propertyType, t } from '@blocksuite/data-view';
 import zod from 'zod';
 export const linkColumnType = propertyType('link');
 export const linkPropertyModelConfig = linkColumnType.modelConfig({
-  name: 'Link',
+  name: '链接',
   propertyData: {
     schema: zod.object({}),
     default: () => ({}),

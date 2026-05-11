@@ -1,4 +1,5 @@
 import { Button, ErrorMessage, Skeleton, Tooltip } from '@affine/component';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
 import { cssVar } from '@toeverything/theme';
@@ -91,7 +92,7 @@ export const StorageProgress = ({ onUpgrade }: StorageProgressProgress) => {
         </div>
       </div>
 
-      {hasPaymentFeature ? (
+      {SHOW_PRICING_PLANS && hasPaymentFeature ? (
         <Tooltip
           options={{ hidden: percent < 100 }}
           content={

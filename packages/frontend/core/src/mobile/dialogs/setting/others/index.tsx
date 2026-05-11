@@ -1,4 +1,5 @@
 import { useI18n } from '@affine/i18n';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 
 import { SettingGroup } from '../group';
 import { RowLayout } from '../row.layout';
@@ -24,20 +25,26 @@ export const OthersGroup = () => {
         href="https://github.com/toeverything/AFFiNE"
       />
 
-      <RowLayout
-        label={t['com.affine.mobile.setting.others.website']()}
-        href="https://affine.pro/"
-      />
+      {PRIVATE_SERVICE_URLS.website ? (
+        <RowLayout
+          label={t['com.affine.mobile.setting.others.website']()}
+          href={PRIVATE_SERVICE_URLS.website}
+        />
+      ) : null}
 
-      <RowLayout
-        label={t['com.affine.mobile.setting.others.privacy']()}
-        href="https://affine.pro/privacy"
-      />
+      {PRIVATE_SERVICE_URLS.privacy ? (
+        <RowLayout
+          label={t['com.affine.mobile.setting.others.privacy']()}
+          href={PRIVATE_SERVICE_URLS.privacy}
+        />
+      ) : null}
 
-      <RowLayout
-        label={t['com.affine.mobile.setting.others.terms']()}
-        href="https://affine.pro/terms"
-      />
+      {PRIVATE_SERVICE_URLS.terms ? (
+        <RowLayout
+          label={t['com.affine.mobile.setting.others.terms']()}
+          href={PRIVATE_SERVICE_URLS.terms}
+        />
+      ) : null}
       <DeleteAccount />
     </SettingGroup>
   );

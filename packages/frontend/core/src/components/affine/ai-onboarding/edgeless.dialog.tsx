@@ -1,6 +1,7 @@
 import { notify } from '@affine/component';
 import { type Notification } from '@affine/component/ui/notification';
 import { SubscriptionService } from '@affine/core/modules/cloud';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import { EditorService } from '@affine/core/modules/editor';
 import { useI18n } from '@affine/i18n';
@@ -59,8 +60,8 @@ export const AIOnboardingEdgeless = () => {
   const goToPricingPlans = useCallback(() => {
     track.$.aiOnboarding.dialog.viewPlans();
     workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'aiPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'account',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'aiPricingPlan' : undefined,
     });
   }, [workspaceDialogService]);
 
@@ -79,7 +80,7 @@ export const AIOnboardingEdgeless = () => {
       },
     ];
 
-    if (!aiSubscription) {
+    if (SHOW_PRICING_PLANS && !aiSubscription) {
       result.push({
         key: 'purchase',
         label: (

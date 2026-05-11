@@ -3,6 +3,7 @@ import {
   RouteLogic,
   useNavigateHelper,
 } from '@affine/core/components/hooks/use-navigate-helper';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 import { AuthService } from '@affine/core/modules/cloud';
 import { useI18n } from '@affine/i18n';
 import { AiIcon } from '@blocksuite/icons/rc';
@@ -40,15 +41,17 @@ export const AIOnboardingLocal = () => {
   const notSignedIn = loginStatus !== 'authenticated';
 
   const actions = useMemo(() => {
-    const result: NonNullable<Notification['actions']> = [
-      {
+    const aiUrl = PRIVATE_SERVICE_URLS.ai;
+    const result: NonNullable<Notification['actions']> = [];
+    if (aiUrl) {
+      result.push({
         key: 'learn-more',
         label: t['com.affine.ai-onboarding.local.action-learn-more'](),
         onClick: () => {
-          window.open('https://ai.affine.pro', '_blank', 'noreferrer');
+          window.open(aiUrl, '_blank', 'noreferrer');
         },
-      },
-    ];
+      });
+    }
     if (notSignedIn) {
       result.push({
         key: 'get-started',

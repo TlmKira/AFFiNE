@@ -122,8 +122,11 @@ const AttachmentAudioPlayer = ({ block }: { block: AudioAttachmentBlock }) => {
         title: t['com.affine.audio.transcribe.non-owner.confirm.title'](),
         description: (
           <Trans i18nKey="com.affine.audio.transcribe.non-owner.confirm.message">
-            Please contact <PublicUserLabel id={result.userId} /> to upgrade AI
-            rights or resend the attachment.
+            {'\u8bf7\u8054\u7cfb '}
+            <PublicUserLabel id={result.userId} />
+            {
+              ' \u8c03\u6574 AI \u6743\u9650\u6216\u91cd\u65b0\u53d1\u9001\u9644\u4ef6\u3002'
+            }
           </Trans>
         ),
         onCancel: false,

@@ -6,7 +6,7 @@ import { t } from '../../core/logical/type-presets.js';
 import { propertyType } from '../../core/property/property-config.js';
 export const datePropertyType = propertyType('date');
 export const datePropertyModelConfig = datePropertyType.modelConfig({
-  name: 'Date',
+  name: '日期',
   propertyData: {
     schema: zod.object({}),
     default: () => ({}),

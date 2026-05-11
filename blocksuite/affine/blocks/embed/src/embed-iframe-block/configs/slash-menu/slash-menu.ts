@@ -8,12 +8,12 @@ import { EmbedIframeTooltip } from './tooltip';
 export const embedIframeSlashMenuConfig: SlashMenuConfig = {
   items: [
     {
-      name: 'Embed',
-      description: 'For Google Drive, and more.',
+      name: '嵌入',
+      description: '用于 Google Drive 等外部内容。',
       icon: EmbedIcon(),
       tooltip: {
         figure: EmbedIframeTooltip,
-        caption: 'Embed',
+        caption: '嵌入',
       },
       group: '4_Content & Media@5',
       when: ({ model }) => {

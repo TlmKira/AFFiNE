@@ -6,6 +6,7 @@ import {
   FeatureFlagService,
   type Flag,
 } from '@affine/core/modules/feature-flag';
+import { PRIVATE_SERVICE_SUPPORT_MAILTO } from '@affine/core/modules/brand/constant';
 import { useI18n } from '@affine/i18n';
 import {
   ArrowRightSmallIcon,
@@ -101,7 +102,7 @@ const FeedbackIcon = ({ type }: { type: Flag['feedbackType'] }) => {
 
 const feedbackLink: Record<NonNullable<Flag['feedbackType']>, string> = {
   discord: BUILD_CONFIG.discordUrl,
-  email: 'mailto:support@toeverything.info',
+  email: PRIVATE_SERVICE_SUPPORT_MAILTO,
   github: 'https://github.com/toeverything/AFFiNE/issues',
 };
 
@@ -149,7 +150,7 @@ const ExperimentalFeaturesItem = ({
           rel="noreferrer"
         >
           <FeedbackIcon type={flag.feedbackType} />
-          <span>Discussion about this feature</span>
+          <span>反馈此功能</span>
           <ArrowRightSmallIcon
             fontSize={20}
             className={styles.arrowRightIcon}

@@ -75,7 +75,7 @@ export class MobileKanbanGroup extends SignalWatcher(
       menu.group({
         items: [
           menu.action({
-            name: 'Ungroup',
+            name: '取消分组',
             hide: () => this.group.value == null,
             select: () => {
               this.group.rows.forEach(row => {
@@ -85,7 +85,7 @@ export class MobileKanbanGroup extends SignalWatcher(
             },
           }),
           menu.action({
-            name: 'Delete Cards',
+            name: '删除卡片',
             select: () => {
               this.view.rowsDelete(this.group.rows.map(row => row.rowId));
               this.requestUpdate();

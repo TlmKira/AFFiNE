@@ -133,7 +133,7 @@ export class RecordField extends SignalWatcher(
           menu.group({
             items: [
               menu.action({
-                name: 'Move Up',
+                name: '上移',
                 prefix: html` <div
                   style="transform: rotate(90deg);display:flex;align-items:center;"
                 >
@@ -155,7 +155,7 @@ export class RecordField extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Move Down',
+                name: '下移',
                 prefix: html` <div
                   style="transform: rotate(90deg);display:flex;align-items:center;"
                 >
@@ -183,7 +183,7 @@ export class RecordField extends SignalWatcher(
             name: 'operation',
             items: [
               menu.action({
-                name: 'Duplicate',
+                name: '创建副本',
                 prefix: DuplicateIcon(),
                 hide: () => !this.column.canDuplicate,
                 select: () => {
@@ -191,7 +191,7 @@ export class RecordField extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Delete',
+                name: '删除',
                 prefix: DeleteIcon(),
                 hide: () => !this.column.canDelete,
                 select: () => {

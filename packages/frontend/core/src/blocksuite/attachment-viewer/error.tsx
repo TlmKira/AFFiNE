@@ -108,7 +108,7 @@ export const AttachmentFallback = ({ model, ext }: ErrorProps) => {
             download(model).catch(console.error);
           }}
         >
-          Download
+          {'\u4e0b\u8f7d'}
         </Button>,
       ]}
     />

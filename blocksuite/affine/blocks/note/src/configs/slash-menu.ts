@@ -27,13 +27,58 @@ import { updateBlockAlign, updateBlockType } from '../commands';
 import { tooltips } from './tooltips';
 
 let basicIndex = 0;
+
+const slashMenuNameLabels: Record<string, string> = {
+  'Align center': '居中对齐',
+  'Align left': '左对齐',
+  'Align right': '右对齐',
+  Bold: '加粗',
+  'Bulleted List': '项目符号列表',
+  'Code Block': '代码块',
+  Divider: '分割线',
+  'Heading 1': '标题 1',
+  'Heading 2': '标题 2',
+  'Heading 3': '标题 3',
+  'Heading 4': '标题 4',
+  'Heading 5': '标题 5',
+  'Heading 6': '标题 6',
+  Italic: '斜体',
+  'Numbered List': '编号列表',
+  'Other Headings': '更多标题',
+  Quote: '引用',
+  Strikethrough: '删除线',
+  Text: '文本',
+  'To-do List': '待办列表',
+  Underline: '下划线',
+};
+
+const slashMenuDescriptionLabels: Record<string, string> = {
+  'Add a blockquote for emphasis.': '添加引用块以突出内容。',
+  'Add tasks to a to-do list.': '添加待办事项列表。',
+  'Code snippet with formatting.': '插入带格式的代码片段。',
+  'Create a bulleted list.': '创建项目符号列表。',
+  'Create a numbered list.': '创建编号列表。',
+  'Headings in the 2nd font size.': '使用第二级标题字号。',
+  'Headings in the 3rd font size.': '使用第三级标题字号。',
+  'Headings in the 4th font size.': '使用第四级标题字号。',
+  'Headings in the 5th font size.': '使用第五级标题字号。',
+  'Headings in the 6th font size.': '使用第六级标题字号。',
+  'Headings in the largest font.': '使用最大标题字号。',
+  'Start typing with plain text.': '开始输入普通文本。',
+  'Visually separate content.': '用分割线分隔内容。',
+};
+
+const getSlashMenuName = (name: string) => slashMenuNameLabels[name] ?? name;
+const getSlashMenuDescription = (description?: string) =>
+  description ? (slashMenuDescriptionLabels[description] ?? description) : '';
+
 const noteSlashMenuConfig: SlashMenuConfig = {
   items: [
     ...textConversionConfigs
       .filter(i => i.type && ['h1', 'h2', 'h3', 'text'].includes(i.type))
       .map(config => createConversionItem(config, `0_Basic@${basicIndex++}`)),
     {
-      name: 'Other Headings',
+      name: getSlashMenuName('Other Headings'),
       icon: HeadingsIcon(),
       group: `0_Basic@${basicIndex++}`,
       subMenu: textConversionConfigs
@@ -84,9 +129,9 @@ function createConversionItem(
 ): SlashMenuActionItem {
   const { name, description, icon, flavour, type, searchAlias = [] } = config;
   return {
-    name,
+    name: getSlashMenuName(name),
     group,
-    description,
+    description: getSlashMenuDescription(description),
     icon,
     searchAlias,
     tooltip: tooltips[name],
@@ -106,7 +151,7 @@ function createAlignItem(
 ): SlashMenuActionItem {
   const { textAlign, name, icon } = config;
   return {
-    name,
+    name: getSlashMenuName(name),
     group,
     icon,
     action: ({ std }) => {
@@ -126,7 +171,7 @@ function createTextFormatItem(
 ): SlashMenuActionItem {
   const { name, icon, id, action } = config;
   return {
-    name,
+    name: getSlashMenuName(name),
     icon,
     group,
     tooltip: tooltips[name],

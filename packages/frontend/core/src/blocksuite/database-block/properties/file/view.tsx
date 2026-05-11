@@ -1,6 +1,7 @@
 import { Popover, uniReactRoot } from '@affine/component';
 import { Button } from '@affine/component/ui/button';
 import { Menu, MenuItem } from '@affine/component/ui/menu';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { PeekViewService } from '@affine/core/modules/peek-view/services/peek-view';
 import {
   type Cell,
@@ -391,8 +392,8 @@ const FileCellComponent: ForwardRefRenderFunction<
   const workspaceDialogService = useService(WorkspaceDialogService);
   const jumpToPricePlan = useCallback(() => {
     workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'workspace:storage',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'cloudPricingPlan' : undefined,
     });
   }, [workspaceDialogService]);
   const renderPopoverContent = () => {
@@ -417,16 +418,18 @@ const FileCellComponent: ForwardRefRenderFunction<
             variant="primary"
             className={styles.uploadButton}
           >
-            Choose a file
+            {'\u9009\u62e9\u6587\u4ef6'}
           </Button>
 
           <div className={styles.fileInfoContainer}>
             <div className={styles.fileSizeInfo}>
-              The maximum size per file is 100MB
+              {'\u5355\u4e2a\u6587\u4ef6\u6700\u5927 100MB'}
             </div>
-            <a className={styles.upgradeLink} onClick={jumpToPricePlan}>
-              Upgrade to Pro
-            </a>
+            {SHOW_PRICING_PLANS ? (
+              <a className={styles.upgradeLink} onClick={jumpToPricePlan}>
+                {'\u8054\u7cfb\u7ba1\u7406\u5458'}
+              </a>
+            ) : null}
           </div>
         </div>
       );
@@ -462,7 +465,7 @@ const FileCellComponent: ForwardRefRenderFunction<
             className={styles.uploadButtonStyle}
           >
             <PlusIcon className={styles.iconPrimary} width={20} height={20} />
-            <span>Add a file or image</span>
+            <span>{'\u6dfb\u52a0\u6587\u4ef6\u6216\u56fe\u7247'}</span>
           </div>
         </div>
       </div>
@@ -603,7 +606,7 @@ export const FileListItem = (props: {
           onClick={onPreview}
           prefixIcon={<FileIcon width={20} height={20} />}
         >
-          Preview
+          {'\u9884\u89c8'}
         </MenuItem>
       )}
       {(fileType === 'file' || fileType === 'image') && (
@@ -615,7 +618,7 @@ export const FileListItem = (props: {
           }}
           prefixIcon={<DownloadIcon width={20} height={20} />}
         >
-          Download
+          {'\u4e0b\u8f7d'}
         </MenuItem>
       )}
       <MenuItem
@@ -625,7 +628,7 @@ export const FileListItem = (props: {
         type={'danger'}
         prefixIcon={<DeleteIcon width={20} height={20} />}
       >
-        Delete
+        {'\u5220\u9664'}
       </MenuItem>
     </>
   );

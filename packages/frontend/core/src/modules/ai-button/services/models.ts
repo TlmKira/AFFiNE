@@ -83,7 +83,10 @@ export class AIModelService extends Service {
 
   private readonly initModels = async (prompt?: string) => {
     const promptName = prompt || 'Chat With AFFiNE AI';
-    const models = await this.getModelsByPrompt(promptName);
+    const models = await this.getModelsByPrompt(promptName).catch(error => {
+      console.warn('Failed to load AI models, fallback to empty list.', error);
+      return null;
+    });
     if (models) {
       const { defaultModel, optionalModels, proModels } = models;
       this.models.value = optionalModels.map(model => {

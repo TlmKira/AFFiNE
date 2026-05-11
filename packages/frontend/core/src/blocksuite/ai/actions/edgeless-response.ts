@@ -82,7 +82,7 @@ export function discard(
   _: EdgelessCopilotWidget
 ): AIItemConfig {
   return {
-    name: 'Discard',
+    name: '\u4e22\u5f03',
     icon: DeleteIcon(),
     testId: 'answer-discard',
     showWhen: () => !!panel.answer,
@@ -94,7 +94,7 @@ export function discard(
 
 export function retry(panel: AffineAIPanelWidget): AIItemConfig {
   return {
-    name: 'Retry',
+    name: '\u91cd\u8bd5',
     icon: ResetIcon(),
     testId: 'answer-retry',
     handler: () => {
@@ -117,10 +117,11 @@ export function createInsertItems<T extends keyof BlockSuitePresets.AIActions>(
   >
 ): AIItemConfig[] {
   const extraCondition = extraConditions[id] || ((_: any) => true);
-  const buttonText = getButtonText[id]?.(variants) ?? 'Insert below';
+  const buttonText =
+    getButtonText[id]?.(variants) ?? '\u5411\u4e0b\u63d2\u5165';
   return [
     {
-      name: `${buttonText} - Loading...`,
+      name: `${buttonText} - \u52a0\u8f7d\u4e2d...`,
       icon: html`<div style=${styleMap({ height: '20px', width: '20px' })}>
         ${LoadingIcon()}
       </div>`,
@@ -140,7 +141,9 @@ export function createInsertItems<T extends keyof BlockSuitePresets.AIActions>(
       name: buttonText,
       icon: InsertBelowIcon(),
       testId:
-        buttonText === 'Replace' ? 'answer-replace' : `answer-insert-below`,
+        buttonText === '\u66ff\u6362'
+          ? 'answer-replace'
+          : `answer-insert-below`,
       showWhen: () => {
         const panel = getAIPanelWidget(host);
         const data = ctx.get();
@@ -193,7 +196,7 @@ export function asCaption<T extends keyof BlockSuitePresets.AIActions>(
   host: EditorHost
 ): AIItemConfig {
   return {
-    name: 'Use as caption',
+    name: '\u7528\u4f5c\u9898\u6ce8',
     icon: PenIcon(),
     testId: 'answer-use-as-caption',
     showWhen: () => {
@@ -565,7 +568,7 @@ const getButtonText: {
   ) => string | undefined;
 } = {
   brainstormMindmap: variants => {
-    return variants?.regenerate ? 'Replace' : undefined;
+    return variants?.regenerate ? '\u66ff\u6362' : undefined;
   },
 };
 
@@ -581,11 +584,11 @@ export function actionToResponse<T extends keyof BlockSuitePresets.AIActions>(
   return {
     responses: [
       {
-        name: 'Response',
+        name: '\u56de\u590d',
         testId: 'answer-responses',
         items: [
           {
-            name: 'Continue in chat',
+            name: '\u7ee7\u7eed\u5bf9\u8bdd',
             testId: 'answer-continue-in-chat',
             icon: ChatWithAiIcon({}),
             handler: () => {
@@ -744,7 +747,7 @@ export function actionToErrorResponse<
     },
     responses: [
       {
-        name: 'Response',
+        name: '\u56de\u590d',
         items: createInsertItems(id, host, ctx, variants),
       },
       {

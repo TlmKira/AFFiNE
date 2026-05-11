@@ -22,7 +22,7 @@ const items = [
   },
   */
   {
-    name: 'Download',
+    name: '下载',
     icon: <LocalDataIcon />,
     action: download,
   },

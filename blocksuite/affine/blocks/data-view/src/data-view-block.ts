@@ -103,7 +103,7 @@ export class DataViewBlockComponent extends CaptionedBlockComponent<DataViewBloc
           }),
           menu.action({
             prefix: CopyIcon,
-            name: 'Copy',
+            name: '复制',
             select: () => {
               const slice = Slice.fromModels(this.store, [this.model]);
               this.std.clipboard.copySlice(slice).catch(console.error);
@@ -117,7 +117,7 @@ export class DataViewBlockComponent extends CaptionedBlockComponent<DataViewBloc
                 class: {
                   'delete-item': true,
                 },
-                name: 'Delete Database',
+                name: '删除数据库',
                 select: () => {
                   this.model.children.slice().forEach(block => {
                     this.store.deleteBlock(block);

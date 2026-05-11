@@ -1,5 +1,6 @@
 import { ErrorMessage, Skeleton } from '@affine/component';
 import { UserQuotaService } from '@affine/core/modules/cloud';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import { useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
@@ -19,8 +20,8 @@ export const CloudUsage = () => {
   const workspaceDialogService = useService(WorkspaceDialogService);
   const handleClick = useCatchEventCallback(() => {
     workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'account',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'cloudPricingPlan' : undefined,
     });
   }, [workspaceDialogService]);
 

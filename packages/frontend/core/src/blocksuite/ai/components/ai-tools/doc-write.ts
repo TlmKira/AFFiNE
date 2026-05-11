@@ -96,26 +96,38 @@ export class DocWriteTool extends WithDisposable(ShadowlessElement) {
   private getCallLabel(title?: string) {
     switch (this.data.toolName) {
       case 'doc_create':
-        return title ? `Creating "${title}"` : 'Creating document';
+        return title
+          ? `\u6b63\u5728\u521b\u5efa\u201c${title}\u201d`
+          : '\u6b63\u5728\u521b\u5efa\u6587\u6863';
       case 'doc_update':
-        return title ? `Updating "${title}"` : 'Updating document';
+        return title
+          ? `\u6b63\u5728\u66f4\u65b0\u201c${title}\u201d`
+          : '\u6b63\u5728\u66f4\u65b0\u6587\u6863';
       case 'doc_update_meta':
-        return title ? `Renaming to "${title}"` : 'Updating document title';
+        return title
+          ? `\u6b63\u5728\u91cd\u547d\u540d\u4e3a\u201c${title}\u201d`
+          : '\u6b63\u5728\u66f4\u65b0\u6587\u6863\u6807\u9898';
       default:
-        return 'Updating document';
+        return '\u6b63\u5728\u66f4\u65b0\u6587\u6863';
     }
   }
 
   private getResultLabel(title?: string) {
     switch (this.data.toolName) {
       case 'doc_create':
-        return title ? `Created "${title}"` : 'Document created';
+        return title
+          ? `\u5df2\u521b\u5efa\u201c${title}\u201d`
+          : '\u6587\u6863\u5df2\u521b\u5efa';
       case 'doc_update':
-        return title ? `Updated "${title}"` : 'Document updated';
+        return title
+          ? `\u5df2\u66f4\u65b0\u201c${title}\u201d`
+          : '\u6587\u6863\u5df2\u66f4\u65b0';
       case 'doc_update_meta':
-        return title ? `Renamed "${title}"` : 'Document title updated';
+        return title
+          ? `\u5df2\u91cd\u547d\u540d\u201c${title}\u201d`
+          : '\u6587\u6863\u6807\u9898\u5df2\u66f4\u65b0';
       default:
-        return 'Document updated';
+        return '\u6587\u6863\u5df2\u66f4\u65b0';
     }
   }
 
@@ -147,7 +159,9 @@ export class DocWriteTool extends WithDisposable(ShadowlessElement) {
 
     const result = this.data.result;
     if (!result || isToolError(result)) {
-      const name = isToolError(result) ? result.name : 'Document action failed';
+      const name = isToolError(result)
+        ? result.name
+        : '\u6587\u6863\u64cd\u4f5c\u5931\u8d25';
       return html`<tool-call-failed
         .name=${name}
         .icon=${this.getToolIcon()}
@@ -155,10 +169,10 @@ export class DocWriteTool extends WithDisposable(ShadowlessElement) {
     }
 
     const docId = this.getDocId();
-    const title = this.getDocTitle(docId) ?? 'Document';
+    const title = this.getDocTitle(docId) ?? '\u6587\u6863';
     const parts: string[] = [];
     if (result.message) parts.push(result.message);
-    if (docId) parts.push(`Doc ID: ${docId}`);
+    if (docId) parts.push(`\u6587\u6863 ID\uff1a${docId}`);
     const content = parts.length ? parts.join('\n') : undefined;
 
     return html`<tool-result-card

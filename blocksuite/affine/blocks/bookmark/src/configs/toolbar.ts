@@ -294,7 +294,7 @@ const builtinToolbarConfig = {
       actions: [
         {
           id: 'copy',
-          label: 'Copy',
+          label: '复制',
           icon: CopyIcon(),
           run(ctx) {
             const model = ctx.getCurrentModelByType(BookmarkBlockModel);
@@ -303,13 +303,13 @@ const builtinToolbarConfig = {
             const slice = Slice.fromModels(ctx.store, [model]);
             ctx.clipboard
               .copySlice(slice)
-              .then(() => toast(ctx.host, 'Copied to clipboard'))
+              .then(() => toast(ctx.host, '已复制到剪贴板'))
               .catch(console.error);
           },
         },
         {
           id: 'duplicate',
-          label: 'Duplicate',
+          label: '创建副本',
           icon: DuplicateIcon(),
           run(ctx) {
             const model = ctx.getCurrentModelByType(BookmarkBlockModel);
@@ -327,7 +327,7 @@ const builtinToolbarConfig = {
     {
       placement: ActionPlacement.More,
       id: 'b.refresh',
-      label: 'Reload',
+      label: '重新加载',
       icon: ResetIcon(),
       run(ctx) {
         const block = ctx.getCurrentBlockByType(BookmarkBlockComponent);
@@ -337,7 +337,7 @@ const builtinToolbarConfig = {
     {
       placement: ActionPlacement.More,
       id: 'c.delete',
-      label: 'Delete',
+      label: '删除',
       icon: DeleteIcon(),
       variant: 'destructive',
       run(ctx) {

@@ -286,7 +286,7 @@ const turnIntoDatabase = {
 
 const turnIntoLinkedDoc = {
   id: 'f.convert-to-linked-doc',
-  tooltip: 'Create Linked Doc',
+  tooltip: '创建链接文档',
   icon: LinkedPageIcon(),
   when({ chain, std }) {
     const supportFlavours = [
@@ -372,7 +372,7 @@ export const builtinToolbarConfig = {
       actions: [
         {
           id: 'copy',
-          label: 'Copy',
+          label: '复制',
           icon: CopyIcon(),
           run({ chain, host }) {
             const [ok] = chain
@@ -383,12 +383,12 @@ export const builtinToolbarConfig = {
 
             if (!ok) return;
 
-            toast(host, 'Copied to clipboard');
+            toast(host, '已复制到剪贴板');
           },
         },
         {
           id: 'duplicate',
-          label: 'Duplicate',
+          label: '创建副本',
           icon: DuplicateIcon(),
           run({ chain, store, selection }) {
             store.captureSync();
@@ -433,7 +433,7 @@ export const builtinToolbarConfig = {
       actions: [
         {
           id: 'delete',
-          label: 'Delete',
+          label: '删除',
           icon: DeleteIcon(),
           variant: 'destructive',
           run({ chain }) {

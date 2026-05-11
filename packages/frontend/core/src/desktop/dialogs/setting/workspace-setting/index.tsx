@@ -1,6 +1,9 @@
 import { useWorkspaceInfo } from '@affine/core/components/hooks/use-workspace-info';
 import { ServerService } from '@affine/core/modules/cloud';
-import type { SettingTab } from '@affine/core/modules/dialogs/constant';
+import {
+  SHOW_PRICING_PLANS,
+  type SettingTab,
+} from '@affine/core/modules/dialogs/constant';
 import { WorkspaceService } from '@affine/core/modules/workspace';
 import { EmbeddingSettings } from '@affine/core/modules/workspace-indexer-embedding';
 import { ServerDeploymentType } from '@affine/graphql';
@@ -50,7 +53,11 @@ export const WorkspaceSetting = ({
         />
       );
     case 'workspace:billing':
-      return <WorkspaceSettingBilling />;
+      return SHOW_PRICING_PLANS ? (
+        <WorkspaceSettingBilling />
+      ) : (
+        <WorkspaceSettingStorage onCloseSetting={onCloseSetting} />
+      );
     case 'workspace:storage':
       return <WorkspaceSettingStorage onCloseSetting={onCloseSetting} />;
     case 'workspace:license':
@@ -121,12 +128,13 @@ export const useWorkspaceSettingList = (): SettingSidebarItem[] => {
         icon: <AiEmbeddingIcon />,
         testId: 'workspace-setting:embedding',
       },
-      showBilling && {
-        key: 'workspace:billing' as SettingTab,
-        title: t['com.affine.settings.workspace.billing'](),
-        icon: <PaymentIcon />,
-        testId: 'workspace-setting:billing',
-      },
+      SHOW_PRICING_PLANS &&
+        showBilling && {
+          key: 'workspace:billing' as SettingTab,
+          title: t['com.affine.settings.workspace.billing'](),
+          icon: <PaymentIcon />,
+          testId: 'workspace-setting:billing',
+        },
       showLicense && {
         key: 'workspace:license' as SettingTab,
         title: t['com.affine.settings.workspace.license'](),

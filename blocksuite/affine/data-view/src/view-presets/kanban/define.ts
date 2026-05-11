@@ -31,7 +31,7 @@ export type KanbanViewData = BasicViewDataType<
   DataType
 >;
 export const kanbanViewModel = kanbanViewType.createModel<KanbanViewData>({
-  defaultName: 'Kanban View',
+  defaultName: '看板视图',
   dataViewManager: KanbanSingleView,
   defaultData: viewManager => {
     const groupBy = resolveKanbanGroupBy(viewManager.dataSource);

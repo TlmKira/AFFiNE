@@ -34,7 +34,7 @@ export class ChatImage extends LitElement {
         'loading',
         () =>
           html`<image-placeholder
-            .text=${'Loading image'}
+            .text=${'\u56fe\u7247\u52a0\u8f7d\u4e2d'}
             .icon=${LoadingIcon()}
           ></image-placeholder>`,
       ],
@@ -42,7 +42,7 @@ export class ChatImage extends LitElement {
         'error',
         () =>
           html`<image-placeholder
-            .text=${'Image Loading Failed'}
+            .text=${'\u56fe\u7247\u52a0\u8f7d\u5931\u8d25'}
             .icon=${ImageLoadingFailedIcon}
           ></image-placeholder>`,
       ],

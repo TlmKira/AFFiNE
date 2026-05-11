@@ -1,4 +1,5 @@
 import type { Server } from '@affine/core/modules/cloud';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 import { useLiveData } from '@toeverything/infra';
 import { cssVarV2 } from '@toeverything/theme/v2';
 import semver from 'semver';
@@ -24,16 +25,29 @@ const rules = [
         <div style={{ marginTop: '12px', color: cssVarV2.text.primary }}>
           <span style={{ fontWeight: 500 }}>Instructions:</span>
           <br />
-          <a
-            style={{
-              whiteSpace: 'break-spaces',
-              wordBreak: 'break-all',
-              fontSize: 12,
-              lineHeight: '16px',
-            }}
-          >
-            https://docs.affine.pro/self-host-affine/install/upgrade
-          </a>
+          {PRIVATE_SERVICE_URLS.docs ? (
+            <a
+              style={{
+                whiteSpace: 'break-spaces',
+                wordBreak: 'break-all',
+                fontSize: 12,
+                lineHeight: '16px',
+              }}
+            >
+              {PRIVATE_SERVICE_URLS.docs}
+            </a>
+          ) : (
+            <span
+              style={{
+                whiteSpace: 'break-spaces',
+                wordBreak: 'break-all',
+                fontSize: 12,
+                lineHeight: '16px',
+              }}
+            >
+              Check your deployment upgrade guide.
+            </span>
+          )}
         </div>
       </div>
     ),

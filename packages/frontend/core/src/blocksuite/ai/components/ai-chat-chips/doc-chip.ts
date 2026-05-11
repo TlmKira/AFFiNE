@@ -109,7 +109,7 @@ export class ChatPanelDocChip extends SignalWatcher(
     try {
       const doc = this.docDisplayConfig.getDoc(this.chip.docId);
       if (!doc) {
-        throw new Error('Document not found');
+        throw new Error('\u672a\u627e\u5230\u6587\u6863');
       }
       if (!doc.ready) {
         doc.load();
@@ -126,13 +126,14 @@ export class ChatPanelDocChip extends SignalWatcher(
       } else {
         this.updateChip(this.chip, {
           state: 'failed',
-          tooltip: 'Content exceeds token limit',
+          tooltip: '\u5185\u5bb9\u8d85\u51fa token \u4e0a\u9650',
         });
       }
     } catch (e) {
       this.updateChip(this.chip, {
         state: 'failed',
-        tooltip: e instanceof Error ? e.message : 'Failed to extract markdown',
+        tooltip:
+          e instanceof Error ? e.message : '\u63d0\u53d6 Markdown \u5931\u8d25',
       });
     }
   };

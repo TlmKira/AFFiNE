@@ -245,7 +245,7 @@ export const TodoTooltip = html`<svg width="170" height="68" viewBox="0 0 170 68
 export const tooltips: Record<string, SlashMenuTooltip> = {
   Text: {
     figure: TextTooltip,
-    caption: 'Text',
+    caption: '文本',
   },
 
   'Heading 1': {
@@ -280,47 +280,47 @@ export const tooltips: Record<string, SlashMenuTooltip> = {
 
   'Code Block': {
     figure: CodeBlockTooltip,
-    caption: 'Code Block',
+    caption: '代码块',
   },
 
   Quote: {
     figure: QuoteTooltip,
-    caption: 'Quote',
+    caption: '引用',
   },
 
   Divider: {
     figure: DividerTooltip,
-    caption: 'Divider',
+    caption: '分割线',
   },
 
   'Bulleted List': {
     figure: BulletedListTooltip,
-    caption: 'Bulleted List',
+    caption: '项目符号列表',
   },
 
   'Numbered List': {
     figure: NumberedListTooltip,
-    caption: 'Numbered List',
+    caption: '编号列表',
   },
 
   Bold: {
     figure: BoldTextTooltip,
-    caption: 'Bold Text',
+    caption: '加粗文本',
   },
 
   Italic: {
     figure: ItalicTooltip,
-    caption: 'Italic',
+    caption: '斜体',
   },
 
   Underline: {
     figure: UnderlineTooltip,
-    caption: 'Underline',
+    caption: '下划线',
   },
 
   Strikethrough: {
     figure: StrikethroughTooltip,
-    caption: 'Strikethrough',
+    caption: '删除线',
   },
 
   'To-do List': {

@@ -10,11 +10,11 @@ export const embedYoutubeSlashMenuConfig: SlashMenuConfig = {
   items: [
     {
       name: 'YouTube',
-      description: 'Embed a YouTube video.',
+      description: '嵌入一个 YouTube 视频。',
       icon: YoutubeDuotoneIcon(),
       tooltip: {
         figure: YoutubeVideoTooltip,
-        caption: 'YouTube Video',
+        caption: 'YouTube 视频',
       },
       group: '4_Content & Media@6',
       when: ({ model }) =>
@@ -30,7 +30,7 @@ export const embedYoutubeSlashMenuConfig: SlashMenuConfig = {
           await toggleEmbedCardCreateModal(
             host,
             'YouTube',
-            'The added YouTube video link will be displayed as an embed view.',
+            '添加的 YouTube 视频链接将显示为嵌入视图。',
             { mode: 'page', parentModel, index },
             ({ mode }) => {
               if (mode === 'edgeless') {

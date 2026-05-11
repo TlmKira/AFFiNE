@@ -4,6 +4,7 @@ import {
   SettingWrapper,
 } from '@affine/component/setting-components';
 import { SubscriptionService } from '@affine/core/modules/cloud';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { useI18n } from '@affine/i18n';
 import { track } from '@affine/track';
 import { useLiveData, useService } from '@toeverything/infra';
@@ -61,8 +62,8 @@ const SubscriptionSettings = ({
     (scrollAnchor?: string) => {
       track.$.settingsPanel.billing.viewPlans();
       onChangeSettingState({
-        activeTab: 'plans',
-        scrollAnchor: scrollAnchor,
+        activeTab: SHOW_PRICING_PLANS ? 'plans' : 'appearance',
+        scrollAnchor: SHOW_PRICING_PLANS ? scrollAnchor : undefined,
       });
     },
     [onChangeSettingState]

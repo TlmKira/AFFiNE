@@ -81,7 +81,7 @@ export class EmbedHtmlFullscreenToolbar extends LitElement {
             name: 'thing',
             items: [
               menu.toggleSwitch({
-                name: 'Hide toolbar',
+                name: '隐藏工具栏',
                 on: this.autoHideToolbar,
                 onChange: on => {
                   this.autoHideToolbar = on;

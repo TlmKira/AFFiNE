@@ -22,13 +22,13 @@ export function getChipTooltip(
     return tooltip;
   }
   if (state === 'candidate') {
-    return 'Click to add doc';
+    return '\u70b9\u51fb\u6dfb\u52a0\u6587\u6863';
   }
   if (state === 'processing') {
-    return 'Processing...';
+    return '\u5904\u7406\u4e2d...';
   }
   if (state === 'failed') {
-    return 'Failed to add to context';
+    return '\u6dfb\u52a0\u5230\u4e0a\u4e0b\u6587\u5931\u8d25';
   }
   return name;
 }

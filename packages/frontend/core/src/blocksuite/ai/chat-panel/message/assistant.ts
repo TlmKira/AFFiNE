@@ -112,7 +112,7 @@ export class ChatMessageAssistant extends WithDisposable(ShadowlessElement) {
     return html`<div class="user-info">
       <chat-assistant-avatar .status=${this.status}></chat-assistant-avatar>
       ${isWithDocs
-        ? html`<span class="message-info">with your docs</span>`
+        ? html`<span class="message-info">基于你的文档</span>`
         : nothing}
     </div>`;
   }

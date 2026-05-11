@@ -112,7 +112,7 @@ const builtinToolbarConfig = {
       actions: [
         {
           id: 'a.copy',
-          label: 'Copy',
+          label: '复制',
           icon: CopyIcon(),
           run(ctx) {
             const block = ctx.getCurrentBlockByType(ImageBlockComponent);
@@ -121,7 +121,7 @@ const builtinToolbarConfig = {
         },
         {
           id: 'b.duplicate',
-          label: 'Duplicate',
+          label: '创建副本',
           icon: DuplicateIcon(),
           run(ctx) {
             const block = ctx.getCurrentBlockByType(ImageBlockComponent);
@@ -138,7 +138,7 @@ const builtinToolbarConfig = {
       actions: [
         {
           id: 'a.turn-into-card-view',
-          label: 'Turn into card view',
+          label: '转为卡片视图',
           icon: BookmarkIcon(),
           when(ctx) {
             const supported =
@@ -158,7 +158,7 @@ const builtinToolbarConfig = {
     {
       placement: ActionPlacement.More,
       id: 'c.delete',
-      label: 'Delete',
+      label: '删除',
       icon: DeleteIcon(),
       variant: 'destructive',
       run(ctx) {

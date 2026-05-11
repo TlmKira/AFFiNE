@@ -189,7 +189,7 @@ export type DynamicKeyboardToolPanelGroup = (
 
 const textToolActionItems: KeyboardToolbarActionItem[] = [
   {
-    name: 'Text',
+    name: '文本',
     icon: TextIcon(),
     showWhen: ({ std }) =>
       std.store.schema.flavourSchemaMap.has('affine:paragraph'),
@@ -213,7 +213,7 @@ const textToolActionItems: KeyboardToolbarActionItem[] = [
     },
   })),
   {
-    name: 'CodeBlock',
+    name: '代码块',
     showWhen: ({ std }) => std.store.schema.flavourSchemaMap.has('affine:code'),
     icon: CodeBlockIcon(),
     action: ({ std }) => {
@@ -223,7 +223,7 @@ const textToolActionItems: KeyboardToolbarActionItem[] = [
     },
   },
   {
-    name: 'Quote',
+    name: '引用',
     showWhen: ({ std }) =>
       std.store.schema.flavourSchemaMap.has('affine:paragraph'),
     icon: QuoteIcon(),
@@ -235,7 +235,7 @@ const textToolActionItems: KeyboardToolbarActionItem[] = [
     },
   },
   {
-    name: 'Divider',
+    name: '分割线',
     icon: DividerIcon(),
     showWhen: ({ std }) =>
       std.store.schema.flavourSchemaMap.has('affine:divider'),
@@ -247,7 +247,7 @@ const textToolActionItems: KeyboardToolbarActionItem[] = [
     },
   },
   {
-    name: 'Inline equation',
+    name: '行内公式',
     icon: TeXIcon(),
     showWhen: ({ std }) =>
       std.store.schema.flavourSchemaMap.has('affine:paragraph'),
@@ -260,7 +260,7 @@ const textToolActionItems: KeyboardToolbarActionItem[] = [
     },
   },
   {
-    name: 'Table',
+    name: '表格',
     icon: TableIcon(),
     showWhen: ({ std, rootComponent: { model } }) =>
       std.store.schema.flavourSchemaMap.has('affine:table') &&
@@ -285,7 +285,7 @@ const textToolActionItems: KeyboardToolbarActionItem[] = [
     },
   },
   {
-    name: 'Callout',
+    name: '标注',
     icon: FontIcon(),
     showWhen: ({ rootComponent: { model } }) => {
       return !isInsideBlockByFlavour(
@@ -320,7 +320,7 @@ const textToolActionItems: KeyboardToolbarActionItem[] = [
 
 const listToolActionItems: KeyboardToolbarActionItem[] = [
   {
-    name: 'BulletedList',
+    name: '项目符号列表',
     icon: BulletedListIcon(),
     showWhen: ({ std }) => std.store.schema.flavourSchemaMap.has('affine:list'),
     action: ({ std }) => {
@@ -333,7 +333,7 @@ const listToolActionItems: KeyboardToolbarActionItem[] = [
     },
   },
   {
-    name: 'NumberedList',
+    name: '编号列表',
     icon: NumberedListIcon(),
     showWhen: ({ std }) => std.store.schema.flavourSchemaMap.has('affine:list'),
     action: ({ std }) => {
@@ -346,7 +346,7 @@ const listToolActionItems: KeyboardToolbarActionItem[] = [
     },
   },
   {
-    name: 'CheckBox',
+    name: '待办列表',
     icon: CheckBoxCheckLinearIcon(),
     showWhen: ({ std }) => std.store.schema.flavourSchemaMap.has('affine:list'),
     action: ({ std }) => {
@@ -361,10 +361,10 @@ const listToolActionItems: KeyboardToolbarActionItem[] = [
 ];
 
 const pageToolGroup: KeyboardToolPanelGroup = {
-  name: 'Page',
+  name: '页面',
   items: [
     {
-      name: 'NewPage',
+      name: '新建页面',
       icon: NewPageIcon(),
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:embed-linked-doc'),
@@ -386,7 +386,7 @@ const pageToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'LinkedPage',
+      name: '链接页面',
       icon: LinkedPageIcon(),
       showWhen: ({ std, rootComponent }) => {
         const linkedDocWidget = std.view.getWidget(
@@ -417,10 +417,10 @@ const pageToolGroup: KeyboardToolPanelGroup = {
 };
 
 const contentMediaToolGroup: KeyboardToolPanelGroup = {
-  name: 'Content & Media',
+  name: '内容与媒体',
   items: [
     {
-      name: 'Image',
+      name: '图片',
       icon: ImageIcon(),
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:image'),
@@ -433,7 +433,7 @@ const contentMediaToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'Link',
+      name: '链接',
       icon: LinkIcon(),
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:bookmark'),
@@ -450,8 +450,8 @@ const contentMediaToolGroup: KeyboardToolPanelGroup = {
         const index = parentModel.children.indexOf(model) + 1;
         await toggleEmbedCardCreateModal(
           std.host,
-          'Links',
-          'The added link will be displayed as a card view.',
+          '链接',
+          '添加的链接将以卡片视图显示。',
           { mode: 'page', parentModel, index },
           ({ mode }) => {
             if (mode === 'edgeless') {
@@ -466,7 +466,7 @@ const contentMediaToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'Attachment',
+      name: '附件',
       icon: AttachmentIcon(),
       showWhen: () => false,
       action: async ({ std }) => {
@@ -486,7 +486,7 @@ const contentMediaToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'Equation',
+      name: '公式',
       icon: TeXIcon(),
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:latex'),
@@ -505,10 +505,10 @@ const contentMediaToolGroup: KeyboardToolPanelGroup = {
 };
 
 const embedToolGroup: KeyboardToolPanelGroup = {
-  name: 'Embeds',
+  name: '嵌入',
   items: [
     {
-      name: 'Embed',
+      name: '嵌入',
       icon: EmbedIcon({ style: `color: black` }),
       showWhen: ({ std }) => {
         return std.store.schema.flavourSchemaMap.has('affine:embed-iframe');
@@ -530,7 +530,7 @@ const embedToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'Youtube',
+      name: 'YouTube',
       icon: YoutubeDuotoneIcon({
         style: `color: white`,
       }),
@@ -565,7 +565,7 @@ const embedToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'Github',
+      name: 'GitHub',
       icon: GithubIcon({ style: `color: black` }),
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:embed-github'),
@@ -665,7 +665,7 @@ const embedToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'Equation',
+      name: '公式',
       icon: TeXIcon(),
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:latex'),
@@ -693,7 +693,7 @@ const documentGroupFrameToolGroup: DynamicKeyboardToolPanelGroup = ({
     .map(block => block.model) as FrameBlockModel[];
 
   const frameItems = frameModels.map<KeyboardToolbarActionItem>(frameModel => ({
-    name: 'Frame: ' + frameModel.props.title.toString(),
+    name: '画框：' + frameModel.props.title.toString(),
     icon: FrameIcon(),
     action: ({ std }) => {
       std.command
@@ -715,7 +715,7 @@ const documentGroupFrameToolGroup: DynamicKeyboardToolPanelGroup = ({
     : [];
 
   const groupItems = groupElements.map<KeyboardToolbarActionItem>(group => ({
-    name: 'Group: ' + group.title.toString(),
+    name: '分组：' + group.title.toString(),
     icon: GroupIcon(),
     action: ({ std }) => {
       std.command
@@ -735,16 +735,16 @@ const documentGroupFrameToolGroup: DynamicKeyboardToolPanelGroup = ({
   if (items.length === 0) return null;
 
   return {
-    name: 'Document Group&Frame',
+  name: '文档分组与画框',
     items,
   };
 };
 
 const dateToolGroup: KeyboardToolPanelGroup = {
-  name: 'Date',
+  name: '日期',
   items: [
     {
-      name: 'Today',
+      name: '今天',
       icon: TodayIcon(),
       action: ({ std }) => {
         const [_, { selectedModels }] = std.command.exec(
@@ -757,7 +757,7 @@ const dateToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'Tomorrow',
+      name: '明天',
       icon: TomorrowIcon(),
       action: ({ std }) => {
         const [_, { selectedModels }] = std.command.exec(
@@ -772,7 +772,7 @@ const dateToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'Yesterday',
+      name: '昨天',
       icon: YesterdayIcon(),
       action: ({ std }) => {
         const [_, { selectedModels }] = std.command.exec(
@@ -787,7 +787,7 @@ const dateToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'Now',
+      name: '当前时间',
       icon: NowIcon(),
       action: ({ std }) => {
         const [_, { selectedModels }] = std.command.exec(
@@ -803,10 +803,10 @@ const dateToolGroup: KeyboardToolPanelGroup = {
 };
 
 const databaseToolGroup: KeyboardToolPanelGroup = {
-  name: 'Database',
+  name: '数据库',
   items: [
     {
-      name: 'Table view',
+      name: '表格视图',
       icon: DatabaseTableViewIcon(),
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:database'),
@@ -823,7 +823,7 @@ const databaseToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
-      name: 'Kanban view',
+      name: '看板视图',
       icon: DatabaseKanbanViewIcon(),
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:database'),
@@ -849,8 +849,8 @@ const moreToolPanel: KeyboardToolPanelConfig = {
   }),
   activeBackground: cssVarV2('edgeless/selection/selectionMarqueeBackground'),
   groups: [
-    { name: 'Basic', items: textToolActionItems },
-    { name: 'List', items: listToolActionItems },
+    { name: '基础', items: textToolActionItems },
+    { name: '列表', items: listToolActionItems },
     pageToolGroup,
     contentMediaToolGroup,
     embedToolGroup,
@@ -864,7 +864,7 @@ const textToolPanel: KeyboardToolPanelConfig = {
   icon: TextIcon(),
   groups: [
     {
-      name: 'Turn into',
+      name: '转换为',
       items: textToolActionItems,
     },
   ],
@@ -872,7 +872,7 @@ const textToolPanel: KeyboardToolPanelConfig = {
 
 const textStyleToolItems: KeyboardToolbarItem[] = [
   {
-    name: 'Bold',
+    name: '加粗',
     icon: BoldIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -883,7 +883,7 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
   {
-    name: 'Italic',
+    name: '斜体',
     icon: ItalicIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -894,7 +894,7 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
   {
-    name: 'UnderLine',
+    name: '下划线',
     icon: UnderLineIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -905,7 +905,7 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
   {
-    name: 'StrikeThrough',
+    name: '删除线',
     icon: StrikeThroughIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -916,7 +916,7 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
   {
-    name: 'Code',
+    name: '代码',
     icon: CodeIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -927,7 +927,7 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
   {
-    name: 'Link',
+    name: '链接',
     icon: LinkIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -938,6 +938,20 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
 ];
+
+const COLOR_LABELS: Record<
+  'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'blue' | 'purple' | 'grey',
+  string
+> = {
+  red: '红色',
+  orange: '橙色',
+  yellow: '黄色',
+  green: '绿色',
+  teal: '青色',
+  blue: '蓝色',
+  purple: '紫色',
+  grey: '灰色',
+};
 
 const highlightToolPanel: KeyboardToolPanelConfig = {
   icon: ({ std }) => {
@@ -950,10 +964,10 @@ const highlightToolPanel: KeyboardToolPanelConfig = {
   },
   groups: [
     {
-      name: 'Color',
+      name: '文字颜色',
       items: [
         {
-          name: 'Default Color',
+          name: '默认颜色',
           icon: TextColorIcon(cssVarV2('text/highlight/fg/orange')),
         },
         ...(
@@ -968,7 +982,7 @@ const highlightToolPanel: KeyboardToolPanelConfig = {
             'grey',
           ] as const
         ).map<KeyboardToolbarActionItem>(color => ({
-          name: color.charAt(0).toUpperCase() + color.slice(1),
+          name: COLOR_LABELS[color],
           icon: TextColorIcon(cssVarV2(`text/highlight/fg/${color}`)),
           action: ({ std }) => {
             const payload = {
@@ -993,10 +1007,10 @@ const highlightToolPanel: KeyboardToolPanelConfig = {
       ],
     },
     {
-      name: 'Background',
+      name: '背景颜色',
       items: [
         {
-          name: 'Default Color',
+          name: '默认颜色',
           icon: TextBackgroundDuotoneIcon(cssVarV2('text/highlight/bg/orange')),
         },
         ...(
@@ -1011,7 +1025,7 @@ const highlightToolPanel: KeyboardToolPanelConfig = {
             'grey',
           ] as const
         ).map<KeyboardToolbarActionItem>(color => ({
-          name: color.charAt(0).toUpperCase() + color.slice(1),
+          name: COLOR_LABELS[color],
           icon: TextBackgroundDuotoneIcon(
             cssVarV2(`text/highlight/bg/${color}`)
           ),
@@ -1046,7 +1060,7 @@ const textSubToolbarConfig: KeyboardSubToolbarConfig = {
     textToolPanel,
     ...textStyleToolItems,
     {
-      name: 'InlineTex',
+      name: '行内公式',
       icon: TeXIcon(),
       action: ({ std }) => {
         std.command
@@ -1075,7 +1089,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
     // { icon: AiIcon(iconStyle) },
     textSubToolbarConfig,
     {
-      name: 'Image',
+      name: '图片',
       icon: ImageIcon(),
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:image'),
@@ -1088,7 +1102,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
       },
     },
     {
-      name: 'Attachment',
+      name: '附件',
       icon: AttachmentIcon(),
       showWhen: () => false,
       action: async ({ std }) => {
@@ -1108,7 +1122,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
       },
     },
     {
-      name: 'Undo',
+      name: '撤销',
       icon: UndoIcon(),
       disableWhen: ({ std }) => !std.store.canUndo,
       action: ({ std }) => {
@@ -1116,7 +1130,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
       },
     },
     {
-      name: 'Redo',
+      name: '重做',
       icon: RedoIcon(),
       disableWhen: ({ std }) => !std.store.canRedo,
       action: ({ std }) => {
@@ -1124,7 +1138,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
       },
     },
     {
-      name: 'RightTab',
+      name: '缩进',
       icon: RightTabIcon(),
       disableWhen: ({ std }) => {
         const [success] = std.command
@@ -1149,7 +1163,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
     ...listToolActionItems,
     ...textToolActionItems.filter(({ name }) => name === 'Divider'),
     {
-      name: 'CollapseTab',
+      name: '收起缩进',
       icon: CollapseTabIcon(),
       disableWhen: ({ std }) => {
         const [success] = std.command
@@ -1172,7 +1186,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
       },
     },
     {
-      name: 'Copy',
+      name: '复制',
       icon: CopyIcon(),
       action: ({ std }) => {
         std.command
@@ -1180,7 +1194,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
           .pipe(getSelectedModelsCommand)
           .with({
             onCopy: () => {
-              toast(std.host, 'Copied to clipboard');
+              toast(std.host, '已复制到剪贴板');
             },
           })
           .pipe(draftSelectedModelsCommand)
@@ -1189,7 +1203,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
       },
     },
     {
-      name: 'Duplicate',
+      name: '创建副本',
       icon: DuplicateIcon(),
       action: ({ std }) => {
         std.command
@@ -1200,7 +1214,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
       },
     },
     {
-      name: 'Delete',
+      name: '删除',
       icon: DeleteIcon(),
       action: ({ std }) => {
         std.command

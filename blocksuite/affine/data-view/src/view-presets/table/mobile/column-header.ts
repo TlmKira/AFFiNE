@@ -74,7 +74,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
           typeConfig(this.column),
           // Number format begin
           menu.subMenu({
-            name: 'Number Format',
+            name: '数字格式',
             hide: () =>
               !this.column.dataUpdate || this.column.type$.value !== 'number',
             options: {
@@ -107,7 +107,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
           menu.group({
             items: [
               menu.action({
-                name: 'Hide In View',
+                name: '在当前视图中隐藏',
                 prefix: ViewIcon(),
                 hide: () => !this.column.hideCanSet,
                 select: () => {
@@ -119,7 +119,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
           menu.group({
             items: [
               menu.action({
-                name: 'Insert Left Column',
+                name: '向左插入列',
                 prefix: InsertLeftIcon(),
                 select: () => {
                   this.tableViewManager.propertyAdd({
@@ -142,7 +142,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Insert Right Column',
+                name: '向右插入列',
                 prefix: InsertRightIcon(),
                 select: () => {
                   this.tableViewManager.propertyAdd({
@@ -164,7 +164,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Move Left',
+                name: '向左移动',
                 prefix: MoveLeftIcon(),
                 hide: () => this.column.isFirst$.value,
                 select: () => {
@@ -179,7 +179,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Move Right',
+                name: '向右移动',
                 prefix: MoveRightIcon(),
                 hide: () => this.column.isLast$.value,
                 select: () => {
@@ -198,7 +198,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
           menu.group({
             items: [
               menu.action({
-                name: 'Duplicate',
+                name: '创建副本',
                 prefix: DuplicateIcon(),
                 hide: () => !this.column.canDuplicate,
                 select: () => {
@@ -206,7 +206,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Delete',
+                name: '删除',
                 prefix: DeleteIcon(),
                 hide: () => !this.column.canDelete,
                 select: () => {

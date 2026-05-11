@@ -12,6 +12,7 @@ import {
   SubscriptionService,
   WorkspaceSubscriptionService,
 } from '@affine/core/modules/cloud';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import {
   WorkspaceMembersService,
   WorkspacePermissionService,
@@ -106,7 +107,12 @@ export const CloudWorkspaceMembersPanel = ({
   const { openConfirmModal, closeConfirmModal } = useConfirmModal();
   const goToTeamBilling = useCallback(() => {
     onChangeSettingState({
-      activeTab: isSelfhosted ? 'workspace:license' : 'workspace:billing',
+      activeTab:
+        SHOW_PRICING_PLANS && !isSelfhosted
+          ? 'workspace:billing'
+          : isSelfhosted
+            ? 'workspace:license'
+            : 'workspace:storage',
     });
   }, [isSelfhosted, onChangeSettingState]);
   const [idempotencyKey, setIdempotencyKey] = useState(nanoid());
@@ -202,7 +208,9 @@ export const CloudWorkspaceMembersPanel = ({
         uniqueEmails.length >
           workspaceQuota.memberLimit - workspaceQuota.memberCount
       ) {
-        setOpenMemberLimit(true);
+        if (SHOW_PRICING_PLANS) {
+          setOpenMemberLimit(true);
+        }
         setIsMutating(false);
         return;
       }
@@ -244,8 +252,8 @@ export const CloudWorkspaceMembersPanel = ({
 
   const handleUpgradeConfirm = useCallback(() => {
     onChangeSettingState({
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'workspace:storage',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'cloudPricingPlan' : undefined,
     });
     track.$.settingsPanel.workspace.viewPlans({
       control: 'inviteMember',
@@ -261,7 +269,7 @@ export const CloudWorkspaceMembersPanel = ({
     return (
       <span>
         {t['com.affine.payment.member.description2']()}
-        {hasPaymentFeature && isOwner ? (
+        {SHOW_PRICING_PLANS && hasPaymentFeature && isOwner ? (
           <div
             className={styles.goUpgradeWrapper}
             onClick={handleUpgradeConfirm}
@@ -309,7 +317,7 @@ export const CloudWorkspaceMembersPanel = ({
         {isOwnerOrAdmin ? (
           <>
             <Button onClick={openInviteModal}>{t['Invite Members']()}</Button>
-            {!isTeam ? (
+            {SHOW_PRICING_PLANS && !isTeam ? (
               <MemberLimitModal
                 isFreePlan={!plan}
                 open={openMemberLimit}

@@ -1,4 +1,5 @@
 import { notify } from '@affine/component';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import { WorkspacePermissionService } from '@affine/core/modules/permissions';
 import { WorkspaceService } from '@affine/core/modules/workspace';
@@ -24,8 +25,8 @@ export const OverCapacityNotification = () => {
   const workspaceDialogService = useService(WorkspaceDialogService);
   const jumpToPricePlan = useCallback(() => {
     workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'workspace:storage',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'cloudPricingPlan' : undefined,
     });
   }, [workspaceDialogService]);
 
@@ -43,13 +44,15 @@ export const OverCapacityNotification = () => {
               title: t['com.affine.payment.storage-limit.new-title'](),
               message:
                 t['com.affine.payment.storage-limit.new-description.owner'](),
-              actions: [
-                {
-                  key: 'upgrade',
-                  label: t['com.affine.payment.upgrade'](),
-                  onClick: jumpToPricePlan,
-                },
-              ],
+              actions: SHOW_PRICING_PLANS
+                ? [
+                    {
+                      key: 'upgrade',
+                      label: t['com.affine.payment.upgrade'](),
+                      onClick: jumpToPricePlan,
+                    },
+                  ]
+                : undefined,
             });
           } else {
             notify.warning({

@@ -29,7 +29,7 @@ export type TableViewData = BasicViewDataType<
   DataType
 >;
 export const tableViewModel = tableViewType.createModel<TableViewData>({
-  defaultName: 'Table View',
+  defaultName: '表格视图',
   dataViewManager: TableSingleView,
   defaultData: viewManager => {
     return {

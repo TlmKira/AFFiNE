@@ -145,7 +145,7 @@ export class ChatInputPreference extends SignalWatcher(
     // model switch
     modelItems.push(
       menu.subMenu({
-        name: 'Model',
+        name: '\u6a21\u578b',
         prefix: AiOutlineIcon(),
         middleware: modelSubMenuMiddleware,
         postfix: html`
@@ -178,7 +178,7 @@ export class ChatInputPreference extends SignalWatcher(
               select: () => {
                 if (model.isPro && !isSelfHosted && !isSubscribed) {
                   this.notificationService.toast(
-                    `Pro models require an AFFiNE AI subscription.`
+                    `Pro \u6a21\u578b\u9700\u8981 AI \u8ba2\u9605\u3002`
                   );
                   return;
                 }
@@ -192,7 +192,7 @@ export class ChatInputPreference extends SignalWatcher(
 
     modelItems.push(
       menu.toggleSwitch({
-        name: 'Extended Thinking',
+        name: '\u6269\u5c55\u601d\u8003',
         prefix: ThinkingIcon(),
         on: this.extendedThinking,
         onChange: (value: boolean) => this.onExtendedThinkingChange?.(value),
@@ -202,7 +202,7 @@ export class ChatInputPreference extends SignalWatcher(
 
     searchItems.push(
       menu.toggleSwitch({
-        name: 'Workspace All Docs',
+        name: '\u5de5\u4f5c\u533a\u5168\u90e8\u6587\u6863',
         prefix: CloudWorkspaceIcon(),
         on:
           !!this.toolsConfigService.config.value.searchWorkspace &&

@@ -3,6 +3,7 @@ import { EditorLoading } from '@affine/component/page-detail-skeleton';
 import { Button, IconButton } from '@affine/component/ui/button';
 import { Modal, useConfirmModal } from '@affine/component/ui/modal';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { DocDisplayMetaService } from '@affine/core/modules/doc-display-meta';
 import { EditorService } from '@affine/core/modules/editor';
 import { WorkspacePermissionService } from '@affine/core/modules/permissions';
@@ -196,8 +197,8 @@ const PlanPrompt = () => {
 
   const onClickUpgrade = useCallback(() => {
     workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'workspace:storage',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'cloudPricingPlan' : undefined,
     });
     track.$.docHistory.$.viewPlans();
   }, [workspaceDialogService]);
@@ -234,7 +235,7 @@ const PlanPrompt = () => {
             With the workspace creator&apos;s Free account, every member can
             access up to <b>7 days</b> of version history.
           </Trans>
-          {isOwner ? (
+          {SHOW_PRICING_PLANS && isOwner ? (
             <span
               className={styles.planPromptUpdateButton}
               onClick={onClickUpgrade}

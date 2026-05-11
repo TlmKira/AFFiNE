@@ -33,7 +33,7 @@ function createCopyLinkToBlockMenuItem(
   model: DatabaseBlockModel
 ) {
   return menu.action({
-    name: 'Copy link to block',
+    name: '复制块链接',
     prefix: LinkIcon({ width: '20', height: '20' }),
     hide: () => {
       const { editor } = framework.get(EditorService);

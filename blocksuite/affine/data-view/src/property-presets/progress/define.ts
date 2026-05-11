@@ -5,7 +5,7 @@ import { propertyType } from '../../core/property/property-config.js';
 export const progressPropertyType = propertyType('progress');
 
 export const progressPropertyModelConfig = progressPropertyType.modelConfig({
-  name: 'Progress',
+  name: '进度',
   propertyData: {
     schema: zod.object({}),
     default: () => ({}),

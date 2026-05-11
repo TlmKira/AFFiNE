@@ -308,7 +308,7 @@ export const selectGroupByProperty = (
             hide: () =>
               view instanceof KanbanSingleView || !group.property$.value,
             class: { 'delete-item': true },
-            name: 'Remove Grouping',
+            name: '移除分组',
             select: () => {
               group.changeGroup(undefined);
               ops?.onSelect?.();
@@ -358,7 +358,7 @@ export const popGroupSetting = (
         menu.group({
           items: [
             menu.action({
-              name: 'Group By',
+              name: '分组依据',
               postfix: html`
                 <div
                   style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:8px;"
@@ -412,7 +412,7 @@ export const popGroupSetting = (
                 items: [
                   menu.dynamic(() => [
                     menu.subMenu({
-                      name: 'Date by',
+                      name: '日期依据',
                       openOnHover: false,
                       middleware: dropdownSubMenuMiddleware,
                       autoHeight: true,
@@ -477,7 +477,7 @@ export const popGroupSetting = (
                       items: [
                         menu.dynamic(() => [
                           menu.subMenu({
-                            name: 'Start week on',
+                            name: '一周开始于',
                             postfix: html`
                               <div
                                 style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:8px;"
@@ -532,7 +532,7 @@ export const popGroupSetting = (
                 items: [
                   menu.dynamic(() => [
                     menu.subMenu({
-                      name: 'Sort',
+                      name: '排序',
                       openOnHover: false,
                       middleware: dropdownSubMenuMiddleware,
                       autoHeight: true,
@@ -549,7 +549,7 @@ export const popGroupSetting = (
                         items: [
                           menu.dynamic(() => [
                             menu.action({
-                              name: 'Oldest first',
+                              name: '最早优先',
                               label: () => {
                                 const isSelected = group.sortAsc$.value;
                                 return html`<span
@@ -566,7 +566,7 @@ export const popGroupSetting = (
                               },
                             }),
                             menu.action({
-                              name: 'Newest first',
+                              name: '最新优先',
                               label: () => {
                                 const isSelected = !group.sortAsc$.value;
                                 return html`<span
@@ -596,7 +596,7 @@ export const popGroupSetting = (
           items: [
             menu.dynamic(() => [
               menu.action({
-                name: 'Hide empty groups',
+                name: '隐藏空分组',
                 isSelected: group.hideEmpty$.value,
                 select: () => {
                   group.setHideEmpty(!group.hideEmpty$.value);
@@ -621,7 +621,7 @@ export const popGroupSetting = (
         menu.group({
           items: [
             menu.action({
-              name: 'Remove grouping',
+              name: '移除分组',
               prefix: DeleteIcon(),
               class: { 'delete-item': true },
               hide: () => !(view instanceof TableSingleView),

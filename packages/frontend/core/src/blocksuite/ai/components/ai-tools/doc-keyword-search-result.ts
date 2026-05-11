@@ -40,7 +40,7 @@ export class DocKeywordSearchResult extends WithDisposable(ShadowlessElement) {
 
   renderToolCall() {
     return html`<tool-call-card
-      .name=${`Searching workspace documents for "${this.data.args.query}"`}
+      .name=${`\u6b63\u5728\u641c\u7d22\u5de5\u4f5c\u533a\u6587\u6863\uff1a\u201c${this.data.args.query}\u201d`}
       .icon=${SearchIcon()}
       .width=${this.width}
     ></tool-call-card>`;
@@ -55,10 +55,10 @@ export class DocKeywordSearchResult extends WithDisposable(ShadowlessElement) {
       return html`<tool-call-failed
         .name=${getToolErrorDisplayName(
           isToolError(result) ? result : null,
-          'Document search failed',
+          '\u6587\u6863\u641c\u7d22\u5931\u8d25',
           {
             'Workspace Sync Required':
-              'Enable workspace sync to search documents',
+              '\u8bf7\u5148\u542f\u7528\u5de5\u4f5c\u533a\u540c\u6b65\u540e\u518d\u641c\u7d22\u6587\u6863',
           }
         )}
         .icon=${SearchIcon()}
@@ -82,7 +82,7 @@ export class DocKeywordSearchResult extends WithDisposable(ShadowlessElement) {
       console.error('Failed to parse result', err);
     }
     return html`<tool-result-card
-      .name=${`Found ${result.length} pages for "${this.data.args.query}"`}
+      .name=${`\u627e\u5230 ${result.length} \u4e2a\u4e0e\u201c${this.data.args.query}\u201d\u76f8\u5173\u7684\u9875\u9762`}
       .icon=${SearchIcon()}
       .width=${this.width}
       .results=${results}

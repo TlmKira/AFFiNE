@@ -2,6 +2,8 @@ import type { DocMode } from '@blocksuite/affine/model';
 
 import type { WorkspaceMetadata } from '../workspace';
 
+export const SHOW_PRICING_PLANS = false;
+
 export type SettingTab =
   | 'shortcuts'
   | 'notifications'

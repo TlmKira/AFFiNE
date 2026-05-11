@@ -2,6 +2,7 @@ import {
   SubscriptionService,
   UserCopilotQuotaService,
 } from '@affine/core/modules/cloud';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import { useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
@@ -38,8 +39,8 @@ export const AIUsage = () => {
 
   const goToAIPlanPage = useCallback(() => {
     workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'aiPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'account',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'aiPricingPlan' : undefined,
     });
   }, [workspaceDialogService]);
 
@@ -86,7 +87,7 @@ export const AIUsage = () => {
 
   return (
     <div
-      onClick={goToAIPlanPage}
+      onClick={SHOW_PRICING_PLANS ? goToAIPlanPage : undefined}
       className={clsx(styles.usageBlock, styles.aiUsageBlock)}
       style={assignInlineVars({
         [styles.progressColorVar]: color,

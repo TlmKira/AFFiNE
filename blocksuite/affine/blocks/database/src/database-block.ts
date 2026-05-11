@@ -91,7 +91,7 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
         }),
         menu.action({
           prefix: CommentIcon(),
-          name: 'Comment',
+          name: '评论',
           hide: () => !this.std.getOptional(CommentProviderIdentifier),
           select: () => {
             this.std.getOptional(CommentProviderIdentifier)?.addComment([
@@ -103,13 +103,13 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
         }),
         menu.action({
           prefix: CopyIcon(),
-          name: 'Copy',
+          name: '复制',
           select: () => {
             const slice = Slice.fromModels(this.store, [this.model]);
             this.std.clipboard
               .copySlice(slice)
               .then(() => {
-                toast(this.host, 'Copied to clipboard');
+                toast(this.host, '已复制到剪贴板');
               })
               .catch(console.error);
           },
@@ -121,7 +121,7 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
               class: {
                 'delete-item': true,
               },
-              name: 'Delete Database',
+              name: '删除数据库',
               select: () => {
                 this.model.children.slice().forEach(block => {
                   this.store.deleteBlock(block);

@@ -48,7 +48,7 @@ export const popRowMenu = (
         name: '',
         items: [
           menu.action({
-            name: 'Copy',
+            name: '复制',
             prefix: html` <div
               style="transform: rotate(90deg);display:flex;align-items:center;"
             >
@@ -64,7 +64,7 @@ export const popRowMenu = (
         name: '',
         items: [
           menu.action({
-            name: 'Delete Rows',
+            name: '删除行',
             class: {
               'delete-item': true,
             },
@@ -83,7 +83,7 @@ export const popRowMenu = (
   if (!row) return;
   popFilterableSimpleMenu(ele, [
     menu.action({
-      name: 'Expand Row',
+      name: '展开行',
       prefix: ExpandFullIcon(),
       select: () => {
         openDetail(tableViewLogic, row.id, selectionController);
@@ -93,7 +93,7 @@ export const popRowMenu = (
       name: '',
       items: [
         menu.action({
-          name: 'Insert Before',
+          name: '在前面插入',
           prefix: html` <div
             style="transform: rotate(90deg);display:flex;align-items:center;"
           >
@@ -104,7 +104,7 @@ export const popRowMenu = (
           },
         }),
         menu.action({
-          name: 'Insert After',
+          name: '在后面插入',
           prefix: html` <div
             style="transform: rotate(90deg);display:flex;align-items:center;"
           >
@@ -119,7 +119,7 @@ export const popRowMenu = (
     menu.group({
       items: [
         menu.action({
-          name: 'Delete Row',
+          name: '删除行',
           class: { 'delete-item': true },
           prefix: DeleteIcon(),
           select: () => {

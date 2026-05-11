@@ -210,7 +210,7 @@ export const builtinToolbarConfig = {
     captionAction('d.caption'),
     {
       id: 'e.convert-to-linked-doc',
-      tooltip: 'Create Linked Doc',
+      tooltip: '创建链接文档',
       icon: LinkedPageIcon(),
       run(ctx) {
         const model = ctx.getCurrentModelByType(EmbedIframeBlockModel);
@@ -257,7 +257,7 @@ export const builtinToolbarConfig = {
       actions: [
         {
           id: 'copy',
-          label: 'Copy',
+          label: '复制',
           icon: CopyIcon(),
           run(ctx) {
             const model = ctx.getCurrentModelByType(EmbedIframeBlockModel);
@@ -266,7 +266,7 @@ export const builtinToolbarConfig = {
             const slice = Slice.fromModels(ctx.store, [model]);
             ctx.clipboard
               .copySlice(slice)
-              .then(() => toast(ctx.host, 'Copied to clipboard'))
+              .then(() => toast(ctx.host, '已复制到剪贴板'))
               .catch(console.error);
 
             ctx.track('CopiedLink', {
@@ -277,7 +277,7 @@ export const builtinToolbarConfig = {
         },
         {
           id: 'duplicate',
-          label: 'Duplicate',
+          label: '创建副本',
           icon: DuplicateIcon(),
           run(ctx) {
             const model = ctx.getCurrentModelByType(EmbedIframeBlockModel);
@@ -295,7 +295,7 @@ export const builtinToolbarConfig = {
     {
       placement: ActionPlacement.More,
       id: 'b.reload',
-      label: 'Reload',
+      label: '重新加载',
       icon: ResetIcon(),
       run(ctx) {
         const component = ctx.getCurrentBlockByType(EmbedIframeBlockComponent);
@@ -317,7 +317,7 @@ export const builtinToolbarConfig = {
     {
       placement: ActionPlacement.More,
       id: 'c.delete',
-      label: 'Delete',
+      label: '删除',
       icon: DeleteIcon(),
       variant: 'destructive',
       run(ctx) {

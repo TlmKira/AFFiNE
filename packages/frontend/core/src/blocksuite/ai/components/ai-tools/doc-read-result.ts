@@ -33,10 +33,16 @@ interface DocReadToolResult {
 }
 
 const getFailedName = (result: ToolError | null) => {
-  return getToolErrorDisplayName(result, 'Document read failed', {
-    'Workspace Sync Required': 'Enable workspace sync to read this document',
-    'Document Sync Pending': 'Wait for document sync to finish',
-  });
+  return getToolErrorDisplayName(
+    result,
+    '\u6587\u6863\u8bfb\u53d6\u5931\u8d25',
+    {
+      'Workspace Sync Required':
+        '\u8bf7\u5148\u542f\u7528\u5de5\u4f5c\u533a\u540c\u6b65\u540e\u518d\u8bfb\u53d6\u6b64\u6587\u6863',
+      'Document Sync Pending':
+        '\u8bf7\u7b49\u5f85\u6587\u6863\u540c\u6b65\u5b8c\u6210',
+    }
+  );
 };
 
 export class DocReadResult extends WithDisposable(ShadowlessElement) {
@@ -52,7 +58,7 @@ export class DocReadResult extends WithDisposable(ShadowlessElement) {
   renderToolCall() {
     // TODO: get document name by doc_id
     return html`<tool-call-card
-      .name=${`Reading document`}
+      .name=${`\u6b63\u5728\u8bfb\u53d6\u6587\u6863`}
       .icon=${ViewIcon()}
       .width=${this.width}
     ></tool-call-card>`;
@@ -71,7 +77,7 @@ export class DocReadResult extends WithDisposable(ShadowlessElement) {
     }
     // TODO: better markdown rendering
     return html`<tool-result-card
-      .name=${`Read "${result.title}"`}
+      .name=${`\u5df2\u8bfb\u53d6\u201c${result.title}\u201d`}
       .icon=${ViewIcon()}
       .width=${this.width}
       .results=${[

@@ -105,9 +105,7 @@ export const usePageHelper = (docCollection: Workspace) => {
       ) => {
         resolve(options);
         toast(
-          `Successfully imported ${options.importedCount} Page${
-            options.importedCount > 1 ? 's' : ''
-          }.`
+          `\u5df2\u6210\u529f\u5bfc\u5165 ${options.importedCount} \u4e2a\u9875\u9762\u3002`
         );
         if (options.isWorkspaceFile) {
           workbench.openAll();

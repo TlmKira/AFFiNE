@@ -1,6 +1,7 @@
 import { useLiveData, useService } from '@toeverything/infra';
 import { Fragment, useCallback, useEffect } from 'react';
 
+import { SHOW_OPEN_IN_APP } from '../../brand/constant';
 import { OpenInAppService } from '../services';
 import { OpenInAppPage } from './open-in-app-page';
 
@@ -25,6 +26,10 @@ const WebOpenInAppGuard = ({ children }: { children: React.ReactNode }) => {
     },
     [service]
   );
+
+  if (!SHOW_OPEN_IN_APP) {
+    return children;
+  }
 
   if (shouldOpenInApp === undefined) {
     return null;

@@ -226,7 +226,7 @@ export class FilterRootView extends SignalWatcher(ShadowlessElement) {
             },
           }),
           menu.action({
-            name: 'Duplicate',
+            name: '创建副本',
             prefix: DuplicateIcon(),
             select: () => {
               const conditions = [...this.filterGroup.value.conditions];
@@ -245,7 +245,7 @@ export class FilterRootView extends SignalWatcher(ShadowlessElement) {
             name: '',
             items: [
               menu.action({
-                name: 'Delete',
+                name: '删除',
                 prefix: DeleteIcon(),
                 class: { 'delete-item': true },
                 select: () => {
@@ -406,7 +406,7 @@ export const popFilterRoot = (
         menu.group({
           items: [
             menu.action({
-              name: 'Add',
+              name: '添加',
               prefix: PlusIcon(),
               select: ele => {
                 const value = filterTrait.filter$.value;

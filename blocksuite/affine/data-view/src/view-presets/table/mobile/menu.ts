@@ -18,7 +18,7 @@ export const popMobileRowMenu = (
     menu.group({
       items: [
         menu.action({
-          name: 'Expand Row',
+          name: '展开行',
           prefix: ExpandFullIcon(),
           select: () => {
             tableViewLogic.root.openDetailPanel({
@@ -33,7 +33,7 @@ export const popMobileRowMenu = (
       name: '',
       items: [
         menu.action({
-          name: 'Delete Row',
+          name: '删除行',
           class: { 'delete-item': true },
           prefix: DeleteIcon(),
           select: () => {

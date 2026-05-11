@@ -1,5 +1,6 @@
 import { Button } from '@affine/component/ui/button';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 import { appIconMap, appNames } from '@affine/core/utils/channel';
 import { Trans, useI18n } from '@affine/i18n';
 import { LocalWorkspaceIcon, Logo1Icon } from '@blocksuite/icons/rc';
@@ -18,8 +19,7 @@ interface OpenAppProps {
   mode?: 'auth' | 'open-doc'; // default to 'auth'
 }
 const channel = BUILD_CONFIG.appBuildType;
-const url =
-  'https://affine.pro/download' + (channel !== 'stable' ? '/beta-canary' : '');
+const downloadUrl = PRIVATE_SERVICE_URLS.download;
 
 export const OpenInAppPage = ({
   urlToOpen,
@@ -32,7 +32,10 @@ export const OpenInAppPage = ({
   const t = useI18n();
 
   const openDownloadLink = useCallback(() => {
-    open(url, '_blank');
+    if (!downloadUrl) {
+      return;
+    }
+    open(downloadUrl, '_blank');
   }, []);
 
   const appIcon = appIconMap[channel];
@@ -65,35 +68,43 @@ export const OpenInAppPage = ({
         </a>
 
         <div className={styles.topNavLinks}>
-          <a
-            href="https://affine.pro"
-            target="_blank"
-            rel="noreferrer"
-            className={styles.topNavLink}
-          >
-            Official Website
-          </a>
-          <a
-            href="https://affine.pro/blog"
-            target="_blank"
-            rel="noreferrer"
-            className={styles.topNavLink}
-          >
-            Blog
-          </a>
-          <a
-            href="https://affine.pro/about-us"
-            target="_blank"
-            rel="noreferrer"
-            className={styles.topNavLink}
-          >
-            Contact us
-          </a>
+          {PRIVATE_SERVICE_URLS.website ? (
+            <a
+              href={PRIVATE_SERVICE_URLS.website}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.topNavLink}
+            >
+              Service Home
+            </a>
+          ) : null}
+          {PRIVATE_SERVICE_URLS.blog ? (
+            <a
+              href={PRIVATE_SERVICE_URLS.blog}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.topNavLink}
+            >
+              Docs
+            </a>
+          ) : null}
+          {PRIVATE_SERVICE_URLS.community ? (
+            <a
+              href={PRIVATE_SERVICE_URLS.community}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.topNavLink}
+            >
+              Support
+            </a>
+          ) : null}
         </div>
 
-        <Button onClick={openDownloadLink}>
-          {t['com.affine.auth.open.affine.download-app']()}
-        </Button>
+        {downloadUrl ? (
+          <Button onClick={openDownloadLink}>
+            {t['com.affine.auth.open.affine.download-app']()}
+          </Button>
+        ) : null}
       </div>
 
       <div className={styles.centerContent}>

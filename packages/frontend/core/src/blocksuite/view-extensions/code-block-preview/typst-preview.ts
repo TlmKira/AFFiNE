@@ -188,11 +188,11 @@ export class TypstPreview extends SignalWatcher(
   private get _errorMessageDetail() {
     return this.errorMessage
       ? html`<details class="typst-error-details">
-          <summary>Error details</summary>
+          <summary>错误详情</summary>
           <pre
             class="typst-error-text"
             tabindex="0"
-            aria-label="Typst error message"
+            aria-label="Typst 错误信息"
           >
 ${this.errorMessage}</pre
           >
@@ -209,19 +209,19 @@ ${this.errorMessage}</pre
     const lower = this.errorMessage?.toLowerCase() ?? '';
 
     const friendlyMessage = lower.includes('no font could be found')
-      ? 'Failed to load fonts. Please check your network or try again.'
-      : 'Failed to render Typst. Please check your code.';
+      ? '\u5b57\u4f53\u52a0\u8f7d\u5931\u8d25\u3002\u8bf7\u68c0\u67e5\u7f51\u7edc\u6216\u7a0d\u540e\u91cd\u8bd5\u3002'
+      : 'Typst \u6e32\u67d3\u5931\u8d25\u3002\u8bf7\u68c0\u67e5\u4ee3\u7801\u3002';
 
     return [friendlyMessage, this._errorMessageDetail];
   }
 
   private get _copyButtonLabel() {
     if (this.copyState === 'copied') {
-      return 'Copied';
+      return '\u5df2\u590d\u5236';
     } else if (this.copyState === 'failed') {
-      return 'Copy failed';
+      return '\u590d\u5236\u5931\u8d25';
     } else {
-      return 'Copy';
+      return '\u590d\u5236';
     }
   }
 
@@ -404,7 +404,7 @@ ${this.errorMessage}</pre
             'loading',
             () =>
               html`<div class="typst-preview-loading">
-                Rendering Typst code...
+                正在渲染 Typst 代码...
               </div>`,
           ],
           [
@@ -418,7 +418,9 @@ ${this.errorMessage}</pre
             'syntax-error',
             () =>
               html`<div class="typst-preview-error">
-                Typst code has errors: ${this.errorMessage ?? 'Unknown error.'}
+                Typst
+                代码存在错误：${this.errorMessage ??
+                '\u672a\u77e5\u9519\u8bef\u3002'}
                 ${this._errorMessageDetail}
               </div>`,
           ],
@@ -426,7 +428,7 @@ ${this.errorMessage}</pre
             'fallback',
             () =>
               html`<div class="typst-preview-fallback">
-                Enter Typst code to preview.
+                输入 Typst 代码以预览。
               </div>`,
           ],
         ])}

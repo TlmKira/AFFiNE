@@ -107,7 +107,7 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
               data-testid="ai-panel-new-chat"
             >
               ${PlusIcon()}
-              <affine-tooltip>New Chat</affine-tooltip>
+              <affine-tooltip>新对话</affine-tooltip>
             </div>`
           : null}
         <div
@@ -119,7 +119,9 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
         >
           ${pinned ? PinedIcon() : PinIcon()}
           <affine-tooltip>
-            ${pinned ? 'Unpin this Chat' : 'Pin this Chat'}
+            ${pinned
+              ? '\u53d6\u6d88\u56fa\u5b9a\u5bf9\u8bdd'
+              : '\u56fa\u5b9a\u5bf9\u8bdd'}
           </affine-tooltip>
         </div>
         <div
@@ -128,7 +130,7 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
           data-testid="ai-panel-chat-history"
         >
           ${HistoryIcon()}
-          <affine-tooltip>Chat History</affine-tooltip>
+          <affine-tooltip>对话历史</affine-tooltip>
         </div>
       </div>
     `;
@@ -137,7 +139,7 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
   private readonly onPinClick = async () => {
     if (this.isGenerating) {
       this.notificationService.toast(
-        'Cannot pin a chat while generating an answer'
+        'AI \u6b63\u5728\u751f\u6210\u56de\u7b54\u65f6\u65e0\u6cd5\u56fa\u5b9a\u5bf9\u8bdd'
       );
       return;
     }
@@ -148,18 +150,21 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
     if (this.session && this.session.pinned) {
       try {
         const confirm = await this.notificationService.confirm({
-          title: 'Switch Chat? Current chat is pinned',
+          title:
+            '\u5207\u6362\u5bf9\u8bdd\uff1f\u5f53\u524d\u5bf9\u8bdd\u5df2\u56fa\u5b9a',
           message:
-            'Switching will unpinned the current chat. This will change the active chat panel, allowing you to navigate between different conversation histories.',
-          confirmText: 'Switch Chat',
-          cancelText: 'Cancel',
+            '\u5207\u6362\u540e\u5c06\u53d6\u6d88\u56fa\u5b9a\u5f53\u524d\u5bf9\u8bdd\uff0c\u5e76\u5207\u6362\u5230\u5176\u4ed6\u5bf9\u8bdd\u5386\u53f2\u3002',
+          confirmText: '\u5207\u6362\u5bf9\u8bdd',
+          cancelText: '\u53d6\u6d88',
         });
         if (!confirm) {
           return false;
         }
         await this.onTogglePin();
       } catch {
-        this.notificationService.toast('Failed to unpin the chat');
+        this.notificationService.toast(
+          '\u53d6\u6d88\u56fa\u5b9a\u5bf9\u8bdd\u5931\u8d25'
+        );
       }
     }
     return true;

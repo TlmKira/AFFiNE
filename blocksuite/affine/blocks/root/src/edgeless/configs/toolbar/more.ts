@@ -69,7 +69,7 @@ export const moreActions = [
     actions: [
       {
         id: 'a.create-frame',
-        label: 'Frame section',
+        label: '创建画框',
         icon: FrameIcon(),
         run(ctx) {
           const frame = ctx.std
@@ -90,7 +90,7 @@ export const moreActions = [
       },
       {
         id: 'b.create-group',
-        label: 'Group section',
+        label: '创建分组',
         icon: GroupIcon(),
         when(ctx) {
           const models = ctx.getSurfaceModels();
@@ -110,7 +110,7 @@ export const moreActions = [
     actions: [
       {
         id: 'a.bring-to-front',
-        label: 'Bring to Front',
+        label: '置于顶层',
         icon: ArrowUpBigTopIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -119,7 +119,7 @@ export const moreActions = [
       },
       {
         id: 'b.bring-forward',
-        label: 'Bring Forward',
+        label: '上移一层',
         icon: ArrowUpBigIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -128,7 +128,7 @@ export const moreActions = [
       },
       {
         id: 'c.send-backward',
-        label: 'Send Backward',
+        label: '下移一层',
         icon: ArrowDownBigIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -137,7 +137,7 @@ export const moreActions = [
       },
       {
         id: 'c.send-to-back',
-        label: 'Send to Back',
+        label: '置于底层',
         icon: ArrowDownBigBottomIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -154,7 +154,7 @@ export const moreActions = [
     actions: [
       {
         id: 'copy',
-        label: 'Copy',
+        label: '复制',
         icon: CopyIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -170,7 +170,7 @@ export const moreActions = [
       },
       {
         id: 'duplicate',
-        label: 'Duplicate',
+        label: '创建副本',
         icon: DuplicateIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -184,7 +184,7 @@ export const moreActions = [
       },
       {
         id: 'reload',
-        label: 'Reload',
+        label: '重新加载',
         icon: ResetIcon(),
         when(ctx) {
           const models = ctx.getSurfaceModels();
@@ -213,7 +213,7 @@ export const moreActions = [
     actions: [
       {
         id: 'a.turn-into-linked-doc',
-        label: 'Turn into linked doc',
+        label: '转为链接文档',
         icon: LinkedPageIcon(),
         when(ctx) {
           const models = ctx.getSurfaceModels();
@@ -290,7 +290,7 @@ export const moreActions = [
       },
       {
         id: 'b.create-linked-doc',
-        label: 'Create linked doc',
+        label: '创建链接文档',
         icon: LinkedPageIcon(),
         when(ctx) {
           const models = ctx.getSurfaceModels();
@@ -374,7 +374,7 @@ export const moreActions = [
   // Deleting Group
   {
     id: 'e.delete',
-    label: 'Delete',
+    label: '删除',
     icon: DeleteIcon(),
     variant: 'destructive',
     run(ctx) {

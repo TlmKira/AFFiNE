@@ -53,11 +53,11 @@ export class AIHistoryClear extends WithDisposable(ShadowlessElement) {
     const sessionId = this.session.sessionId;
     try {
       const confirm = await this.notificationService.confirm({
-        title: 'Clear History',
+        title: '\u6e05\u7a7a\u5386\u53f2',
         message:
-          'Are you sure you want to clear all history? This action will permanently delete all content, including all chat logs and data, and cannot be undone.',
-        confirmText: 'Confirm',
-        cancelText: 'Cancel',
+          '\u786e\u5b9a\u8981\u6e05\u7a7a\u6240\u6709\u5386\u53f2\u5417\uff1f\u6b64\u64cd\u4f5c\u4f1a\u6c38\u4e45\u5220\u9664\u6240\u6709\u804a\u5929\u8bb0\u5f55\u548c\u6570\u636e\uff0c\u4e14\u65e0\u6cd5\u64a4\u9500\u3002',
+        confirmText: '\u786e\u8ba4',
+        cancelText: '\u53d6\u6d88',
       });
 
       if (confirm) {
@@ -69,11 +69,11 @@ export class AIHistoryClear extends WithDisposable(ShadowlessElement) {
           this.doc.id,
           [...(sessionId ? [sessionId] : []), ...(actionIds || [])]
         );
-        this.notificationService.toast('History cleared');
+        this.notificationService.toast('\u5386\u53f2\u5df2\u6e05\u7a7a');
         this.onHistoryCleared?.();
       }
     } catch {
-      this.notificationService.toast('Failed to clear history');
+      this.notificationService.toast('\u6e05\u7a7a\u5386\u53f2\u5931\u8d25');
     }
   };
 
@@ -85,7 +85,7 @@ export class AIHistoryClear extends WithDisposable(ShadowlessElement) {
         @click=${this._cleanupHistories}
         data-testid="chat-panel-clear"
       >
-        Clear
+        清空
       </div>
     `;
   }

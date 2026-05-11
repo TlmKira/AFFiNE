@@ -210,9 +210,9 @@ export class AIChatComposer extends SignalWatcher(
       ></ai-chat-input>
       <div class="chat-panel-footer">
         <ai-chat-composer-tip
-          .tips=${[
-            html`<span>AI outputs can be misleading or wrong</span>`,
-          ].filter(Boolean)}
+          .tips=${[html`<span>AI 输出可能具有误导性或不准确</span>`].filter(
+            Boolean
+          )}
           .loop=${false}
         ></ai-chat-composer-tip>
       </div>
@@ -489,7 +489,7 @@ export class AIChatComposer extends SignalWatcher(
     try {
       const contextId = await this.createContextId();
       if (!contextId || !AIProvider.context) {
-        throw new Error('Context not found');
+        throw new Error('\u672a\u627e\u5230\u4e0a\u4e0b\u6587');
       }
       await AIProvider.context.addContextDoc({
         contextId,
@@ -498,7 +498,10 @@ export class AIChatComposer extends SignalWatcher(
     } catch (e) {
       this.updateChip(chip, {
         state: 'failed',
-        tooltip: e instanceof Error ? e.message : 'Add context doc error',
+        tooltip:
+          e instanceof Error
+            ? e.message
+            : '\u6dfb\u52a0\u6587\u6863\u4e0a\u4e0b\u6587\u5931\u8d25',
       });
     }
   };
@@ -507,7 +510,7 @@ export class AIChatComposer extends SignalWatcher(
     try {
       const contextId = await this.createContextId();
       if (!contextId || !AIProvider.context) {
-        throw new Error('Context not found');
+        throw new Error('\u672a\u627e\u5230\u4e0a\u4e0b\u6587');
       }
       const contextFile = await AIProvider.context.addContextFile(chip.file, {
         contextId,
@@ -520,7 +523,10 @@ export class AIChatComposer extends SignalWatcher(
     } catch (e) {
       this.updateChip(chip, {
         state: 'failed',
-        tooltip: e instanceof Error ? e.message : 'Add context file error',
+        tooltip:
+          e instanceof Error
+            ? e.message
+            : '\u6dfb\u52a0\u6587\u4ef6\u4e0a\u4e0b\u6587\u5931\u8d25',
       });
     }
   };
@@ -529,7 +535,7 @@ export class AIChatComposer extends SignalWatcher(
     try {
       const contextId = await this.createContextId();
       if (!contextId || !AIProvider.context) {
-        throw new Error('Context not found');
+        throw new Error('\u672a\u627e\u5230\u4e0a\u4e0b\u6587');
       }
       // TODO: server side docIds calculation
       const docIds = this.docDisplayConfig.getTagPageIds(chip.tagId);
@@ -544,7 +550,10 @@ export class AIChatComposer extends SignalWatcher(
     } catch (e) {
       this.updateChip(chip, {
         state: 'failed',
-        tooltip: e instanceof Error ? e.message : 'Add context tag error',
+        tooltip:
+          e instanceof Error
+            ? e.message
+            : '\u6dfb\u52a0\u6807\u7b7e\u4e0a\u4e0b\u6587\u5931\u8d25',
       });
     }
   };
@@ -553,7 +562,7 @@ export class AIChatComposer extends SignalWatcher(
     try {
       const contextId = await this.createContextId();
       if (!contextId || !AIProvider.context) {
-        throw new Error('Context not found');
+        throw new Error('\u672a\u627e\u5230\u4e0a\u4e0b\u6587');
       }
       // TODO: server side docIds calculation
       const docIds = this.docDisplayConfig.getCollectionPageIds(
@@ -571,7 +580,9 @@ export class AIChatComposer extends SignalWatcher(
       this.updateChip(chip, {
         state: 'failed',
         tooltip:
-          e instanceof Error ? e.message : 'Add context collection error',
+          e instanceof Error
+            ? e.message
+            : '\u6dfb\u52a0\u96c6\u5408\u4e0a\u4e0b\u6587\u5931\u8d25',
       });
     }
   };
@@ -581,7 +592,7 @@ export class AIChatComposer extends SignalWatcher(
   ) => {
     const contextId = await this.createContextId();
     if (!contextId || !AIProvider.context) {
-      throw new Error('Context not found');
+      throw new Error('\u672a\u627e\u5230\u4e0a\u4e0b\u6587');
     }
     try {
       const contextBlob = await AIProvider.context.addContextBlob({
@@ -596,7 +607,9 @@ export class AIChatComposer extends SignalWatcher(
       this.updateChip(chip, {
         state: 'failed',
         tooltip:
-          e instanceof Error ? e.message : 'Add context attachment error',
+          e instanceof Error
+            ? e.message
+            : '\u6dfb\u52a0\u9644\u4ef6\u4e0a\u4e0b\u6587\u5931\u8d25',
       });
     }
   };

@@ -6,6 +6,7 @@ import {
   SettingWrapper,
 } from '@affine/component/setting-components';
 import { LanguageMenu } from '@affine/core/components/affine/language-menu';
+import { SHOW_OPEN_IN_APP } from '@affine/core/modules/brand/constant';
 import { TraySettingService } from '@affine/core/modules/editor-setting/services/tray-settings';
 import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { useI18n } from '@affine/i18n';
@@ -214,7 +215,7 @@ export const AppearanceSettings = () => {
         </SettingRow>
       </SettingWrapper>
 
-      {BUILD_CONFIG.isWeb && !environment.isMobile ? (
+      {BUILD_CONFIG.isWeb && !environment.isMobile && SHOW_OPEN_IN_APP ? (
         <SettingWrapper title={t['com.affine.setting.appearance.links']()}>
           <SettingRow
             name={t['com.affine.setting.appearance.open-in-app']()}

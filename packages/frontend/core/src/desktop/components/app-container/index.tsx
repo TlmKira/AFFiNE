@@ -7,6 +7,7 @@ import {
   SidebarSwitch,
 } from '@affine/core/modules/app-sidebar/views';
 import { AppTabsHeader } from '@affine/core/modules/app-tabs-header';
+import { SHOW_OPEN_IN_APP } from '@affine/core/modules/brand/constant';
 import { NavigationButtons } from '@affine/core/modules/navigation';
 import { WorkspaceService } from '@affine/core/modules/workspace';
 import {
@@ -95,7 +96,7 @@ const BrowserLayout = ({
 
   return (
     <div className={styles.browserAppViewContainer}>
-      <OpenInAppCard />
+      {SHOW_OPEN_IN_APP ? <OpenInAppCard /> : null}
       {fallback ? <AppSidebarFallback /> : isInWorkspace && <RootAppSidebar />}
       <MainContainer>{children}</MainContainer>
     </div>

@@ -105,7 +105,7 @@ const createSettingMenus = (
   const settingItems: MenuConfig[] = [];
   settingItems.push(
     menu.action({
-      name: 'Properties',
+      name: '属性',
       prefix: InfoIcon(),
       closeOnSelect: false,
       postfix: html` <div style="font-size: 14px;">
@@ -134,7 +134,7 @@ const createSettingMenus = (
     const filterCount = filterTrait.filter$.value.conditions.length;
     settingItems.push(
       menu.action({
-        name: 'Filter',
+        name: '筛选',
         prefix: FilterIcon(),
         closeOnSelect: false,
         postfix: html` <div style="font-size: 14px;">
@@ -217,15 +217,15 @@ const createSettingMenus = (
     const sortCount = sortTrait.sortList$.value.length;
     settingItems.push(
       menu.action({
-        name: 'Sort',
+        name: '排序',
         prefix: SortIcon(),
         closeOnSelect: false,
         postfix: html` <div style="font-size: 14px;">
             ${sortCount === 0
               ? ''
               : sortCount === 1
-                ? '1 sort'
-                : `${sortCount} sorts`}
+                ? '1 项排序'
+                : `${sortCount} 项排序`}
           </div>
           ${ArrowRightSmallIcon()}`,
         select: () => {
@@ -258,7 +258,7 @@ const createSettingMenus = (
               {
                 sortUtils: sortUtils,
                 title: {
-                  text: 'Sort',
+                  text: '排序',
                   onBack: reopen,
                   onClose: closeMenu,
                 },
@@ -280,7 +280,7 @@ const createSettingMenus = (
   if (groupTrait) {
     settingItems.push(
       menu.action({
-        name: 'Group',
+        name: '分组',
         prefix: GroupingIcon(),
         closeOnSelect: false,
         postfix: html` <div style="font-size: 14px;">
@@ -441,7 +441,7 @@ export const popViewOptions = (
     menu.group({
       items: [
         menu.action({
-          name: 'Duplicate',
+          name: '创建副本',
           prefix: DuplicateIcon(),
           closeOnSelect: false,
           select: () => {
@@ -449,7 +449,7 @@ export const popViewOptions = (
           },
         }),
         menu.action({
-          name: 'Delete',
+          name: '删除',
           prefix: DeleteIcon(),
           closeOnSelect: false,
           select: () => {

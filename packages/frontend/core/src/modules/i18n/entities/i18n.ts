@@ -19,8 +19,9 @@ export type LanguageInfo = {
 };
 
 const logger = new DebugLogger('i18n');
+const DEFAULT_LANGUAGE: Language = 'zh-Hans';
 
-function mapLanguageInfo(language: Language = 'en'): LanguageInfo {
+function mapLanguageInfo(language: Language = DEFAULT_LANGUAGE): LanguageInfo {
   const languageInfo = SUPPORTED_LANGUAGES[language];
 
   return {
@@ -60,7 +61,7 @@ export class I18n extends Entity {
   }
 
   init() {
-    const language = this.currentLanguageKey$.value ?? 'en';
+    const language = this.currentLanguageKey$.value ?? DEFAULT_LANGUAGE;
     this.applyDocumentLanguage(language);
     this.changeLanguage(language);
   }

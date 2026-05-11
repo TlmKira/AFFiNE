@@ -1,5 +1,6 @@
 import { Button, IconButton, Loading, notify } from '@affine/component';
 import { AuthPageContainer } from '@affine/component/auth-components';
+import { PRIVATE_SERVICE_SUPPORT_MAILTO } from '@affine/core/modules/brand/constant';
 import { SelfhostGenerateLicenseService } from '@affine/core/modules/cloud';
 import { OpenInAppService } from '@affine/core/modules/open-in-app';
 import { copyTextToClipboard } from '@affine/core/utils/clipboard';
@@ -87,7 +88,7 @@ const Success = ({ licenseKey }: { licenseKey: string | null }) => {
           components={{
             1: (
               <a
-                href="mailto:support@toeverything.info"
+                href={PRIVATE_SERVICE_SUPPORT_MAILTO}
                 className={styles.mail}
               />
             ),

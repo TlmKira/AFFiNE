@@ -6,6 +6,7 @@ import { useNavigateHelper } from '@affine/core/components/hooks/use-navigate-he
 import { PageDetailEditor } from '@affine/core/components/page-detail-editor';
 import { AppContainer } from '@affine/core/desktop/components/app-container';
 import { AuthService, ServerService } from '@affine/core/modules/cloud';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 import { type Doc, DocsService } from '@affine/core/modules/doc';
 import {
   type Editor,
@@ -401,9 +402,12 @@ const SharePageFooter = () => {
   if (isPresent || loginStatus === 'authenticated') {
     return null;
   }
+  if (!PRIVATE_SERVICE_URLS.website) {
+    return null;
+  }
   return (
     <a
-      href="https://affine.pro"
+      href={PRIVATE_SERVICE_URLS.website}
       target="_blank"
       className={styles.link}
       rel="noreferrer"

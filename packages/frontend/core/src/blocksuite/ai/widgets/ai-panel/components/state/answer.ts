@@ -85,7 +85,7 @@ export class AIPanelAnswer extends WithDisposable(LitElement) {
     const responseGroup = filterAIItemGroup(this.host, this.config.responses);
     return html`
       <div class="answer">
-        <div class="answer-head">Answer</div>
+        <div class="answer-head">回答</div>
         <div class="answer-body" data-testid="answer-content">
           <slot></slot>
         </div>

@@ -53,7 +53,7 @@ export const popCreateFilter = (
           name: '',
           items: [
             menu.action({
-              name: 'Add filter group',
+              name: '添加筛选组',
               prefix: AddCursorIcon(),
               select: () => {
                 props.onSelect(firstFilterInGroup(props.vars.value));

@@ -60,6 +60,38 @@ const icons: Record<string, TemplateResult<1>> = {
   'Convert to sticker': ImageIcon(),
 };
 
+const actionLabels: Record<string, string> = {
+  'Fix spelling for it': '\u4fee\u6b63\u62fc\u5199',
+  'Improve grammar for it': '\u4fee\u6b63\u8bed\u6cd5',
+  'Explain this code': '\u89e3\u91ca\u4ee3\u7801',
+  'Check code error': '\u68c0\u67e5\u4ee3\u7801\u9519\u8bef',
+  'Explain this': '\u89e3\u91ca\u5185\u5bb9',
+  Translate: '\u7ffb\u8bd1',
+  'Change tone': '\u8c03\u6574\u8bed\u6c14',
+  'Improve writing for it': '\u4f18\u5316\u5199\u4f5c',
+  'Make it longer': '\u6269\u5199',
+  'Make it shorter': '\u7f29\u5199',
+  'Continue writing': '\u7ee7\u7eed\u5199\u4f5c',
+  'Make it real': '\u751f\u6210\u53ef\u89c6\u5316',
+  'Find action items from it': '\u63d0\u53d6\u5f85\u529e\u4e8b\u9879',
+  Summary: '\u603b\u7ed3',
+  'Create headings': '\u521b\u5efa\u6807\u9898',
+  'Write outline': '\u64b0\u5199\u5927\u7eb2',
+  image: '\u56fe\u7247',
+  'Brainstorm mindmap': '\u5934\u8111\u98ce\u66b4\u601d\u7ef4\u5bfc\u56fe',
+  'Expand mind map': '\u6269\u5c55\u601d\u7ef4\u5bfc\u56fe',
+  'Create a presentation': '\u521b\u5efa\u6f14\u793a\u6587\u7a3f',
+  'Write a poem about this': '\u5199\u4e00\u9996\u8bd7',
+  'Write a blog post about this': '\u5199\u4e00\u7bc7\u535a\u5ba2',
+  'AI image filter clay style': '\u7c98\u571f\u98ce\u683c',
+  'AI image filter sketch style': '\u7d20\u63cf\u98ce\u683c',
+  'AI image filter anime style': '\u52a8\u6f2b\u98ce\u683c',
+  'AI image filter pixel style': '\u50cf\u7d20\u98ce\u683c',
+  Clearer: '\u53d8\u6e05\u6670',
+  'Remove background': '\u79fb\u9664\u80cc\u666f',
+  'Convert to sticker': '\u8f6c\u4e3a\u8d34\u7eb8',
+};
+
 export class ActionWrapper extends WithDisposable(LitElement) {
   static override styles = css`
     .action-name {
@@ -148,14 +180,14 @@ export class ActionWrapper extends WithDisposable(LitElement) {
       >
         ${icons[item.action] ? icons[item.action] : DoneIcon()}
         <div>
-          <div>${item.action}</div>
+          <div>${actionLabels[item.action] ?? item.action}</div>
           <div>${this.promptShow ? ArrowDownIcon() : ArrowUpIcon()}</div>
         </div>
       </div>
       ${this.promptShow
         ? html`
             <div class="answer-prompt" data-testid="answer-prompt">
-              <div class="subtitle">Answer</div>
+              <div class="subtitle">回答</div>
               ${HISTORY_IMAGE_ACTIONS.includes(item.action)
                 ? images &&
                   html`<chat-content-images
@@ -171,7 +203,7 @@ export class ActionWrapper extends WithDisposable(LitElement) {
                   })(answer)
                 : nothing}
               ${originalText
-                ? html`<div class="subtitle prompt">Prompt</div>
+                ? html`<div class="subtitle prompt">提示词</div>
                     ${createTextRenderer({
                       customHeading: true,
                       testId: 'chat-message-action-prompt',

@@ -1,6 +1,7 @@
 import { notify } from '@affine/component';
 import { isMindmapChild, isMindMapRoot } from '@affine/core/blocksuite/ai';
 import { EditorService } from '@affine/core/modules/editor';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 import { apis } from '@affine/electron-api';
 import { I18n } from '@affine/i18n';
 import type { MenuContext } from '@blocksuite/affine/components/toolbar';
@@ -106,18 +107,21 @@ const MARGIN = 20;
 
 export function copyAsImage(std: BlockStdScope) {
   if (!apis) {
+    const downloadUrl = PRIVATE_SERVICE_URLS.download;
     notify.error({
       title: I18n.t('com.affine.copy.asImage.notAvailable.title'),
       message: I18n.t('com.affine.copy.asImage.notAvailable.message'),
-      actions: [
-        {
-          key: 'download',
-          label: I18n.t('com.affine.copy.asImage.notAvailable.action'),
-          onClick: () => {
-            window.open('https://affine.pro/download');
-          },
-        },
-      ],
+      actions: downloadUrl
+        ? [
+            {
+              key: 'download',
+              label: I18n.t('com.affine.copy.asImage.notAvailable.action'),
+              onClick: () => {
+                window.open(downloadUrl);
+              },
+            },
+          ]
+        : [],
     });
     return;
   }
@@ -219,7 +223,7 @@ export function copyAsImage(std: BlockStdScope) {
 export function createCopyAsPngMenuItem(framework: FrameworkProvider) {
   return {
     icon: CopyAsImgaeIcon({ width: '20', height: '20' }),
-    label: 'Copy as Image',
+    label: '\u590d\u5236\u4e3a\u56fe\u7247',
     type: 'copy-as-image',
     when: (ctx: MenuContext) => {
       if (ctx.isEmpty()) return false;

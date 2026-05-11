@@ -5,6 +5,7 @@ import {
   SubscriptionService,
   UserCopilotQuotaService,
 } from '@affine/core/modules/cloud';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { SubscriptionPlan } from '@affine/graphql';
 import { useI18n } from '@affine/i18n';
 import { track } from '@affine/track';
@@ -48,7 +49,7 @@ export const AIUsagePanel = ({
 
   const openBilling = useCallback(() => {
     onChangeSettingState?.({
-      activeTab: 'billing',
+      activeTab: SHOW_PRICING_PLANS ? 'billing' : 'account',
     });
     track.$.settingsPanel.accountUsage.viewPlans({ plan: SubscriptionPlan.AI });
   }, [onChangeSettingState]);
@@ -101,13 +102,15 @@ export const AIUsagePanel = ({
       name={t['com.affine.payment.ai.usage-title']()}
     >
       {copilotActionLimit === 'unlimited' ? (
-        hasPaymentFeature && aiSubscription?.canceledAt ? (
+        SHOW_PRICING_PLANS &&
+        hasPaymentFeature &&
+        aiSubscription?.canceledAt ? (
           <AIResume />
-        ) : (
+        ) : SHOW_PRICING_PLANS && hasPaymentFeature ? (
           <Button onClick={openBilling}>
             {t['com.affine.payment.ai.usage.change-button-label']()}
           </Button>
-        )
+        ) : null
       ) : (
         <div className={styles.storageProgressContainer}>
           <div className={styles.storageProgressWrapper}>
@@ -129,7 +132,7 @@ export const AIUsagePanel = ({
             </div>
           </div>
 
-          {hasPaymentFeature && (
+          {SHOW_PRICING_PLANS && hasPaymentFeature && (
             <AISubscribe variant="primary">
               {t['com.affine.payment.ai.usage.purchase-button-label']()}
             </AISubscribe>

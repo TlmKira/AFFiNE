@@ -9,7 +9,7 @@ import { isLinkedDoc } from '../../utils/title-doc.js';
 export const titleColumnType = propertyType('title');
 
 export const titlePropertyModelConfig = titleColumnType.modelConfig({
-  name: 'Title',
+  name: '标题',
   propertyData: {
     schema: zod.object({}),
     default: () => ({}),

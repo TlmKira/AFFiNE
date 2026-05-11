@@ -4,6 +4,7 @@ import { CloseIcon, DownloadIcon } from '@blocksuite/icons/rc';
 import clsx from 'clsx';
 import { useCallback, useState } from 'react';
 
+import { PRIVATE_SERVICE_URLS } from '../../../brand/constant';
 import * as styles from './index.css';
 
 export function AppDownloadButton({
@@ -21,12 +22,14 @@ export function AppDownloadButton({
 
   // TODO(@JimmFly): unify this type of literal value.
   const handleClick = useCallback(() => {
+    if (!PRIVATE_SERVICE_URLS.download) {
+      return;
+    }
     track.$.navigationPanel.bottomButtons.downloadApp();
-    const url = `https://affine.pro/download?channel=stable`;
-    open(url, '_blank');
+    open(PRIVATE_SERVICE_URLS.download, '_blank');
   }, []);
 
-  if (!show) {
+  if (!show || !PRIVATE_SERVICE_URLS.download) {
     return null;
   }
   return (
@@ -37,7 +40,7 @@ export function AppDownloadButton({
     >
       <div className={clsx([styles.label])}>
         <DownloadIcon className={styles.icon} />
-        <span className={styles.ellipsisTextOverflow}>Download App</span>
+        <span className={styles.ellipsisTextOverflow}>Desktop Client</span>
       </div>
       <div className={styles.closeIcon} onClick={handleClose}>
         <CloseIcon />

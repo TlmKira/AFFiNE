@@ -32,7 +32,7 @@ export const surfaceRefToolbarModuleConfig: ToolbarModuleConfig = {
     },
     {
       id: 'c.copy-surface-ref',
-      label: 'Copy',
+      label: '复制',
       icon: CopyIcon(),
       run: ctx => {
         const surfaceRefBlock = ctx.getCurrentBlockByType(
@@ -47,7 +47,7 @@ export const surfaceRefToolbarModuleConfig: ToolbarModuleConfig = {
           .pipe(copySelectedModelsCommand)
           .run();
 
-        toast(surfaceRefBlock.std.host, 'Copied to clipboard');
+        toast(surfaceRefBlock.std.host, '已复制到剪贴板');
       },
     },
     {
@@ -82,7 +82,7 @@ export const surfaceRefToolbarModuleConfig: ToolbarModuleConfig = {
     },
     {
       id: 'g.surface-ref-deletion',
-      label: 'Delete',
+      label: '删除',
       icon: DeleteIcon(),
       placement: ActionPlacement.More,
       variant: 'destructive',

@@ -300,10 +300,11 @@ export class AffineAIPanelWidget extends WidgetComponent {
     this._discardModalAbort = new AbortController();
     return notification
       .confirm({
-        title: 'Stop generating',
-        message: 'AI is generating content. Do you want to stop generating?',
-        cancelText: 'Cancel',
-        confirmText: 'Stop',
+        title: '\u505c\u6b62\u751f\u6210',
+        message:
+          'AI \u6b63\u5728\u751f\u6210\u5185\u5bb9\u3002\u8981\u505c\u6b62\u751f\u6210\u5417\uff1f',
+        cancelText: '\u53d6\u6d88',
+        confirmText: '\u505c\u6b62',
         abort: this._abortController.signal,
       })
       .finally(() => (this._discardModalAbort = null));
@@ -318,10 +319,11 @@ export class AffineAIPanelWidget extends WidgetComponent {
     this._discardModalAbort = new AbortController();
     return notification
       .confirm({
-        title: 'Discard the AI result',
-        message: 'Do you want to discard the results the AI just generated?',
-        cancelText: 'Cancel',
-        confirmText: 'Discard',
+        title: '\u4e22\u5f03 AI \u7ed3\u679c',
+        message:
+          '\u8981\u4e22\u5f03 AI \u521a\u521a\u751f\u6210\u7684\u7ed3\u679c\u5417\uff1f',
+        cancelText: '\u53d6\u6d88',
+        confirmText: '\u4e22\u5f03',
         abort: this._abortController.signal,
       })
       .finally(() => (this._discardModalAbort = null));

@@ -1,4 +1,5 @@
 import { Tooltip } from '@affine/component/ui/tooltip';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { SubscriptionPlan } from '@affine/graphql';
 import { useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
@@ -33,7 +34,7 @@ export const UserPlanButton = ({
 
   const t = useI18n();
 
-  if (!hasPayment) {
+  if (!SHOW_PRICING_PLANS || !hasPayment) {
     // no payment feature
     return;
   }

@@ -15,13 +15,13 @@ export const databaseSlashMenuConfig: SlashMenuConfig = {
   disableWhen: ({ model }) => model.flavour === 'affine:database',
   items: [
     {
-      name: 'Table View',
-      description: 'Display items in a table format.',
+      name: '表格视图',
+      description: '以表格形式展示数据。',
       searchAlias: ['database'],
       icon: DatabaseTableViewIcon(),
       tooltip: {
         figure: TableViewTooltip,
-        caption: 'Table View',
+        caption: '表格视图',
       },
       group: '7_Database@0',
       when: ({ model }) =>
@@ -48,13 +48,13 @@ export const databaseSlashMenuConfig: SlashMenuConfig = {
     },
 
     {
-      name: 'Kanban View',
-      description: 'Visualize data in a dashboard.',
+      name: '看板视图',
+      description: '以看板形式组织和查看数据。',
       searchAlias: ['database'],
       icon: DatabaseKanbanViewIcon(),
       tooltip: {
         figure: KanbanViewTooltip,
-        caption: 'Kanban View',
+        caption: '看板视图',
       },
       group: '7_Database@2',
       when: ({ model }) =>

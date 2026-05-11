@@ -134,7 +134,7 @@ export class TableViewUILogic extends DataViewUILogicBase<
     return html` <div style="display:flex;">
       <div class="${addGroupStyle}" @click="${add}">
         <div class="${addGroupIconStyle}">${AddCursorIcon()}</div>
-        <div>New Group</div>
+        <div>新建分组</div>
       </div>
     </div>`;
   };

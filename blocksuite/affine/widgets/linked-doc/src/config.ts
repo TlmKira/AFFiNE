@@ -69,7 +69,7 @@ export type LinkedDocContext = {
   close: () => void;
 };
 
-const DEFAULT_DOC_NAME = 'Untitled';
+const DEFAULT_DOC_NAME = '未命名';
 const DISPLAY_NAME_LENGTH = 8;
 
 export function createLinkedDocMenuGroup(
@@ -86,7 +86,7 @@ export function createLinkedDocMenuGroup(
   const MAX_DOCS = 6;
 
   return {
-    name: 'Link to Doc',
+    name: '链接到文档',
     items: filteredDocList.map(doc => ({
       key: doc.id,
       name: doc.title || DEFAULT_DOC_NAME,
@@ -112,7 +112,7 @@ export function createLinkedDocMenuGroup(
       },
     })),
     maxDisplay: MAX_DOCS,
-    overflowText: `${filteredDocList.length - MAX_DOCS} more docs`,
+    overflowText: `还有 ${filteredDocList.length - MAX_DOCS} 篇文档`,
   };
 }
 
@@ -131,7 +131,7 @@ export function createNewDocMenuGroup(
   const items: LinkedMenuItem[] = [
     {
       key: 'create',
-      name: `Create "${displayDocName}" doc`,
+      name: `创建“${displayDocName}”文档`,
       icon: NewDocIcon,
       action: () => {
         abort();
@@ -162,7 +162,7 @@ export function createNewDocMenuGroup(
   if (!IS_MOBILE) {
     items.push({
       key: 'import',
-      name: 'Import',
+      name: '导入',
       icon: ImportIcon,
       action: () => {
         abort();
@@ -172,10 +172,7 @@ export function createNewDocMenuGroup(
             importedCount: number;
           }
         ) => {
-          toast(
-            editorHost,
-            `Successfully imported ${options.importedCount} Doc${options.importedCount > 1 ? 's' : ''}.`
-          );
+          toast(editorHost, `已成功导入 ${options.importedCount} 篇文档。`);
           for (const docId of docIds) {
             insertLinkedNode({
               inlineEditor,
@@ -201,7 +198,7 @@ export function createNewDocMenuGroup(
   }
 
   return {
-    name: 'New Doc',
+    name: '新建文档',
     items,
   };
 }

@@ -9,6 +9,7 @@ import { CloseIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
 import { useCallback, useState } from 'react';
 
+import { PRIVATE_SERVICE_URLS } from '../../../brand/constant';
 import * as styles from './open-in-app-card.css';
 
 export const OpenInAppCard = () => {
@@ -36,6 +37,7 @@ export const OpenInAppCard = () => {
   }, []);
 
   const appIcon = appIconMap[BUILD_CONFIG.appBuildType];
+  const downloadUrl = PRIVATE_SERVICE_URLS.download;
 
   return (
     <div
@@ -57,18 +59,22 @@ export const OpenInAppCard = () => {
           />
         </div>
         <div className={styles.subtitleRow}>
-          <Trans i18nKey="com.affine.open-in-app.card.subtitle">
-            Don&apos;t have the app?
-            <a
-              href="https://affine.pro/download"
-              target="_blank"
-              rel="noreferrer"
-              className={styles.link}
-            >
-              Click to download
-            </a>
-            .
-          </Trans>
+          {downloadUrl ? (
+            <Trans i18nKey="com.affine.open-in-app.card.subtitle">
+              Don&apos;t have the app?
+              <a
+                href={downloadUrl}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.link}
+              >
+                Click to download
+              </a>
+              .
+            </Trans>
+          ) : (
+            t.t('com.affine.setting.appearance.open-in-app.hint')
+          )}
         </div>
         <div className={styles.controlsRow}>
           <label className={styles.rememberLabel}>

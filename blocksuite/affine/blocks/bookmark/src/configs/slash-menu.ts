@@ -14,12 +14,12 @@ import { LinkTooltip } from './tooltips';
 const bookmarkSlashMenuConfig: SlashMenuConfig = {
   items: [
     {
-      name: 'Link',
-      description: 'Add a bookmark for reference.',
+      name: '链接',
+      description: '添加一个链接卡片。',
       icon: LinkIcon(),
       tooltip: {
         figure: LinkTooltip,
-        caption: 'Link',
+        caption: '链接',
       },
       group: '4_Content & Media@2',
       when: ({ model }) =>
@@ -33,8 +33,8 @@ const bookmarkSlashMenuConfig: SlashMenuConfig = {
         const index = parentModel.children.indexOf(model) + 1;
         toggleEmbedCardCreateModal(
           host,
-          'Links',
-          'The added link will be displayed as a card view.',
+          '链接',
+          '添加的链接将显示为卡片视图。',
           { mode: 'page', parentModel, index },
           ({ mode }) => {
             if (mode === 'edgeless') {

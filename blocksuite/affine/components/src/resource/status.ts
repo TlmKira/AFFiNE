@@ -125,18 +125,18 @@ export class ResourceStatus extends WithDisposable(LitElement) {
     const { message, needUpload } = this;
     const { type, label } = needUpload
       ? {
-          type: 'Upload',
-          label: 'Retry',
+          type: '上传',
+          label: '重试',
         }
       : {
-          type: 'Download',
-          label: 'Reload',
+          type: '下载',
+          label: '重新加载',
         };
 
     return html`
       <button class="status">${InformationIcon()}</button>
       <div class="popper">
-        <div class="header">${type} failed</div>
+        <div class="header">${type}失败</div>
         <div class="content">${message}</div>
         <div class="footer">
           <button class="action">${label}</button>

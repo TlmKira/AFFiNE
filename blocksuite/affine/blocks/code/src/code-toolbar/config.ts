@@ -268,7 +268,7 @@ export const clipboardGroup: MenuItemGroup<CodeBlockToolbarContext> = {
   items: [
     {
       type: 'duplicate',
-      label: 'Duplicate',
+      label: '创建副本',
       icon: DuplicateIcon,
       when: ({ doc }) => !doc.readonly,
       action: ({ host, blockComponent, close }) => {
@@ -303,7 +303,7 @@ export const deleteGroup: MenuItemGroup<CodeBlockToolbarContext> = {
   items: [
     {
       type: 'delete',
-      label: 'Delete',
+      label: '删除',
       icon: DeleteIcon,
       when: ({ doc }) => !doc.readonly,
       action: ({ doc, blockComponent, close }) => {

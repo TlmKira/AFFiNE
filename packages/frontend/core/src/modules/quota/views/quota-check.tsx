@@ -1,4 +1,5 @@
 import { useConfirmModal } from '@affine/component';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import { type I18nString, useI18n } from '@affine/i18n';
 import { InformationFillDuotoneIcon } from '@blocksuite/icons/rc';
@@ -41,7 +42,7 @@ export const QuotaCheck = ({
   const t = useI18n();
 
   const onConfirm = useCallback(() => {
-    if (!isOwner) {
+    if (!SHOW_PRICING_PLANS || !isOwner) {
       return;
     }
     if (
@@ -54,8 +55,8 @@ export const QuotaCheck = ({
       return;
     }
     workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'workspace:storage',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'cloudPricingPlan' : undefined,
     });
   }, [dialog, isOwner, workspaceDialogService]);
 
@@ -70,7 +71,7 @@ export const QuotaCheck = ({
     const memberOverflow = quota.overcapacityMemberCount > 0;
     const storageOverflow = usedPercent && usedPercent >= 100;
     const message = getSyncPausedMessage(
-      !!isOwner,
+      SHOW_PRICING_PLANS && !!isOwner,
       memberOverflow,
       !!storageOverflow
     );

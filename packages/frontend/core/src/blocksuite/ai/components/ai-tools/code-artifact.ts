@@ -576,7 +576,9 @@ export class CodeArtifactTool extends ArtifactTool<
           { text: new Text(html), language: 'html', preview: true },
           parentId
         );
-        this.notificationService.toast('Inserted to current doc');
+        this.notificationService.toast(
+          '\u5df2\u63d2\u5165\u5230\u5f53\u524d\u6587\u6863'
+        );
       } catch (e) {
         console.error(e);
       }
@@ -605,7 +607,7 @@ export class CodeArtifactTool extends ArtifactTool<
           })}
           @click=${setCodeMode}
         >
-          Code
+          代码
         </div>
         <div
           class=${classMap({
@@ -614,7 +616,7 @@ export class CodeArtifactTool extends ArtifactTool<
           })}
           @click=${setPreviewMode}
         >
-          Preview
+          预览
         </div>
       </div>
       <div style="flex: 1"></div>
@@ -624,12 +626,12 @@ export class CodeArtifactTool extends ArtifactTool<
           height: '20',
           style: `color: ${unsafeCSSVarV2('icon/primary')}`,
         })}
-        Insert
+        插入
       </button>
-      <icon-button @click=${downloadHTML} title="Download HTML">
+      <icon-button @click=${downloadHTML} title="下载 HTML">
         ${DownloadIcon({ width: '20', height: '20' })}
       </icon-button>
-      <icon-button @click=${copyHTML} title="Copy HTML">
+      <icon-button @click=${copyHTML} title="复制 HTML">
         ${CopyIcon({ width: '20', height: '20' })}
       </icon-button>
     `;
@@ -642,7 +644,7 @@ export class CodeArtifactTool extends ArtifactTool<
       (this.data.result as any).type === 'error'
     ) {
       return html`<tool-call-failed
-        .name=${'Code artifact failed'}
+        .name=${'\u4ee3\u7801\u6784\u4ef6\u751f\u6210\u5931\u8d25'}
         .icon=${ToolIcon()}
       ></tool-call-failed>`;
     }

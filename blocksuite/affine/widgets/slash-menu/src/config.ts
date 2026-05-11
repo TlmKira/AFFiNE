@@ -31,7 +31,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
 
     return [
       {
-        name: 'Today',
+        name: '今天',
         icon: TodayIcon(),
         tooltip: slashMenuToolTips['Today'],
         description: formatDate(now),
@@ -41,7 +41,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Tomorrow',
+        name: '明天',
         icon: TomorrowIcon(),
         tooltip: slashMenuToolTips['Tomorrow'],
         description: formatDate(tomorrow),
@@ -53,7 +53,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Yesterday',
+        name: '昨天',
         icon: YesterdayIcon(),
         tooltip: slashMenuToolTips['Yesterday'],
         description: formatDate(yesterday),
@@ -65,7 +65,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Now',
+        name: '当前时间',
         icon: NowIcon(),
         tooltip: slashMenuToolTips['Now'],
         description: formatTime(now),
@@ -75,8 +75,8 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Move Up',
-        description: 'Shift this line up.',
+        name: '上移',
+        description: '将当前行向上移动。',
         icon: ArrowUpBigIcon(),
         tooltip: slashMenuToolTips['Move Up'],
         group: '8_Actions@0',
@@ -97,8 +97,8 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Move Down',
-        description: 'Shift this line down.',
+        name: '下移',
+        description: '将当前行向下移动。',
         icon: ArrowDownBigIcon(),
         tooltip: slashMenuToolTips['Move Down'],
         group: '8_Actions@1',
@@ -114,8 +114,8 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Copy',
-        description: 'Copy this line to clipboard.',
+        name: '复制',
+        description: '复制当前行到剪贴板。',
         icon: CopyIcon(),
         tooltip: slashMenuToolTips['Copy'],
         group: '8_Actions@2',
@@ -125,7 +125,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
           std.clipboard
             .copy(slice)
             .then(() => {
-              toast(std.host, 'Copied to clipboard');
+              toast(std.host, '已复制到剪贴板');
             })
             .catch(e => {
               console.error(e);
@@ -133,8 +133,8 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Duplicate',
-        description: 'Create a duplicate of this line.',
+        name: '创建副本',
+        description: '复制当前行并创建一个副本。',
         icon: DualLinkIcon(),
         tooltip: slashMenuToolTips['Copy'],
         group: '8_Actions@3',
@@ -174,8 +174,8 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Delete',
-        description: 'Remove this line permanently.',
+        name: '删除',
+        description: '永久删除当前行。',
         searchAlias: ['remove'],
         icon: DeleteIcon(),
         tooltip: slashMenuToolTips['Delete'],

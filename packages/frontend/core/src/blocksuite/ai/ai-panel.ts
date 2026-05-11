@@ -50,7 +50,7 @@ function asCaption<T extends keyof BlockSuitePresets.AIActions>(
   id?: T
 ): AIItemConfig {
   return {
-    name: 'Use as caption',
+    name: '\u7528\u4f5c\u56fe\u7247\u8bf4\u660e',
     icon: PenIcon(),
     testId: 'answer-use-as-caption',
     showWhen: () => {
@@ -77,7 +77,7 @@ function asCaption<T extends keyof BlockSuitePresets.AIActions>(
 
 function createNewNote(host: EditorHost): AIItemConfig {
   return {
-    name: 'Create new note',
+    name: '\u521b\u5efa\u65b0\u7b14\u8bb0',
     icon: PageIcon(),
     testId: 'answer-create-new-note',
     showWhen: () => {
@@ -147,11 +147,11 @@ function buildPageResponseConfig<T extends keyof BlockSuitePresets.AIActions>(
 
   return [
     {
-      name: 'Response',
+      name: '\u54cd\u5e94',
       testId: 'answer-responses',
       items: [
         {
-          name: 'Insert below',
+          name: '\u5411\u4e0b\u63d2\u5165',
           testId: 'answer-insert-below',
           icon: InsertBelowIcon(),
           showWhen: () =>
@@ -163,7 +163,7 @@ function buildPageResponseConfig<T extends keyof BlockSuitePresets.AIActions>(
           },
         },
         {
-          name: 'Insert above',
+          name: '\u5411\u4e0a\u63d2\u5165',
           testId: 'answer-insert-above',
           icon: InsertTopIcon(),
           showWhen: () =>
@@ -195,7 +195,7 @@ function buildPageResponseConfig<T extends keyof BlockSuitePresets.AIActions>(
       testId: 'answer-common-responses',
       items: [
         {
-          name: 'Continue in chat',
+          name: '\u5728\u5bf9\u8bdd\u4e2d\u7ee7\u7eed',
           icon: ChatWithAiIcon(),
           testId: 'answer-continue-in-chat',
           handler: () => {
@@ -205,7 +205,7 @@ function buildPageResponseConfig<T extends keyof BlockSuitePresets.AIActions>(
           },
         },
         {
-          name: 'Regenerate',
+          name: '\u91cd\u65b0\u751f\u6210',
           icon: ResetIcon(),
           testId: 'answer-regenerate',
           handler: () => {
@@ -214,7 +214,7 @@ function buildPageResponseConfig<T extends keyof BlockSuitePresets.AIActions>(
           },
         },
         {
-          name: 'Discard',
+          name: '\u4e22\u5f03',
           icon: DeleteIcon(),
           testId: 'answer-discard',
           handler: () => {
@@ -232,7 +232,7 @@ export function buildErrorResponseConfig(panel: AffineAIPanelWidget) {
       name: '',
       items: [
         {
-          name: 'Retry',
+          name: '\u91cd\u8bd5',
           icon: ResetIcon(),
           testId: 'error-retry',
           showWhen: () => true,
@@ -242,7 +242,7 @@ export function buildErrorResponseConfig(panel: AffineAIPanelWidget) {
           },
         },
         {
-          name: 'Discard',
+          name: '\u4e22\u5f03',
           icon: DeleteIcon(),
           testId: 'error-discard',
           showWhen: () => !!panel.answer,

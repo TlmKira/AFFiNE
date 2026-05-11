@@ -65,7 +65,7 @@ function getPreviewFromSelections(
     // Skip other types
   }
 
-  return previews.length > 0 ? previews.join(' ') : 'New comment';
+  return previews.length > 0 ? previews.join(' ') : '\u65b0\u8bc4\u8bba';
 }
 
 function extractTextFromSelection(

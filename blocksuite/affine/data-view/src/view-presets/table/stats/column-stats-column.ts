@@ -133,7 +133,7 @@ export class DatabaseColumnStatsCell extends SignalWatcher(
         items: [
           menu.action({
             isSelected: !this.column.statCalcOp$.value,
-            name: 'None',
+            name: '无',
             select: () => {
               this.column.updateStatCalcOp();
             },

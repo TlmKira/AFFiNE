@@ -332,7 +332,7 @@ export const databaseBlockNotionHtmlAdapterMatcher: BlockNotionHtmlAdapterMatche
                   views: [
                     {
                       id: nanoid(),
-                      name: 'Table View',
+                      name: '表格视图',
                       mode: 'table',
                       columns: [],
                       filter: {

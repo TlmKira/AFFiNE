@@ -128,7 +128,7 @@ export class AffineBlockDiffWidgetForPage extends WidgetComponent {
               ${CloseIcon({
                 style: `color: ${unsafeCSSVarV2('icon/secondary')}`,
               })}
-              Reject all
+              全部拒绝
             </div>
             <div
               class="ai-block-diff-all-option"
@@ -137,7 +137,7 @@ export class AffineBlockDiffWidgetForPage extends WidgetComponent {
               ${DoneIcon({
                 style: `color: ${unsafeCSSVarV2('icon/activated')}`,
               })}
-              Accept all
+              全部接受
             </div>
           </div>
         `;

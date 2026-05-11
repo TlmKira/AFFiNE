@@ -14,7 +14,7 @@ export class WorkspaceShareSettingStore extends Store {
 
   async fetchWorkspaceConfig(workspaceId: string, signal?: AbortSignal) {
     if (!this.workspaceServerService.server) {
-      throw new Error('No Server');
+      return null;
     }
     const data = await this.workspaceServerService.server.gql({
       query: getWorkspaceConfigQuery,

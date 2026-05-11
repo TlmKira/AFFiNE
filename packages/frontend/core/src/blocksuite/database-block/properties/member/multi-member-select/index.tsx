@@ -85,8 +85,8 @@ class MemberManager {
     if (this.ops.multiple) {
       if (this.selectedMembers.value.includes(memberId)) {
         notify.error({
-          title: 'Member already exists',
-          message: 'The member has already been selected',
+          title: '\u6210\u5458\u5df2\u5b58\u5728',
+          message: '\u8be5\u6210\u5458\u5df2\u88ab\u9009\u62e9',
         });
         return;
       }
@@ -246,11 +246,13 @@ export const MemberPreview = ({
         size={16}
       />
       <div className={styles.memberName}>
-        {userInfo.removed ? 'Deleted user' : userInfo.name || 'Unnamed'}
+        {userInfo.removed
+          ? '\u5df2\u5220\u9664\u7528\u6237'
+          : userInfo.name || '\u672a\u547d\u540d'}
       </div>
       {onDelete && (
         <div className={styles.memberDeleteIcon} onClick={onDelete}>
-          ✕
+          {'\u00d7'}
         </div>
       )}
     </div>
@@ -333,7 +335,9 @@ export const MultiMemberSelect: React.FC<MemberManagerOptions> = props => {
         <input
           ref={inputRef}
           className={styles.memberSearchInput}
-          placeholder={selectedMembers.length > 0 ? '' : 'Search members...'}
+          placeholder={
+            selectedMembers.length > 0 ? '' : '\u641c\u7d22\u6210\u5458...'
+          }
           value={memberManager.userListService.searchText$.value}
           onChange={handleInputChange}
         />
@@ -342,10 +346,12 @@ export const MultiMemberSelect: React.FC<MemberManagerOptions> = props => {
         {isLoading ? (
           <div className={styles.loadingContainer}>
             <Spinner />
-            Loading...
+            \u52a0\u8f7d\u4e2d...
           </div>
         ) : filteredMemberList.length === 0 ? (
-          <div className={styles.noResultContainer}>No results</div>
+          <div className={styles.noResultContainer}>
+            \u65e0\u5339\u914d\u7ed3\u679c
+          </div>
         ) : (
           filteredMemberList.map(member => (
             <MemberListItem

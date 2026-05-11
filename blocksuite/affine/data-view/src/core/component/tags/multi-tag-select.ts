@@ -225,7 +225,7 @@ export class MultiTagSelect extends SignalWatcher(
             },
           }),
           menu.action({
-            name: 'Delete',
+            name: '删除',
             prefix: DeleteIcon(),
             class: {
               'delete-item': true,
@@ -235,7 +235,7 @@ export class MultiTagSelect extends SignalWatcher(
             },
           }),
           menu.group({
-            name: 'color',
+            name: '颜色',
             items: selectOptionColors.map(item => {
               const styles = styleMap({
                 backgroundColor: item.color,

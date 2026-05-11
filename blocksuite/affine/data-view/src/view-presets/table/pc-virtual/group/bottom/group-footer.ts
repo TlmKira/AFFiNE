@@ -86,9 +86,7 @@ export class TableGroupFooter extends WithDisposable(ShadowlessElement) {
                 data-test-id="affine-database-add-row-button"
                 role="button"
               >
-                ${PlusIcon()}<span class="${styles.addRowText}"
-                  >New Record</span
-                >
+                ${PlusIcon()}<span class="${styles.addRowText}">新建记录</span>
               </div>
             </div>
           `}

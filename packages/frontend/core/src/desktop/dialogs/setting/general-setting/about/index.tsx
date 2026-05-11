@@ -5,6 +5,7 @@ import {
   SettingWrapper,
 } from '@affine/component/setting-components';
 import { useAppUpdater } from '@affine/core/components/hooks/use-app-updater';
+import { PRIVATE_SERVICE_URLS } from '@affine/core/modules/brand/constant';
 import { UrlService } from '@affine/core/modules/url';
 import { appIconMap, appNames } from '@affine/core/utils/channel';
 import { useI18n } from '@affine/i18n';
@@ -115,64 +116,78 @@ export const AboutAffine = () => {
           />
         </SettingRow>
       </SettingWrapper>
-      <SettingWrapper title={t['com.affine.aboutAFFiNE.contact.title']()}>
-        <a
-          className={styles.link}
-          rel="noreferrer"
-          href="https://affine.pro"
-          target="_blank"
-        >
-          {t['com.affine.aboutAFFiNE.contact.website']()}
-          <OpenInNewIcon className="icon" />
-        </a>
-        <a
-          className={styles.link}
-          rel="noreferrer"
-          href="https://affine.pro/redirect/discord"
-          target="_blank"
-        >
-          {t['com.affine.aboutAFFiNE.contact.community']()}
-          <OpenInNewIcon className="icon" />
-        </a>
-      </SettingWrapper>
-      <SettingWrapper title={t['com.affine.aboutAFFiNE.community.title']()}>
-        <div className={styles.communityWrapper}>
-          {relatedLinks.map(({ icon, title, link }) => {
-            return (
-              <div
-                className={styles.communityItem}
-                onClick={() => {
-                  urlService.openPopupWindow(link);
-                }}
-                key={title}
-              >
-                {icon}
-                <p>{title}</p>
-              </div>
-            );
-          })}
-        </div>
-      </SettingWrapper>
-      <SettingWrapper title={t['com.affine.aboutAFFiNE.legal.title']()}>
-        <a
-          className={styles.link}
-          rel="noreferrer"
-          href="https://affine.pro/privacy"
-          target="_blank"
-        >
-          {t['com.affine.aboutAFFiNE.legal.privacy']()}
-          <OpenInNewIcon className="icon" />
-        </a>
-        <a
-          className={styles.link}
-          rel="noreferrer"
-          href="https://affine.pro/terms"
-          target="_blank"
-        >
-          {t['com.affine.aboutAFFiNE.legal.tos']()}
-          <OpenInNewIcon className="icon" />
-        </a>
-      </SettingWrapper>
+      {PRIVATE_SERVICE_URLS.website || PRIVATE_SERVICE_URLS.community ? (
+        <SettingWrapper title={t['com.affine.aboutAFFiNE.contact.title']()}>
+          {PRIVATE_SERVICE_URLS.website ? (
+            <a
+              className={styles.link}
+              rel="noreferrer"
+              href={PRIVATE_SERVICE_URLS.website}
+              target="_blank"
+            >
+              {t['com.affine.aboutAFFiNE.contact.website']()}
+              <OpenInNewIcon className="icon" />
+            </a>
+          ) : null}
+          {PRIVATE_SERVICE_URLS.community ? (
+            <a
+              className={styles.link}
+              rel="noreferrer"
+              href={PRIVATE_SERVICE_URLS.community}
+              target="_blank"
+            >
+              {t['com.affine.aboutAFFiNE.contact.community']()}
+              <OpenInNewIcon className="icon" />
+            </a>
+          ) : null}
+        </SettingWrapper>
+      ) : null}
+      {relatedLinks.length ? (
+        <SettingWrapper title={t['com.affine.aboutAFFiNE.community.title']()}>
+          <div className={styles.communityWrapper}>
+            {relatedLinks.map(({ icon, title, link }) => {
+              return (
+                <div
+                  className={styles.communityItem}
+                  onClick={() => {
+                    urlService.openPopupWindow(link);
+                  }}
+                  key={title}
+                >
+                  {icon}
+                  <p>{title}</p>
+                </div>
+              );
+            })}
+          </div>
+        </SettingWrapper>
+      ) : null}
+      {PRIVATE_SERVICE_URLS.privacy || PRIVATE_SERVICE_URLS.terms ? (
+        <SettingWrapper title={t['com.affine.aboutAFFiNE.legal.title']()}>
+          {PRIVATE_SERVICE_URLS.privacy ? (
+            <a
+              className={styles.link}
+              rel="noreferrer"
+              href={PRIVATE_SERVICE_URLS.privacy}
+              target="_blank"
+            >
+              {t['com.affine.aboutAFFiNE.legal.privacy']()}
+              <OpenInNewIcon className="icon" />
+            </a>
+          ) : null}
+          {PRIVATE_SERVICE_URLS.terms ? (
+            <a
+              className={styles.link}
+              rel="noreferrer"
+              href={PRIVATE_SERVICE_URLS.terms}
+              target="_blank"
+            >
+              {t['com.affine.aboutAFFiNE.legal.tos']()}
+              <OpenInNewIcon className="icon" />
+            </a>
+          ) : null}
+        </SettingWrapper>
+      ) : null}
     </>
   );
 };

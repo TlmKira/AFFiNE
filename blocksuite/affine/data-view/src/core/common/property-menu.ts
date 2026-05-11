@@ -22,7 +22,7 @@ export const typeConfig = (property: Property) => {
   return menu.group({
     items: [
       menu.subMenu({
-        name: 'Type',
+        name: '类型',
         hide: () => !property.typeCanSet,
         postfix: html` <div
           class="affine-database-column-type-icon"

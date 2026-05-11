@@ -140,7 +140,7 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
   renderToolCall() {
     return html`
       <tool-call-card
-        .name=${`Editing: ${this.data.args.instructions}`}
+        .name=${`\u6b63\u5728\u7f16\u8f91\uff1a${this.data.args.instructions}`}
         .icon=${PageIcon()}
       ></tool-call-card>
     `;
@@ -158,7 +158,7 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
           <div class="section-edit-header">
             <div class="section-edit-title">
               ${PageIcon()}
-              <span>Edited Content</span>
+              <span>已编辑内容</span>
             </div>
             <div class="section-edit-actions">
               <div
@@ -166,12 +166,14 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
                 @click=${async () => {
                   const success = await copyText(result.content);
                   if (success) {
-                    this.notifySuccess('Copied to clipboard');
+                    this.notifySuccess(
+                      '\u5df2\u590d\u5236\u5230\u526a\u8d34\u677f'
+                    );
                   }
                 }}
               >
                 ${CopyIcon()}
-                <affine-tooltip>Copy</affine-tooltip>
+                <affine-tooltip>复制</affine-tooltip>
               </div>
               ${this.independentMode
                 ? nothing
@@ -181,7 +183,8 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
                       if (!this.host) return;
                       if (this.host.std.store.readonly$.value) {
                         this.notificationService.notify({
-                          title: 'Cannot insert in read-only mode',
+                          title:
+                            '\u53ea\u8bfb\u6a21\u5f0f\u4e0b\u65e0\u6cd5\u63d2\u5165',
                           accent: 'error',
                           onClose: () => {},
                         });
@@ -203,7 +206,7 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
                     }}
                   >
                     ${InsertBleowIcon()}
-                    <affine-tooltip>Insert below</affine-tooltip>
+                    <affine-tooltip>向下插入</affine-tooltip>
                   </div>`}
               ${this.independentMode
                 ? nothing
@@ -215,7 +218,7 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
                     }}
                   >
                     ${LinkedPageIcon()}
-                    <affine-tooltip>Create new doc</affine-tooltip>
+                    <affine-tooltip>创建新文档</affine-tooltip>
                   </div>`}
             </div>
           </div>
@@ -232,7 +235,7 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
 
     return html`
       <tool-call-failed
-        .name=${'Section edit failed'}
+        .name=${'\u7247\u6bb5\u7f16\u8f91\u5931\u8d25'}
         .icon=${PageIcon()}
       ></tool-call-failed>
     `;

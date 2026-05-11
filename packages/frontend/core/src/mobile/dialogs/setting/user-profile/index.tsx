@@ -1,4 +1,5 @@
 import { Avatar } from '@affine/component';
+import { useI18n } from '@affine/i18n';
 import { useSignOut } from '@affine/core/components/hooks/affine/use-sign-out';
 import { AuthService } from '@affine/core/modules/cloud';
 import { GlobalDialogService } from '@affine/core/modules/dialogs';
@@ -75,13 +76,14 @@ const AuthorizedUserProfile = () => {
 
 const UnauthorizedUserProfile = () => {
   const globalDialogService = useService(GlobalDialogService);
+  const t = useI18n();
 
   return (
     <BaseLayout
       onClick={() => globalDialogService.open('sign-in', {})}
       avatar={<Avatar size={48} rounded={4} />}
-      title="Sign up / Sign in"
-      caption="Sync with AFFiNE Cloud"
+      title={t['com.affine.settings.sign']()}
+      caption={t['com.affine.setting.sign.message']()}
     />
   );
 };

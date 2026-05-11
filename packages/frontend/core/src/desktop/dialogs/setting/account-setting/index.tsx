@@ -11,6 +11,7 @@ import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hoo
 import { useCatchEventCallback } from '@affine/core/components/hooks/use-catch-event-hook';
 import { Upload } from '@affine/core/components/pure/file-upload';
 import { GlobalDialogService } from '@affine/core/modules/dialogs';
+import { SHOW_PRICING_PLANS } from '@affine/core/modules/dialogs/constant';
 import { SubscriptionPlan } from '@affine/graphql';
 import { useI18n } from '@affine/i18n';
 import { track } from '@affine/track';
@@ -154,8 +155,8 @@ const StoragePanel = ({
       plan: SubscriptionPlan.Pro,
     });
     onChangeSettingState?.({
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
+      activeTab: SHOW_PRICING_PLANS ? 'plans' : 'account',
+      scrollAnchor: SHOW_PRICING_PLANS ? 'cloudPricingPlan' : undefined,
     });
   }, [onChangeSettingState]);
 

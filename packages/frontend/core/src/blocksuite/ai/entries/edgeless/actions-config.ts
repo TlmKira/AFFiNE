@@ -109,10 +109,10 @@ export const imageProcessingSubItem = imageProcessingTypes.map(type => {
 });
 
 const othersGroup: AIItemGroupConfig = {
-  name: 'others',
+  name: '\u5176\u4ed6',
   items: [
     {
-      name: 'Continue in AI Chat',
+      name: '\u5728 AI \u5bf9\u8bdd\u4e2d\u7ee7\u7eed',
       testId: 'action-continue-with-ai',
       icon: CommentIcon({ width: '20px', height: '20px' }),
       showWhen: () => true,
@@ -137,24 +137,24 @@ const othersGroup: AIItemGroupConfig = {
 };
 
 const editTextGroup: AIItemGroupConfig = {
-  name: 'edit text',
+  name: '\u7f16\u8f91\u6587\u672c',
   items: [
     {
-      name: 'Translate to',
+      name: '\u7ffb\u8bd1\u4e3a',
       testId: 'action-translate',
       icon: LanguageIcon(),
       showWhen: noteBlockOrTextShowWhen,
       subItem: translateSubItem,
     },
     {
-      name: 'Change tone to',
+      name: '\u8bed\u6c14\u8c03\u6574\u4e3a',
       testId: 'action-change-tone',
       icon: ToneIcon(),
       showWhen: noteBlockOrTextShowWhen,
       subItem: toneSubItem,
     },
     {
-      name: 'Improve writing',
+      name: '\u4f18\u5316\u5199\u4f5c',
       testId: 'action-improve-writing',
       icon: ImproveWritingIcon(),
       showWhen: noteBlockOrTextShowWhen,
@@ -162,21 +162,21 @@ const editTextGroup: AIItemGroupConfig = {
     },
 
     {
-      name: 'Make it longer',
+      name: '\u6269\u5199\u5185\u5bb9',
       testId: 'action-make-it-longer',
       icon: LongerIcon(),
       showWhen: noteBlockOrTextShowWhen,
       handler: actionToHandler('makeLonger', AIStarIconWithAnimation),
     },
     {
-      name: 'Make it shorter',
+      name: '\u7cbe\u7b80\u5185\u5bb9',
       testId: 'action-make-it-shorter',
       icon: ShorterIcon(),
       showWhen: noteBlockOrTextShowWhen,
       handler: actionToHandler('makeShorter', AIStarIconWithAnimation),
     },
     {
-      name: 'Continue writing',
+      name: '\u7ee7\u7eed\u5199\u4f5c',
       testId: 'action-continue-writing',
       icon: PenIcon(),
       showWhen: noteBlockOrTextShowWhen,
@@ -186,38 +186,38 @@ const editTextGroup: AIItemGroupConfig = {
 };
 
 const draftFromTextGroup: AIItemGroupConfig = {
-  name: 'draft from text',
+  name: '\u57fa\u4e8e\u6587\u672c\u5199\u4f5c',
   items: [
     {
-      name: 'Write an article about this',
+      name: '\u56f4\u7ed5\u6b64\u5185\u5bb9\u5199\u6587\u7ae0',
       testId: 'action-write-article',
       icon: PenIcon(),
       showWhen: noteBlockOrTextShowWhen,
       handler: actionToHandler('writeArticle', AIPenIconWithAnimation),
     },
     {
-      name: 'Write a tweet about this',
+      name: '\u56f4\u7ed5\u6b64\u5185\u5bb9\u5199\u77ed\u5e16',
       testId: 'action-write-twitter-post',
       icon: PenIcon(),
       showWhen: noteBlockOrTextShowWhen,
       handler: actionToHandler('writeTwitterPost', AIPenIconWithAnimation),
     },
     {
-      name: 'Write a poem about this',
+      name: '\u56f4\u7ed5\u6b64\u5185\u5bb9\u5199\u8bd7',
       testId: 'action-write-poem',
       icon: PenIcon(),
       showWhen: noteBlockOrTextShowWhen,
       handler: actionToHandler('writePoem', AIPenIconWithAnimation),
     },
     {
-      name: 'Write a blog post about this',
+      name: '\u56f4\u7ed5\u6b64\u5185\u5bb9\u5199\u535a\u5ba2',
       testId: 'action-write-blog-post',
       icon: PenIcon(),
       showWhen: noteBlockOrTextShowWhen,
       handler: actionToHandler('writeBlogPost', AIPenIconWithAnimation),
     },
     {
-      name: 'Brainstorm ideas about this',
+      name: '\u56f4\u7ed5\u6b64\u5185\u5bb9\u5934\u8111\u98ce\u66b4',
       testId: 'action-brainstorm',
       icon: PenIcon(),
       showWhen: noteBlockOrTextShowWhen,
@@ -227,10 +227,10 @@ const draftFromTextGroup: AIItemGroupConfig = {
 };
 
 const reviewImageGroup: AIItemGroupConfig = {
-  name: 'review image',
+  name: '\u56fe\u50cf\u7406\u89e3',
   items: [
     {
-      name: 'Explain this image',
+      name: '\u89e3\u91ca\u8fd9\u5f20\u56fe\u7247',
       icon: PenIcon(),
       testId: 'action-explain-image',
       showWhen: imageOnlyShowWhen,
@@ -245,17 +245,17 @@ const reviewImageGroup: AIItemGroupConfig = {
 };
 
 const reviewCodeGroup: AIItemGroupConfig = {
-  name: 'review code',
+  name: '\u4ee3\u7801\u5ba1\u9605',
   items: [
     {
-      name: 'Explain this code',
+      name: '\u89e3\u91ca\u8fd9\u6bb5\u4ee3\u7801',
       icon: ExplainIcon(),
       testId: 'action-explain-code',
       showWhen: noteWithCodeBlockShowWen,
       handler: actionToHandler('explainCode', AIStarIconWithAnimation),
     },
     {
-      name: 'Check code error',
+      name: '\u68c0\u67e5\u4ee3\u7801\u9519\u8bef',
       icon: ExplainIcon(),
       testId: 'action-check-code-error',
       showWhen: noteWithCodeBlockShowWen,
@@ -265,17 +265,17 @@ const reviewCodeGroup: AIItemGroupConfig = {
 };
 
 const reviewTextGroup: AIItemGroupConfig = {
-  name: 'review text',
+  name: '\u6587\u672c\u6821\u5bf9',
   items: [
     {
-      name: 'Fix spelling',
+      name: '\u4fee\u6b63\u62fc\u5199',
       icon: PenIcon(),
       testId: 'action-fix-spelling',
       showWhen: noteBlockOrTextShowWhen,
       handler: actionToHandler('fixSpelling', AIStarIconWithAnimation),
     },
     {
-      name: 'Fix grammar',
+      name: '\u4fee\u6b63\u8bed\u6cd5',
       icon: PenIcon(),
       testId: 'action-fix-grammar',
       showWhen: noteBlockOrTextShowWhen,
@@ -283,7 +283,7 @@ const reviewTextGroup: AIItemGroupConfig = {
     },
 
     {
-      name: 'Explain selection',
+      name: '\u89e3\u91ca\u6240\u9009\u5185\u5bb9',
       icon: SelectionIcon({ width: '20px', height: '20px' }),
       testId: 'action-explain-selection',
       showWhen: noteBlockOrTextShowWhen,
@@ -293,17 +293,17 @@ const reviewTextGroup: AIItemGroupConfig = {
 };
 
 const generateFromTextGroup: AIItemGroupConfig = {
-  name: 'generate from text',
+  name: '\u6587\u672c\u751f\u6210',
   items: [
     {
-      name: 'Summarize',
+      name: '\u603b\u7ed3\u8981\u70b9',
       icon: PenIcon(),
       testId: 'action-summarize',
       showWhen: noteBlockOrTextShowWhen,
       handler: actionToHandler('summary', AIPenIconWithAnimation),
     },
     {
-      name: 'Generate headings',
+      name: '\u751f\u6210\u6807\u9898',
       icon: PenIcon(),
       testId: 'action-generate-headings',
       showWhen: noteBlockOrTextShowWhen,
@@ -311,14 +311,14 @@ const generateFromTextGroup: AIItemGroupConfig = {
       beta: true,
     },
     {
-      name: 'Generate outline',
+      name: '\u751f\u6210\u5927\u7eb2',
       icon: PenIcon(),
       testId: 'action-generate-outline',
       showWhen: noteBlockOrTextShowWhen,
       handler: actionToHandler('writeOutline', AIPenIconWithAnimation),
     },
     {
-      name: 'Generate an image',
+      name: '\u751f\u6210\u56fe\u7247',
       icon: ImageIcon(),
       testId: 'action-generate-image',
       showWhen: notAllAIChatBlockShowWhen,
@@ -393,7 +393,7 @@ const generateFromTextGroup: AIItemGroupConfig = {
       ),
     },
     {
-      name: 'Expand from this mind map node',
+      name: '\u4ece\u6b64\u8111\u56fe\u8282\u70b9\u6269\u5c55',
       icon: MindmapNodeIcon(),
       testId: 'action-expand-mindmap-node',
       showWhen: mindmapChildShowWhen,
@@ -419,14 +419,14 @@ const generateFromTextGroup: AIItemGroupConfig = {
       beta: true,
     },
     {
-      name: 'Brainstorm ideas with mind map',
+      name: '\u7528\u8111\u56fe\u5934\u8111\u98ce\u66b4',
       icon: MindmapIcon(),
       testId: 'action-brainstorm-mindmap',
       showWhen: noteBlockOrTextShowWhen,
       handler: actionToHandler('brainstormMindmap', AIMindMapIconWithAnimation),
     },
     {
-      name: 'Regenerate mind map',
+      name: '\u91cd\u65b0\u751f\u6210\u8111\u56fe',
       icon: MindmapIcon(),
       testId: 'action-regenerate-mindmap',
       showWhen: mindmapRootShowWhen,
@@ -439,7 +439,7 @@ const generateFromTextGroup: AIItemGroupConfig = {
       ),
     },
     {
-      name: 'Generate presentation',
+      name: '\u751f\u6210\u6f14\u793a\u6587\u7a3f',
       icon: PresentationIcon(),
       testId: 'action-generate-presentation',
       showWhen: noteBlockOrTextShowWhen,
@@ -447,7 +447,7 @@ const generateFromTextGroup: AIItemGroupConfig = {
       beta: true,
     },
     {
-      name: 'Make it real',
+      name: '\u843d\u5730\u5b9e\u73b0',
       icon: MakeItRealIcon({ width: '20px', height: '20px' }),
       testId: 'action-make-it-real',
       beta: true,
@@ -529,7 +529,7 @@ const generateFromTextGroup: AIItemGroupConfig = {
       ),
     },
     {
-      name: 'AI image filter',
+      name: 'AI \u56fe\u50cf\u6ee4\u955c',
       icon: PenIcon(),
       testId: 'action-ai-image-filter',
       showWhen: imageOnlyShowWhen,
@@ -538,7 +538,7 @@ const generateFromTextGroup: AIItemGroupConfig = {
       beta: true,
     },
     {
-      name: 'Image processing',
+      name: '\u56fe\u50cf\u5904\u7406',
       icon: ImageIcon(),
       testId: 'action-image-processing',
       showWhen: imageOnlyShowWhen,
@@ -547,7 +547,7 @@ const generateFromTextGroup: AIItemGroupConfig = {
       beta: true,
     },
     {
-      name: 'Generate a caption',
+      name: '\u751f\u6210\u56fe\u7247\u8bf4\u660e',
       icon: PenIcon(),
       testId: 'action-generate-caption',
       showWhen: imageOnlyShowWhen,
@@ -560,7 +560,7 @@ const generateFromTextGroup: AIItemGroupConfig = {
       ),
     },
     {
-      name: 'Find actions',
+      name: '\u63d0\u53d6\u884c\u52a8\u9879',
       icon: SearchIcon(),
       testId: 'action-find-actions',
       showWhen: noteBlockOrTextShowWhen,
