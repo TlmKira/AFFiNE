@@ -14,6 +14,7 @@ export * from './embed-figma-block';
 export * from './embed-github-block';
 export * from './embed-html-block';
 export * from './embed-iframe-block';
+export * from './jupyter-notebook-block';
 export * from './embed-loom-block';
 export * from './embed-youtube-block';
 export * from './types';

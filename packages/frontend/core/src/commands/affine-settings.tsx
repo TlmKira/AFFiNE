@@ -83,6 +83,26 @@ export function registerAffineSettingsCommands({
     })
   );
 
+  unsubs.push(
+    registerAffineCommand({
+      id: 'affine:change-color-mode-to-research',
+      label: `${t['com.affine.cmdk.affine.color-mode.to']()} ${t.t(
+        'com.affine.themeSettings.research'
+      )}`,
+      category: 'affine:settings',
+      icon: <SettingsIcon />,
+      preconditionStrategy: () => theme.theme !== 'research',
+      run() {
+        track.$.cmdk.settings.changeAppSetting({
+          key: 'theme',
+          value: 'research',
+        });
+
+        theme.setTheme('research');
+      },
+    })
+  );
+
   // Font styles
   unsubs.push(
     registerAffineCommand({

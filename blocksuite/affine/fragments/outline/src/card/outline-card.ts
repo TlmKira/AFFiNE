@@ -75,13 +75,13 @@ export class OutlineNoteCard extends SignalWatcher(
   private _getCurrentModeLabel(mode: NoteDisplayMode) {
     switch (mode) {
       case NoteDisplayMode.DocAndEdgeless:
-        return 'Both';
+        return '两者';
       case NoteDisplayMode.EdgelessOnly:
-        return 'Edgeless';
+        return '白板';
       case NoteDisplayMode.DocOnly:
-        return 'Page';
+        return '页面';
       default:
-        return 'Both';
+        return '两者';
     }
   }
 
@@ -200,9 +200,9 @@ export class OutlineNoteCard extends SignalWatcher(
           }
           <span class=${styles.divider}></span>
           <div class=${styles.displayModeButtonGroup}>
-            <span>Show in</span>
+            <span>显示于</span>
             <edgeless-tool-icon-button
-              .tooltip=${this._showPopper$.value ? '' : 'Display Mode'}
+              .tooltip=${this._showPopper$.value ? '' : '显示模式'}
               .tipPosition=${'left-start'}
               .iconContainerPadding=${0}
               data-testid="display-mode-button"

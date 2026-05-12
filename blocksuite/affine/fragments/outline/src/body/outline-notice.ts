@@ -50,7 +50,7 @@ export class OutlineNotice extends SignalWatcher(
     return html`
       <div data-testid=${AFFINE_OUTLINE_NOTICE} class=${styles.outlineNotice}>
         <div class=${styles.outlineNoticeHeader}>
-          <span class=${styles.outlineNoticeLabel}>SOME CONTENTS HIDDEN</span>
+          <span class=${styles.outlineNoticeLabel}>部分内容已隐藏</span>
           <span
             data-testid="outline-notice-close-button"
             class=${styles.outlineNoticeCloseButton}
@@ -61,9 +61,7 @@ export class OutlineNotice extends SignalWatcher(
           >
         </div>
         <div class=${styles.outlineNoticeBody}>
-          <div class="${styles.notice}">
-            Some contents are not visible on edgeless.
-          </div>
+          <div class="${styles.notice}">部分内容在白板中不可见。</div>
           <div
             data-testid="outline-notice-sort-button"
             class="${styles.button}"
@@ -72,11 +70,11 @@ export class OutlineNotice extends SignalWatcher(
               this._visible$.value = false;
             }}
           >
-            <span class=${styles.buttonSpan}>Click here or</span>
+            <span class=${styles.buttonSpan}>点击这里或</span>
             <span class=${styles.buttonSpan}
               >${SortIcon({ width: '20px', height: '20px' })}</span
             >
-            <span class=${styles.buttonSpan}>to organize content.</span>
+            <span class=${styles.buttonSpan}>来整理内容。</span>
           </div>
         </div>
       </div>

@@ -24,6 +24,7 @@ import {
   EmbedIframeViewExtensions,
 } from './embed-iframe-block';
 import { EmbedIframeInteraction } from './embed-iframe-block/embed-edgeless-iframe-block';
+import { JupyterNotebookViewExtensions } from './jupyter-notebook-block';
 import {
   EdgelessClipboardEmbedLoomConfig,
   EmbedLoomViewExtensions,
@@ -51,6 +52,7 @@ export class EmbedViewExtension extends ViewExtensionProvider {
     context.register(EmbedYoutubeViewExtensions);
     context.register(EmbedHtmlViewExtensions);
     context.register(EmbedIframeViewExtensions);
+    context.register(JupyterNotebookViewExtensions);
     const isEdgeless = this.isEdgeless(context.scope);
     if (isEdgeless) {
       context.register([

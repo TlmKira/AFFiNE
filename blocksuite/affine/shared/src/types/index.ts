@@ -13,6 +13,7 @@ export type NoteChildrenFlavour =
   | 'affine:image'
   | 'affine:bookmark'
   | 'affine:attachment'
+  | 'affine:jupyter-notebook'
   | 'affine:surface-ref';
 
 export interface Viewport {

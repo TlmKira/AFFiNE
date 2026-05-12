@@ -1,9 +1,6 @@
 import { addSiblingAttachmentBlocks } from '@blocksuite/affine-block-attachment';
 import { insertDatabaseBlockCommand } from '@blocksuite/affine-block-database';
-import {
-  createJupyterLiteBlockProps,
-  insertEmptyEmbedIframeCommand,
-} from '@blocksuite/affine-block-embed';
+import { insertEmptyEmbedIframeCommand } from '@blocksuite/affine-block-embed';
 import { insertImagesCommand } from '@blocksuite/affine-block-image';
 import { insertLatexBlockCommand } from '@blocksuite/affine-block-latex';
 import {
@@ -604,7 +601,7 @@ const embedToolGroup: KeyboardToolPanelGroup = {
       name: 'Jupyter Notebook',
       icon: EmbedIcon({ style: `color: black` }),
       showWhen: ({ std }) =>
-        std.store.schema.flavourSchemaMap.has('affine:embed-iframe'),
+        std.store.schema.flavourSchemaMap.has('affine:jupyter-notebook'),
       action: ({ std }) => {
         const [_, { selectedModels }] = std.command.exec(
           getSelectedModelsCommand
@@ -616,8 +613,7 @@ const embedToolGroup: KeyboardToolPanelGroup = {
           model,
           [
             {
-              flavour: 'affine:embed-iframe',
-              ...createJupyterLiteBlockProps(),
+              flavour: 'affine:jupyter-notebook',
             },
           ],
           'after'

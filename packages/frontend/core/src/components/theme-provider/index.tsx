@@ -4,7 +4,12 @@ import { ThemeProvider as NextThemeProvider, useTheme } from 'next-themes';
 import type { PropsWithChildren } from 'react';
 import { useEffect } from 'react';
 
-const themes = ['dark', 'light'];
+import {
+  applyDynamicBackgroundPreference,
+  DYNAMIC_BACKGROUND_CHANGE_EVENT,
+} from './dynamic-background';
+
+const themes = ['dark', 'light', 'research'];
 
 function ThemeObserver() {
   const { resolvedTheme } = useTheme();
@@ -17,11 +22,29 @@ function ThemeObserver() {
   return null;
 }
 
+function DynamicBackgroundObserver() {
+  useEffect(() => {
+    applyDynamicBackgroundPreference();
+
+    const update = () => applyDynamicBackgroundPreference();
+    window.addEventListener(DYNAMIC_BACKGROUND_CHANGE_EVENT, update);
+    window.addEventListener('storage', update);
+
+    return () => {
+      window.removeEventListener(DYNAMIC_BACKGROUND_CHANGE_EVENT, update);
+      window.removeEventListener('storage', update);
+    };
+  }, []);
+
+  return null;
+}
+
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   return (
     <NextThemeProvider themes={themes} enableSystem={true}>
       {children}
       <ThemeObserver />
+      <DynamicBackgroundObserver />
     </NextThemeProvider>
   );
 };

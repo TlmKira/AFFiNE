@@ -6,13 +6,17 @@ import {
   SettingWrapper,
 } from '@affine/component/setting-components';
 import { LanguageMenu } from '@affine/core/components/affine/language-menu';
+import {
+  getDynamicBackgroundPreference,
+  setDynamicBackgroundPreference,
+} from '@affine/core/components/theme-provider/dynamic-background';
 import { SHOW_OPEN_IN_APP } from '@affine/core/modules/brand/constant';
 import { TraySettingService } from '@affine/core/modules/editor-setting/services/tray-settings';
 import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
 import { useTheme } from 'next-themes';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useAppSettingHelper } from '../../../../../components/hooks/affine/use-app-setting-helper';
 import { OpenInAppLinksMenu } from './links';
@@ -35,6 +39,11 @@ export const getThemeOptions = (t: ReturnType<typeof useI18n>) =>
       value: 'dark',
       label: t['com.affine.themeSettings.dark'](),
       testId: 'dark-theme-trigger',
+    },
+    {
+      value: 'research',
+      label: t.t('com.affine.themeSettings.research'),
+      testId: 'research-theme-trigger',
     },
   ] satisfies RadioItem[];
 
@@ -160,6 +169,9 @@ export const AppearanceSettings = () => {
     featureFlagService.flags.enable_theme_editor.$
   );
   const { appSettings, updateSettings } = useAppSettingHelper();
+  const [dynamicBackground, setDynamicBackground] = useState(() =>
+    getDynamicBackgroundPreference()
+  );
 
   return (
     <>
@@ -196,6 +208,20 @@ export const AppearanceSettings = () => {
           </SettingRow>
         ) : null}
         {enableThemeEditor ? <ThemeEditorSetting /> : null}
+        <SettingRow
+          name={t.t('com.affine.appearanceSettings.dynamicBackground.title')}
+          desc={t.t(
+            'com.affine.appearanceSettings.dynamicBackground.description'
+          )}
+        >
+          <Switch
+            checked={dynamicBackground}
+            onChange={checked => {
+              setDynamicBackground(checked);
+              setDynamicBackgroundPreference(checked);
+            }}
+          />
+        </SettingRow>
       </SettingWrapper>
 
       <SettingWrapper title={t['com.affine.appearanceSettings.images.title']()}>

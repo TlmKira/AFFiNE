@@ -399,7 +399,7 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
       </style>
       <edgeless-tool-icon-button
         .iconContainerPadding=${0}
-        .tooltip=${'Previous'}
+        .tooltip=${'上一个'}
         .iconSize=${'24px'}
         @click=${() => this._previousFrame()}
       >
@@ -414,7 +414,7 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
               class="edgeless-frame-navigator-title"
               @click=${() => this._moveToCurrentFrame()}
             >
-              ${frame?.props.title ?? 'no frame'}
+              ${frame?.props.title ?? '暂无画框'}
             </span>`}
 
         <span class="edgeless-frame-navigator-count">
@@ -423,7 +423,7 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
       </div>
 
       <edgeless-tool-icon-button
-        .tooltip=${'Next'}
+        .tooltip=${'下一个'}
         @click=${() => this._nextFrame()}
         .iconContainerPadding=${0}
         .iconSize=${'24px'}
@@ -435,9 +435,7 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
 
       <div class="config-buttons">
         <edgeless-tool-icon-button
-          .tooltip=${document.fullscreenElement
-            ? 'Exit Full Screen'
-            : 'Enter Full Screen'}
+          .tooltip=${document.fullscreenElement ? '退出全屏' : '进入全屏'}
           @click=${() => this._toggleFullScreen()}
           .iconContainerPadding=${0}
           .iconContainerWidth=${'24px'}

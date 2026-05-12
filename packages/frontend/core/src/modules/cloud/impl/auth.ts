@@ -79,6 +79,25 @@ export function configureDefaultAuthProvider(framework: Framework) {
           },
         });
       },
+      async sendPhoneCode(phone: string) {
+        const res = await fetchService.fetch('/api/auth/phone/code', {
+          method: 'POST',
+          body: JSON.stringify({ phone }),
+          headers: {
+            'content-type': 'application/json',
+          },
+        });
+        return (await res.json()) as { phone: string; code?: string };
+      },
+      async signInPhone(credential: { phone: string; code: string }) {
+        await fetchService.fetch('/api/auth/phone/sign-in', {
+          method: 'POST',
+          body: JSON.stringify(credential),
+          headers: {
+            'content-type': 'application/json',
+          },
+        });
+      },
       async signOut() {
         const csrfToken = getCookieValue(CSRF_COOKIE_NAME);
         await fetchService.fetch('/api/auth/sign-out', {

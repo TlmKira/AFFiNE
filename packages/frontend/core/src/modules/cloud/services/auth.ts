@@ -216,6 +216,25 @@ export class AuthService extends Service {
     }
   }
 
+  async sendPhoneCode(phone: string) {
+    track.$.$.auth.signIn({ method: 'otp' });
+    return await this.store.sendPhoneCode(phone);
+  }
+
+  async signInPhone(phone: string, code: string) {
+    try {
+      await this.store.signInPhone({ phone, code });
+      this.session.revalidate();
+      track.$.$.auth.signedIn({ method: 'otp' });
+    } catch (e) {
+      track.$.$.auth.signInFail({
+        method: 'otp',
+        reason: UserFriendlyError.fromAny(e).name,
+      });
+      throw e;
+    }
+  }
+
   async signOut() {
     await this.store.signOut();
     this.store.setCachedAuthSession(null);

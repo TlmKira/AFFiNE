@@ -128,6 +128,13 @@ export const SignInStep = ({
     }));
   }, [changeState]);
 
+  const onPhoneSignIn = useCallback(() => {
+    changeState(prev => ({
+      ...prev,
+      step: 'signInWithPhone',
+    }));
+  }, [changeState]);
+
   if (versionError && isSelfhosted) {
     return (
       <AuthContainer>
@@ -176,6 +183,14 @@ export const SignInStep = ({
           onClick={onContinue}
         >
           {t['com.affine.auth.sign.email.continue']()}
+        </Button>
+
+        <Button
+          variant="plain"
+          onClick={onPhoneSignIn}
+          style={{ padding: '4px' }}
+        >
+          使用手机号登录
         </Button>
 
         {!isSelfhosted && (

@@ -21,6 +21,10 @@ export interface AuthProvider {
     challenge?: string;
   }): Promise<void>;
 
+  sendPhoneCode(phone: string): Promise<{ phone: string; code?: string }>;
+
+  signInPhone(credential: { phone: string; code: string }): Promise<void>;
+
   signOut(): Promise<void>;
 }
 

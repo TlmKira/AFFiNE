@@ -35,6 +35,7 @@ import {
   LocalWorkspaceIcon,
   OpenInNewIcon,
   PageIcon,
+  CodeIcon,
   ShareIcon,
   SplitViewIcon,
   TocIcon,
@@ -50,6 +51,15 @@ import { HeaderDropDownButton } from '../../../components/pure/header-drop-down-
 import { useFavorite } from '../favorite';
 import { HistoryTipsModal } from './history-tips-modal';
 import { shareMenu } from './style.css';
+
+type JupyterNotebookElement = HTMLElement & {
+  model?: {
+    store?: {
+      id?: string;
+    };
+  };
+  runAllCodeCells?: () => Promise<number>;
+};
 
 type PageMenuProps = {
   rename?: () => void;
@@ -295,6 +305,36 @@ const PageHeaderMenuItem = ({
     toggleFavorite();
   }, [toggleFavorite]);
 
+  const handleRunAllNotebookCells = useCallback(async () => {
+    const notebookBlocks = Array.from(
+      document.querySelectorAll<JupyterNotebookElement>(
+        'affine-jupyter-notebook-block'
+      )
+    ).filter(
+      block =>
+        block.model?.store?.id === pageId &&
+        typeof block.runAllCodeCells === 'function'
+    );
+
+    if (!notebookBlocks.length) {
+      toast('当前文档没有 Notebook 代码块');
+      return;
+    }
+
+    try {
+      let cellCount = 0;
+      for (const block of notebookBlocks) {
+        cellCount += await block.runAllCodeCells!();
+      }
+      toast(
+        `已运行 ${notebookBlocks.length} 个 Notebook，共 ${cellCount} 个代码块`
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      toast(`Notebook 运行失败：${message}`);
+    }
+  }, [pageId]);
+
   const showResponsiveMenu = hideShare;
   const ResponsiveMenuItems = (
     <>
@@ -372,6 +412,14 @@ const PageHeaderMenuItem = ({
         {favorite
           ? t['com.affine.favoritePageOperation.remove']()
           : t['com.affine.favoritePageOperation.add']()}
+      </MenuItem>
+      <MenuItem
+        data-testid="editor-option-menu-run-notebooks"
+        onSelect={handleRunAllNotebookCells}
+        prefixIcon={<CodeIcon />}
+        disabled={!canEdit}
+      >
+        运行此文档所有 Notebook 代码块
       </MenuItem>
       <MenuSeparator />
       <MenuItem

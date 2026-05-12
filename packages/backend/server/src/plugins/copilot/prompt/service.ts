@@ -49,7 +49,7 @@ export class PromptService {
           });
 
     this.logWarnings(rendered.warnings, sessionId);
-    return rendered.messages;
+    return this.withCustomCapabilityPrompt(rendered.messages);
   }
 
   renderSession(
@@ -81,7 +81,7 @@ export class PromptService {
           });
 
     this.logWarnings(rendered.warnings, sessionId);
-    return rendered.messages;
+    return this.withCustomCapabilityPrompt(rendered.messages);
   }
 
   protected lookupCompatPrompt(_name: string): Prompt | null {
@@ -193,6 +193,36 @@ export class PromptService {
     }
 
     throw new Error(`Prompt ${prompt.name} does not expose compat messages`);
+  }
+
+  private withCustomCapabilityPrompt(
+    messages: PromptMessage[]
+  ): PromptMessage[] {
+    const capabilityNote = [
+      '',
+      '<custom_product_capabilities>',
+      '- The product has private-deployment features: Bilibili video embeds, paper citation cards, and self-hosted Jupyter Notebook blocks.',
+      '- `/Bilibili 视频` inserts a Bilibili video embed from BV, av, or player.bilibili.com links.',
+      '- `/论文引用` creates paper citation cards from DOI, arXiv, URL, BibTeX, or manual input, and can format BibTeX, APA, GB/T 7714, and Markdown footnotes.',
+      '- `/Jupyter Notebook` inserts a lightweight Notebook block. Python code runs through the user configured self-hosted Jupyter runtime, not through the AI model.',
+      '- The AI may help write, explain, and organize Notebook code, but must not claim that it executed code unless execution results are present in the document context.',
+      '- The default Notebook image is intended for graduate research data analysis and includes scientific Python packages, but no deep learning frameworks or CUDA stack by default.',
+      '</custom_product_capabilities>',
+    ].join('\n');
+
+    const systemIndex = messages.findIndex(
+      message => message.role === 'system'
+    );
+
+    if (systemIndex === -1) {
+      return [{ role: 'system', content: capabilityNote }, ...messages];
+    }
+
+    return messages.map((message, index) =>
+      index === systemIndex
+        ? { ...message, content: `${message.content}${capabilityNote}` }
+        : message
+    );
   }
 
   private logWarnings(warnings: string[], sessionId?: string) {

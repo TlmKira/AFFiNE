@@ -119,9 +119,23 @@ export class UserModel extends BaseModel {
     filter: UserFilter = {}
   ): Promise<User | null> {
     const rows = await this.db.$queryRaw<User[]>`
-      SELECT id, name, email, password, registered, email_verified as "emailVerifiedAt", avatar_url as "avatarUrl", registered, created_at as "createdAt", disabled
+      SELECT id, name, email, phone, phone_verified_at as "phoneVerifiedAt", password, registered, email_verified as "emailVerifiedAt", avatar_url as "avatarUrl", registered, created_at as "createdAt", disabled
       FROM "users"
       WHERE lower("email") = lower(${email})
+      ${Prisma.raw(filter.withDisabled ? '' : 'AND disabled = false')}
+    `;
+
+    return rows[0] ?? null;
+  }
+
+  async getUserByPhone(
+    phone: string,
+    filter: UserFilter = {}
+  ): Promise<User | null> {
+    const rows = await this.db.$queryRaw<User[]>`
+      SELECT id, name, email, phone, phone_verified_at as "phoneVerifiedAt", password, registered, email_verified as "emailVerifiedAt", avatar_url as "avatarUrl", registered, created_at as "createdAt", disabled
+      FROM "users"
+      WHERE "phone" = ${phone}
       ${Prisma.raw(filter.withDisabled ? '' : 'AND disabled = false')}
     `;
 
@@ -167,6 +181,13 @@ export class UserModel extends BaseModel {
 
     if (user) {
       throw new EmailAlreadyUsed();
+    }
+
+    if (data.phone) {
+      user = await this.getUserByPhone(data.phone, { withDisabled: true });
+      if (user) {
+        throw new EmailAlreadyUsed('Phone number already used.');
+      }
     }
 
     if (data.password) {

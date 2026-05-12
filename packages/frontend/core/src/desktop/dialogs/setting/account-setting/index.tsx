@@ -81,9 +81,9 @@ export const AvatarAndName = () => {
   const t = useI18n();
   const session = useService(AuthService).session;
   const account = useLiveData(session.account$);
-  const [input, setInput] = useState<string>(account?.label ?? '');
+  const [input, setInput] = useState<string>(account?.displayName ?? '');
 
-  const allowUpdate = !!input && input !== account?.label;
+  const allowUpdate = !!input && input !== account?.displayName;
   const handleUpdateUserName = useAsyncCallback(async () => {
     if (account === null) {
       return;
@@ -221,13 +221,15 @@ export const AccountSetting = ({
       <SettingWrapper>
         <SettingRow
           name={t['com.affine.settings.email']()}
-          desc={account.email}
+          desc={account.displayEmail ?? account.phone ?? ''}
         >
-          <Button onClick={onChangeEmail}>
-            {account.info?.emailVerified
-              ? t['com.affine.settings.email.action.change']()
-              : t['com.affine.settings.email.action.verify']()}
-          </Button>
+          {account.displayEmail ? (
+            <Button onClick={onChangeEmail}>
+              {account.info?.emailVerified
+                ? t['com.affine.settings.email.action.change']()
+                : t['com.affine.settings.email.action.verify']()}
+            </Button>
+          ) : null}
         </SettingRow>
         <SettingRow
           name={t['com.affine.settings.password']()}

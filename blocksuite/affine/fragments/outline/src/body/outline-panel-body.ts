@@ -122,7 +122,7 @@ export class OutlinePanelBody extends SignalWatcher(
         data-testid="empty-panel-placeholder"
         class=${styles.emptyPanelPlaceholder}
       >
-        Use headings to create a table of contents.
+        使用标题创建目录。
       </div>
     </div>`;
   }

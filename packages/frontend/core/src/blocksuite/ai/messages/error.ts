@@ -187,7 +187,7 @@ export class AIErrorWrapper extends SignalWatcher(WithDisposable(LitElement)) {
   accessor testId = 'ai-error';
 }
 
-const PaymentRequiredErrorRenderer = (host?: EditorHost | null) => html`
+const PaymentRequiredErrorRenderer = (_host?: EditorHost | null) => html`
   <ai-error-wrapper
     .text=${'\u5df2\u8fbe\u5230\u5f53\u524d AI \u4f7f\u7528\u4e0a\u9650\u3002\u8bf7\u8054\u7cfb\u7ba1\u7406\u5458\u5f00\u901a\u6216\u8c03\u6574\u79c1\u6709\u670d\u52a1\u914d\u989d\u3002'}
     .actionText=${'\u77e5\u9053\u4e86'}

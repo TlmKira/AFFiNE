@@ -16,6 +16,8 @@ import type { ServerService } from '../services/server';
 export interface AccountProfile {
   id: string;
   email: string;
+  phone?: string | null;
+  phoneVerified?: boolean;
   name: string;
   hasPassword: boolean;
   avatarUrl: string | null;
@@ -98,6 +100,14 @@ export class AuthStore extends Store {
     challenge?: string;
   }) {
     await this.authProvider.signInPassword(credential);
+  }
+
+  async sendPhoneCode(phone: string) {
+    return await this.authProvider.sendPhoneCode(phone);
+  }
+
+  async signInPhone(credential: { phone: string; code: string }) {
+    await this.authProvider.signInPhone(credential);
   }
 
   async signOut() {

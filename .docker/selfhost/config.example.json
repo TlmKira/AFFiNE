@@ -1,6 +1,21 @@
 {
-  "$schema": "https://github.com/toeverything/affine/releases/latest/download/config.schema.json",
+  "$schema": "./schema.json",
   "server": {
-    "name": "AFFiNE Self Hosted Server"
+    "name": "私有知识库服务"
+  },
+  "auth": {
+    "phone": {
+      "enabled": true,
+      "mockCodeVisible": false
+    }
+  },
+  "copilot": {
+    "enabled": false,
+    "providers": {
+      "openai": {
+        "apiKey": "",
+        "baseURL": "https://api.openai.com/v1"
+      }
+    }
   }
 }

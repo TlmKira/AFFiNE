@@ -1,7 +1,7 @@
 name: affine
 services:
   affine:
-    image: ghcr.io/toeverything/affine:${AFFINE_REVISION:-stable}
+    image: ${AFFINE_IMAGE:-kite-affine:local}
     container_name: affine_server
     ports:
       - '${PORT:-3010}:3010'
@@ -10,6 +10,8 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      notebook:
+        condition: service_started
       affine_migration:
         condition: service_completed_successfully
     volumes:
@@ -22,10 +24,16 @@ services:
       - REDIS_SERVER_HOST=redis
       - DATABASE_URL=postgresql://${DB_USERNAME}:${DB_PASSWORD}@postgres:5432/${DB_DATABASE:-affine}
       - AFFINE_INDEXER_ENABLED=false
+      - AFFINE_NOTEBOOK_ENABLED=${AFFINE_NOTEBOOK_ENABLED:-true}
+      - AFFINE_NOTEBOOK_GATEWAY_URL=http://notebook:8888
+      - AFFINE_NOTEBOOK_GATEWAY_TOKEN=${NOTEBOOK_TOKEN}
+      - AFFINE_NOTEBOOK_IDLE_TIMEOUT_SECONDS=${AFFINE_NOTEBOOK_IDLE_TIMEOUT_SECONDS:-900}
+      - AFFINE_NOTEBOOK_MAX_OUTPUT_BYTES=${AFFINE_NOTEBOOK_MAX_OUTPUT_BYTES:-2000000}
+      - AFFINE_NOTEBOOK_MAX_CONCURRENT_KERNELS=${AFFINE_NOTEBOOK_MAX_CONCURRENT_KERNELS:-4}
     restart: unless-stopped
 
   affine_migration:
-    image: ghcr.io/toeverything/affine:${AFFINE_REVISION:-stable}
+    image: ${AFFINE_IMAGE:-kite-affine:local}
     container_name: affine_migration_job
     volumes:
       # custom configurations
@@ -43,6 +51,29 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+
+  notebook:
+    build:
+      context: ./notebook
+    image: ${NOTEBOOK_IMAGE:-kite-affine-notebook:local}
+    container_name: affine_notebook
+    expose:
+      - '8888'
+    volumes:
+      - ${NOTEBOOK_WORKDIR_LOCATION}:/home/jovyan/work
+    environment:
+      - JUPYTER_TOKEN=${NOTEBOOK_TOKEN}
+    command:
+      [
+        'start-notebook.py',
+        '--ServerApp.ip=0.0.0.0',
+        '--ServerApp.port=8888',
+        '--ServerApp.open_browser=False',
+        '--ServerApp.disable_check_xsrf=True',
+      ]
+    cpus: ${NOTEBOOK_CPU_LIMIT:-2}
+    mem_limit: ${NOTEBOOK_MEMORY_LIMIT:-2g}
+    restart: unless-stopped
 
   redis:
     image: redis
@@ -64,9 +95,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE:-affine}
       POSTGRES_INITDB_ARGS: '--data-checksums'
-      # you better set a password for you database
-      # or you may add 'POSTGRES_HOST_AUTH_METHOD=trust' to ignore postgres security policy
-      POSTGRES_HOST_AUTH_METHOD: trust
     healthcheck:
       test:
         ['CMD', 'pg_isready', '-U', "${DB_USERNAME}", '-d', "${DB_DATABASE:-affine}"]

@@ -5,7 +5,7 @@ import { sonner } from './styles.css';
 
 export function MobileNotificationCenter() {
   const theme = useTheme();
-  const resolvedTheme = theme.resolvedTheme as 'light' | 'dark';
+  const resolvedTheme = theme.resolvedTheme === 'dark' ? 'dark' : 'light';
 
   return (
     <Toaster

@@ -1,0 +1,76 @@
+@keyframes affine-dynamic-background-flow {
+  0% {
+    background-position:
+      0% 45%,
+      100% 55%,
+      50% 50%;
+  }
+
+  50% {
+    background-position:
+      100% 35%,
+      0% 65%,
+      50% 50%;
+  }
+
+  100% {
+    background-position:
+      20% 70%,
+      80% 30%,
+      50% 50%;
+  }
+}
+
+html[data-dynamic-background='on'] {
+  --affine-background-primary-color: rgba(255, 255, 255, 0.9);
+  --affine-background-secondary-color: rgba(246, 250, 252, 0.82);
+  --affine-background-overlay-panel-color: rgba(255, 255, 255, 0.94);
+
+  background:
+    radial-gradient(
+      circle at 18% 12%,
+      rgba(18, 143, 156, 0.14),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 82% 18%,
+      rgba(61, 126, 255, 0.12),
+      transparent 34%
+    ),
+    linear-gradient(135deg, #f7fbff 0%, #eef7f8 48%, #f8fafc 100%);
+  background-attachment: fixed;
+  background-size:
+    160% 160%,
+    180% 180%,
+    100% 100%;
+  animation: affine-dynamic-background-flow 22s ease-in-out infinite alternate;
+}
+
+html[data-theme='dark'][data-dynamic-background='on'] {
+  --affine-background-primary-color: rgba(17, 24, 39, 0.9);
+  --affine-background-secondary-color: rgba(15, 23, 42, 0.82);
+  --affine-background-overlay-panel-color: rgba(20, 27, 38, 0.94);
+
+  background:
+    radial-gradient(
+      circle at 16% 10%,
+      rgba(36, 166, 178, 0.2),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 84% 18%,
+      rgba(96, 165, 250, 0.14),
+      transparent 34%
+    ),
+    linear-gradient(135deg, #101418 0%, #111827 52%, #171717 100%);
+}
+
+html[data-dynamic-background='on'] body {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-dynamic-background='on'] {
+    animation: none;
+  }
+}

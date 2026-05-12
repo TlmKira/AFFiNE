@@ -26,6 +26,15 @@ export class UserType implements CurrentUser {
   @Field({ description: 'User email' })
   email!: string;
 
+  @Field(() => String, { description: 'User phone number', nullable: true })
+  phone?: string | null;
+
+  @Field(() => Boolean, {
+    description: 'User phone verified',
+    nullable: true,
+  })
+  phoneVerified?: boolean;
+
   @Field(() => String, { description: 'User avatar url', nullable: true })
   avatarUrl!: string | null;
 

@@ -23,8 +23,27 @@ export interface AuthAccountInfo {
   id: string;
   label: string;
   email?: string;
+  phone?: string | null;
+  displayEmail?: string;
+  displayName: string;
   info?: AccountProfile | null;
   avatar?: string | null;
+}
+
+export function isPhonePlaceholderEmail(email?: string | null) {
+  return !!email && /^phone_[a-f0-9]{24}@local\.invalid$/i.test(email);
+}
+
+export function getAccountDisplayName(account: AuthAccountInfo | null) {
+  if (!account) {
+    return '';
+  }
+  return (
+    account.displayName ||
+    account.displayEmail ||
+    account.phone ||
+    account.label
+  );
 }
 
 export interface AuthSessionUnauthenticated {
@@ -98,10 +117,18 @@ export class AuthSession extends Entity {
       const session = await this.store.fetchSession();
 
       if (session?.user) {
+        const displayEmail = isPhonePlaceholderEmail(session.user.email)
+          ? undefined
+          : session.user.email;
+        const displayName =
+          displayEmail || session.user.phone || session.user.name;
         const account = {
           id: session.user.id,
-          email: session.user.email,
-          label: session.user.name,
+          email: displayEmail,
+          phone: session.user.phone,
+          displayEmail,
+          displayName,
+          label: displayName,
           avatar: session.user.avatarUrl,
           info: session.user,
         };

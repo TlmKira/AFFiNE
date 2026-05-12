@@ -3,6 +3,7 @@ import { Avatar } from '@affine/component/ui/avatar';
 import { UserPlanButton } from '@affine/core/components/affine/auth/user-plan-button';
 import { useCatchEventCallback } from '@affine/core/components/hooks/use-catch-event-hook';
 import { AuthService } from '@affine/core/modules/cloud';
+import { getAccountDisplayName } from '@affine/core/modules/cloud/entities/session';
 import { GlobalDialogService } from '@affine/core/modules/dialogs';
 import type { SettingTab } from '@affine/core/modules/dialogs/constant';
 import { type WorkspaceMetadata } from '@affine/core/modules/workspace';
@@ -47,6 +48,7 @@ export const UserInfo = ({
     // TODO(@eyhn): loading ui
     return;
   }
+  const displayName = getAccountDisplayName(account);
   return (
     <div
       data-testid="user-info-card"
@@ -58,21 +60,24 @@ export const UserInfo = ({
       <Avatar
         size={28}
         rounded={2}
-        name={account.label}
+        name={displayName}
         url={account.avatar}
         className="avatar"
       />
 
       <div className="content">
         <div className="name-container">
-          <div className="name" title={account.label}>
-            {account.label}
+          <div className="name" title={displayName}>
+            {displayName}
           </div>
           <UserPlanButton onClick={onClick} />
         </div>
 
-        <div className="email" title={account.email}>
-          {account.email}
+        <div
+          className="email"
+          title={account.displayEmail ?? account.phone ?? ''}
+        >
+          {account.displayEmail ?? account.phone}
         </div>
       </div>
     </div>

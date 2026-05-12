@@ -132,10 +132,10 @@ export class FramesSettingMenu extends WithDisposable(LitElement) {
       }}
     >
       <div class="frames-setting-menu-item">
-        <div class="setting-label">Preview Settings</div>
+        <div class="setting-label">预览设置</div>
       </div>
       <div class="frames-setting-menu-item action">
-        <div class="action-label">Fill Screen</div>
+        <div class="action-label">填满屏幕</div>
         <div class="toggle-button">
           <toggle-switch
             .on=${this.fillScreen}
@@ -147,10 +147,10 @@ export class FramesSettingMenu extends WithDisposable(LitElement) {
       <menu-divider></menu-divider>
 
       <div class="frames-setting-menu-item">
-        <div class="setting-label">Playback Settings</div>
+        <div class="setting-label">播放设置</div>
       </div>
       <div class="frames-setting-menu-item action">
-        <div class="action-label">Dark background</div>
+        <div class="action-label">深色背景</div>
         <div class="toggle-button">
           <toggle-switch
             .on=${this.blackBackground}

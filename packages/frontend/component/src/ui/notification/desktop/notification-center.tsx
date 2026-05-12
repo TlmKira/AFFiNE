@@ -17,7 +17,7 @@ export function DesktopNotificationCenter({
   width = 380,
 }: NotificationCenterProps) {
   const theme = useTheme();
-  const resolvedTheme = theme.resolvedTheme as 'light' | 'dark';
+  const resolvedTheme = theme.resolvedTheme === 'dark' ? 'dark' : 'light';
   const style = useMemo(() => {
     return {
       ...assignInlineVars({

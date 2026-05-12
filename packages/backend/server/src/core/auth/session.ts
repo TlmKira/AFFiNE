@@ -50,8 +50,10 @@ export interface CurrentUser extends Pick<
   User,
   'id' | 'email' | 'avatarUrl' | 'name' | 'disabled'
 > {
+  phone?: string | null;
   hasPassword: boolean | null;
   emailVerified: boolean;
+  phoneVerified?: boolean;
 }
 
 // interface and variable don't conflict

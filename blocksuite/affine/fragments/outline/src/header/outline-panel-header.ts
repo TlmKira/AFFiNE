@@ -40,11 +40,11 @@ export class OutlinePanelHeader extends SignalWatcher(
 
     return html`<div class=${styles.container}>
         <div class=${styles.noteSettingContainer}>
-          <span class=${styles.label}>Table of Contents</span>
+          <span class=${styles.label}>目录</span>
           <edgeless-tool-icon-button
             data-testid="toggle-toc-setting-button"
             class="${showSettingPopper ? 'active' : ''}"
-            .tooltip=${showSettingPopper ? '' : 'Preview Settings'}
+            .tooltip=${showSettingPopper ? '' : '预览设置'}
             .tipPosition=${'bottom'}
             .active=${showSettingPopper}
             .activeMode=${'background'}
@@ -56,7 +56,7 @@ export class OutlinePanelHeader extends SignalWatcher(
         <edgeless-tool-icon-button
           data-testid="toggle-notes-sorting-button"
           class="${sortingEnabled ? 'active' : ''}"
-          .tooltip=${'Visibility and sort'}
+          .tooltip=${'显示与排序'}
           .tipPosition=${'left'}
           .iconContainerPadding=${0}
           .active=${sortingEnabled}

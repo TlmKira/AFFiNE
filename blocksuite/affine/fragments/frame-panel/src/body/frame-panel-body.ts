@@ -248,9 +248,7 @@ export class FramePanelBody extends SignalWatcher(
 
   private _renderEmptyContent() {
     const emptyContent = html` <div class="no-frame-container">
-      <div class="no-frame-placeholder">
-        Add frames to organize and present your Edgeless
-      </div>
+      <div class="no-frame-placeholder">添加画框来组织并演示白板内容</div>
     </div>`;
 
     return emptyContent;

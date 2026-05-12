@@ -242,7 +242,7 @@ export class OutlineViewer extends SignalWatcher(
     const toggleOutlinePanelButton =
       this.toggleOutlinePanel !== null
         ? html`<edgeless-tool-icon-button
-            .tooltip=${'Open in sidebar'}
+            .tooltip=${'在侧边栏中打开'}
             .tipPosition=${'top-end'}
             .activeMode=${'background'}
             @click=${this._toggleOutlinePanel}
@@ -271,7 +271,7 @@ export class OutlineViewer extends SignalWatcher(
         </div>
         <div class="outline-viewer-panel">
           <div class="outline-viewer-item outline-viewer-header">
-            <span>Table of Contents</span>
+            <span>目录</span>
             ${toggleOutlinePanelButton}
           </div>
           ${repeat(

@@ -9,6 +9,7 @@ import {
   type Server,
   ServersService,
 } from '@affine/core/modules/cloud';
+import { getAccountDisplayName } from '@affine/core/modules/cloud/entities/session';
 import { GlobalDialogService } from '@affine/core/modules/dialogs';
 import { GlobalContextService } from '@affine/core/modules/global-context';
 import {
@@ -141,7 +142,7 @@ const WorkspaceServerInfo = ({
       <div className={styles.serverName}>{name}</div>
       {isCloud ? (
         <div className={styles.serverAccount}>
-          - {account ? account.email : 'Not signed in'}
+          - {account ? getAccountDisplayName(account) : 'Not signed in'}
         </div>
       ) : null}
       <div className={styles.spaceX} />

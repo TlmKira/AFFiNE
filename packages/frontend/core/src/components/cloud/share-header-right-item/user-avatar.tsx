@@ -7,6 +7,7 @@ import { useLiveData, useService } from '@toeverything/infra';
 import { useEffect, useMemo } from 'react';
 
 import { AuthService, SubscriptionService } from '../../../modules/cloud';
+import { getAccountDisplayName } from '../../../modules/cloud/entities/session';
 import { useNavigateHelper } from '../../hooks/use-navigate-helper';
 import * as styles from './styles.css';
 
@@ -23,24 +24,28 @@ const UserInfo = () => {
     // TODO(@eyhn): loading UI
     return null;
   }
+  const displayName = getAccountDisplayName(user);
   return (
     <div className={styles.accountCard}>
       <Avatar
         size={28}
-        name={user.label}
+        name={displayName}
         url={user.avatar}
         className={styles.avatar}
       />
 
       <div className={styles.content}>
         <div className={styles.nameContainer}>
-          <div className={styles.userName} title={user.label}>
-            {user.label}
+          <div className={styles.userName} title={displayName}>
+            {displayName}
           </div>
           {plan && <div className={styles.userPlanButton}>{plan}</div>}
         </div>
-        <div className={styles.userEmail} title={user.email}>
-          {user.email}
+        <div
+          className={styles.userEmail}
+          title={user.displayEmail ?? user.phone ?? ''}
+        >
+          {user.displayEmail ?? user.phone}
         </div>
       </div>
     </div>
@@ -86,7 +91,11 @@ export const PublishPageUserAvatar = () => {
       }}
     >
       <div className={styles.iconWrapper} data-testid="share-page-user-avatar">
-        <Avatar size={24} url={user.avatar} name={user.label} />
+        <Avatar
+          size={24}
+          url={user.avatar}
+          name={getAccountDisplayName(user)}
+        />
       </div>
     </Menu>
   );

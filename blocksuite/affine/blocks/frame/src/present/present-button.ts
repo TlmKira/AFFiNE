@@ -25,7 +25,7 @@ export class EdgelessPresentButton extends QuickToolMixin(
   override render() {
     return html`<edgeless-tool-icon-button
     class="edgeless-frame-navigator-button"
-    .tooltip=${'Present'}
+    .tooltip=${'演示'}
     .tooltipOffset=${17}
     .iconContainerPadding=${6}
     .iconSize=${'24px'}

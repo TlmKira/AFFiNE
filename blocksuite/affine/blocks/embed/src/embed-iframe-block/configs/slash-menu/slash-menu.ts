@@ -1,12 +1,11 @@
-import { getSelectedModelsCommand } from '@blocksuite/affine-shared/commands';
 import { DefaultTool } from '@blocksuite/affine-block-surface';
 import { toggleEmbedCardCreateModal } from '@blocksuite/affine-components/embed-card-modal';
+import { getSelectedModelsCommand } from '@blocksuite/affine-shared/commands';
 import type { SlashMenuConfig } from '@blocksuite/affine-widget-slash-menu';
 import { EmbedIcon } from '@blocksuite/icons/lit';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
 
 import { insertEmptyEmbedIframeCommand } from '../../commands/insert-empty-embed-iframe';
-import { createJupyterLiteBlockProps } from '../providers/jupyterlite';
 import { EmbedIframeTooltip } from './tooltip';
 
 export const embedIframeSlashMenuConfig: SlashMenuConfig = {
@@ -74,44 +73,6 @@ export const embedIframeSlashMenuConfig: SlashMenuConfig = {
             }
           })
           .catch(console.error);
-      },
-    },
-    {
-      name: 'Jupyter Notebook',
-      description: '插入一个浏览器本地运行的 JupyterLite Notebook。',
-      icon: EmbedIcon(),
-      tooltip: {
-        figure: EmbedIframeTooltip,
-        caption: 'Jupyter Notebook',
-      },
-      group: '4_Content & Media@8',
-      when: ({ model }) => {
-        return model.store.schema.flavourSchemaMap.has('affine:embed-iframe');
-      },
-      action: ({ std }) => {
-        std.command
-          .chain()
-          .pipe(getSelectedModelsCommand)
-          .pipe(({ selectedModels }) => {
-            if (!selectedModels?.length) {
-              return;
-            }
-            const targetModel = selectedModels[selectedModels.length - 1];
-            const result = std.store.addSiblingBlocks(
-              targetModel,
-              [
-                {
-                  flavour: 'affine:embed-iframe',
-                  ...createJupyterLiteBlockProps(),
-                },
-              ],
-              'after'
-            );
-            if (targetModel.text?.length === 0 && result.length) {
-              std.store.deleteBlock(targetModel);
-            }
-          })
-          .run();
       },
     },
   ],

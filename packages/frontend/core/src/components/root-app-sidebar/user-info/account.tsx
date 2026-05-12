@@ -1,5 +1,6 @@
 import { Avatar } from '@affine/component';
 import { AuthService } from '@affine/core/modules/cloud';
+import { getAccountDisplayName } from '@affine/core/modules/cloud/entities/session';
 import { useLiveData, useService } from '@toeverything/infra';
 
 import * as styles from './index.css';
@@ -10,29 +11,21 @@ export const Account = () => {
     // TODO(@JimmFly): loading ui
     return null;
   }
+  const displayName = getAccountDisplayName(account);
   return (
     <div data-testid="user-info-card" className={styles.account}>
-      <Avatar
-        size={28}
-        rounded={50}
-        name={account.label}
-        url={account.avatar}
-      />
+      <Avatar size={28} rounded={50} name={displayName} url={account.avatar} />
 
       <div className={styles.content}>
-        <div
-          className={styles.name}
-          title={account.label}
-          content={account.label}
-        >
-          {account.label}
+        <div className={styles.name} title={displayName} content={displayName}>
+          {displayName}
         </div>
         <div
           className={styles.email}
-          title={account.email}
-          content={account.email}
+          title={account.displayEmail ?? account.phone ?? ''}
+          content={account.displayEmail ?? account.phone ?? ''}
         >
-          {account.email}
+          {account.displayEmail ?? account.phone}
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hoo
 import { useNavigateHelper } from '@affine/core/components/hooks/use-navigate-helper';
 import type { AuthAccountInfo, Server } from '@affine/core/modules/cloud';
 import { AuthService, ServersService } from '@affine/core/modules/cloud';
+import { getAccountDisplayName } from '@affine/core/modules/cloud/entities/session';
 import { GlobalDialogService } from '@affine/core/modules/dialogs';
 import { GlobalContextService } from '@affine/core/modules/global-context';
 import {
@@ -104,7 +105,7 @@ const WorkspaceServerInfo = ({
         <div className={styles.workspaceServerName}>{name}</div>
         {isCloud ? (
           <div className={styles.workspaceServerAccount}>
-            {account ? account.email : 'Not signed in'}
+            {account ? getAccountDisplayName(account) : 'Not signed in'}
           </div>
         ) : null}
       </div>

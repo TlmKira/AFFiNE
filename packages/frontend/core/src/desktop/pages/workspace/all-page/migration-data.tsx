@@ -11,10 +11,10 @@ import lightMigration from './light-migration.png';
 import * as styles from './migration-data.css';
 
 const MigrationBackgroundCover = () => {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   return (
     <img
-      src={theme === 'light' ? lightMigration : darkMigration}
+      src={resolvedTheme === 'dark' ? darkMigration : lightMigration}
       className={styles.migrationBackgroundCover}
     />
   );

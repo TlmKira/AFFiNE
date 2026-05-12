@@ -12,6 +12,7 @@ import { EmbedIframeLinkInputPopup } from './embed-iframe-block/components/embed
 import { EmbedIframeLoadingCard } from './embed-iframe-block/components/embed-iframe-loading-card';
 import { EmbedEdgelessIframeBlockComponent } from './embed-iframe-block/embed-edgeless-iframe-block';
 import { EmbedIframeBlockComponent } from './embed-iframe-block/embed-iframe-block';
+import { JupyterNotebookBlockComponent } from './jupyter-notebook-block';
 import { EmbedLoomBlockComponent } from './embed-loom-block';
 import { EmbedEdgelessLoomBlockComponent } from './embed-loom-block/embed-edgeless-loom-bock';
 import { EmbedYoutubeBlockComponent } from './embed-youtube-block';
@@ -61,6 +62,10 @@ export function effects() {
   );
   customElements.define('affine-embed-iframe-block', EmbedIframeBlockComponent);
   customElements.define(
+    'affine-jupyter-notebook-block',
+    JupyterNotebookBlockComponent
+  );
+  customElements.define(
     'embed-iframe-link-input-popup',
     EmbedIframeLinkInputPopup
   );
@@ -87,6 +92,7 @@ declare global {
     'affine-embed-youtube-block': EmbedYoutubeBlockComponent;
     'affine-embed-edgeless-youtube-block': EmbedEdgelessYoutubeBlockComponent;
     'affine-embed-iframe-block': EmbedIframeBlockComponent;
+    'affine-jupyter-notebook-block': JupyterNotebookBlockComponent;
     'embed-iframe-link-input-popup': EmbedIframeLinkInputPopup;
     'embed-iframe-loading-card': EmbedIframeLoadingCard;
     'embed-iframe-error-card': EmbedIframeErrorCard;

@@ -61,6 +61,7 @@ import { GCloudModule } from './plugins/gcloud';
 import { IndexerModule } from './plugins/indexer';
 import { LicenseModule } from './plugins/license';
 import { OAuthModule } from './plugins/oauth';
+import { NotebookRuntimeModule } from './plugins/notebook';
 import { PaymentModule } from './plugins/payment';
 import { WorkerModule } from './plugins/worker';
 
@@ -200,6 +201,7 @@ export function buildAppModule(env: Env) {
       CopilotModule,
       CaptchaModule,
       OAuthModule,
+      NotebookRuntimeModule,
       CalendarModule,
       CustomerIoModule,
       TelemetryModule,

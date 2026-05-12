@@ -17,14 +17,25 @@ import type { CurrentUser } from './session';
 export function sessionUser(
   user: Pick<
     User,
-    'id' | 'email' | 'avatarUrl' | 'name' | 'emailVerifiedAt' | 'disabled'
+    | 'id'
+    | 'email'
+    | 'phone'
+    | 'phoneVerifiedAt'
+    | 'avatarUrl'
+    | 'name'
+    | 'emailVerifiedAt'
+    | 'disabled'
   > & { password?: string | null }
 ): CurrentUser {
   // use pick to avoid unexpected fields
-  return assign(pick(user, 'id', 'email', 'avatarUrl', 'name', 'disabled'), {
-    hasPassword: user.password !== null,
-    emailVerified: user.emailVerifiedAt !== null,
-  });
+  return assign(
+    pick(user, 'id', 'email', 'phone', 'avatarUrl', 'name', 'disabled'),
+    {
+      hasPassword: user.password !== null,
+      emailVerified: user.emailVerifiedAt !== null,
+      phoneVerified: user.phoneVerifiedAt !== null,
+    }
+  );
 }
 
 function extractTokenFromHeader(authorization: string) {

@@ -125,6 +125,7 @@ const DeleteAccountModal = ({
   if (!account) {
     return null;
   }
+  const confirmationIdentity = account.displayEmail ?? account.phone ?? '';
   return (
     <ConfirmModal
       open={open}
@@ -151,7 +152,7 @@ const DeleteAccountModal = ({
       confirmText={t['com.affine.setting.account.delete.confirm-button']()}
       confirmButtonOptions={{
         variant: 'error',
-        disabled: email !== account.email,
+        disabled: email !== confirmationIdentity,
         loading: isLoading,
       }}
       childrenContentClassName={styles.confirmContent}

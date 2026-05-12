@@ -206,6 +206,12 @@ framework.scope(ServerScope).override(AuthProvider, resolver => {
       });
       await writeEndpointToken(endpoint, token);
     },
+    async sendPhoneCode() {
+      throw new Error('Phone sign-in is only supported in the web app.');
+    },
+    async signInPhone() {
+      throw new Error('Phone sign-in is only supported in the web app.');
+    },
     async signOut() {
       await Auth.signOut({
         endpoint,
@@ -383,7 +389,7 @@ const ThemeProvider = () => {
       style:
         resolvedTheme === 'dark'
           ? Style.Dark
-          : resolvedTheme === 'light'
+          : resolvedTheme === 'light' || resolvedTheme === 'research'
             ? Style.Light
             : Style.Default,
     }).catch(console.error);

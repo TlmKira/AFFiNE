@@ -7,6 +7,10 @@ export interface AuthConfig {
     ttl: number;
     ttr: number;
   };
+  phone: {
+    enabled: boolean;
+    mockCodeVisible: boolean;
+  };
   allowSignup: boolean;
   allowSignupForOauth: boolean;
   requireEmailDomainVerification: boolean;
@@ -70,5 +74,15 @@ defineModuleConfig('auth', {
   'session.ttr': {
     desc: 'Application auth time to refresh in seconds.',
     default: 60 * 60 * 24 * 7, // 7 days
+  },
+  'phone.enabled': {
+    desc: 'Whether allow phone number sign-in with verification code.',
+    default: false,
+    env: 'AFFINE_PHONE_AUTH_ENABLED',
+  },
+  'phone.mockCodeVisible': {
+    desc: 'Whether return mock phone verification code in API response. Only use this for local development or trusted self-hosted previews.',
+    default: false,
+    env: 'AFFINE_PHONE_AUTH_MOCK_CODE_VISIBLE',
   },
 });

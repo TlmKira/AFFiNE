@@ -7,11 +7,13 @@ import { AddSelfhostedStep } from './add-selfhosted';
 import { SignInStep } from './sign-in';
 import { SignInWithEmailStep } from './sign-in-with-email';
 import { SignInWithPasswordStep } from './sign-in-with-password';
+import { SignInWithPhoneStep } from './sign-in-with-phone';
 
 export type SignInStep =
   | 'signIn'
   | 'signInWithPassword'
   | 'signInWithEmail'
+  | 'signInWithPhone'
   | 'addSelfhosted';
 
 export interface SignInState {
@@ -19,6 +21,7 @@ export interface SignInState {
   server?: Server;
   initialServerBaseUrl?: string;
   email?: string;
+  phone?: string;
   hasPassword?: boolean;
   redirectUrl?: string;
 }
@@ -65,6 +68,12 @@ export const SignInPanel = ({
         />
       ) : step === 'signInWithPassword' ? (
         <SignInWithPasswordStep
+          state={state}
+          changeState={setState}
+          onAuthenticated={onAuthenticated}
+        />
+      ) : step === 'signInWithPhone' ? (
+        <SignInWithPhoneStep
           state={state}
           changeState={setState}
           onAuthenticated={onAuthenticated}

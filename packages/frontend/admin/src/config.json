@@ -90,6 +90,16 @@
     "session.ttr": {
       "type": "Number",
       "desc": "Application auth time to refresh in seconds."
+    },
+    "phone.enabled": {
+      "type": "Boolean",
+      "desc": "Whether allow phone number sign-in with verification code.",
+      "env": "AFFINE_PHONE_AUTH_ENABLED"
+    },
+    "phone.mockCodeVisible": {
+      "type": "Boolean",
+      "desc": "Whether return mock phone verification code in API response. Only use this for local development or trusted self-hosted previews.",
+      "env": "AFFINE_PHONE_AUTH_MOCK_CODE_VISIBLE"
     }
   },
   "mailer": {
@@ -443,6 +453,38 @@
       "type": "Object",
       "desc": "Apple OAuth provider config",
       "link": "https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_js/implementing_sign_in_with_apple_in_your_app"
+    }
+  },
+  "notebook": {
+    "enabled": {
+      "type": "Boolean",
+      "desc": "Enable self-hosted Jupyter notebook runtime proxy",
+      "env": "AFFINE_NOTEBOOK_ENABLED"
+    },
+    "gatewayUrl": {
+      "type": "String",
+      "desc": "Jupyter Kernel Gateway or Jupyter Server URL",
+      "env": "AFFINE_NOTEBOOK_GATEWAY_URL"
+    },
+    "gatewayToken": {
+      "type": "String",
+      "desc": "Jupyter Gateway token. Leave empty only for trusted local runtimes.",
+      "env": "AFFINE_NOTEBOOK_GATEWAY_TOKEN"
+    },
+    "idleTimeoutSeconds": {
+      "type": "Number",
+      "desc": "Notebook kernel idle timeout in seconds",
+      "env": "AFFINE_NOTEBOOK_IDLE_TIMEOUT_SECONDS"
+    },
+    "maxOutputBytes": {
+      "type": "Number",
+      "desc": "Maximum output bytes returned from a single cell execution",
+      "env": "AFFINE_NOTEBOOK_MAX_OUTPUT_BYTES"
+    },
+    "maxConcurrentKernels": {
+      "type": "Number",
+      "desc": "Maximum concurrent notebook kernels per AFFiNE process",
+      "env": "AFFINE_NOTEBOOK_MAX_CONCURRENT_KERNELS"
     }
   },
   "payment": {

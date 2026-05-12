@@ -200,6 +200,16 @@
           "type": "number",
           "description": "Application auth time to refresh in seconds.\n@default 604800",
           "default": 604800
+        },
+        "phone.enabled": {
+          "type": "boolean",
+          "description": "Whether allow phone number sign-in with verification code.\n@default false\n@environment `AFFINE_PHONE_AUTH_ENABLED`",
+          "default": false
+        },
+        "phone.mockCodeVisible": {
+          "type": "boolean",
+          "description": "Whether return mock phone verification code in API response. Only use this for local development or trusted self-hosted previews.\n@default false\n@environment `AFFINE_PHONE_AUTH_MOCK_CODE_VISIBLE`",
+          "default": false
         }
       }
     },
@@ -1486,6 +1496,42 @@
             "clientId": "",
             "clientSecret": ""
           }
+        }
+      }
+    },
+    "notebook": {
+      "type": "object",
+      "description": "Configuration for notebook module",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable self-hosted Jupyter notebook runtime proxy\n@default false\n@environment `AFFINE_NOTEBOOK_ENABLED`",
+          "default": false
+        },
+        "gatewayUrl": {
+          "type": "string",
+          "description": "Jupyter Kernel Gateway or Jupyter Server URL\n@default \"http://localhost:8888\"\n@environment `AFFINE_NOTEBOOK_GATEWAY_URL`",
+          "default": "http://localhost:8888"
+        },
+        "gatewayToken": {
+          "type": "string",
+          "description": "Jupyter Gateway token. Leave empty only for trusted local runtimes.\n@default \"\"\n@environment `AFFINE_NOTEBOOK_GATEWAY_TOKEN`",
+          "default": ""
+        },
+        "idleTimeoutSeconds": {
+          "type": "number",
+          "description": "Notebook kernel idle timeout in seconds\n@default 900\n@environment `AFFINE_NOTEBOOK_IDLE_TIMEOUT_SECONDS`",
+          "default": 900
+        },
+        "maxOutputBytes": {
+          "type": "number",
+          "description": "Maximum output bytes returned from a single cell execution\n@default 2000000\n@environment `AFFINE_NOTEBOOK_MAX_OUTPUT_BYTES`",
+          "default": 2000000
+        },
+        "maxConcurrentKernels": {
+          "type": "number",
+          "description": "Maximum concurrent notebook kernels per AFFiNE process\n@default 8\n@environment `AFFINE_NOTEBOOK_MAX_CONCURRENT_KERNELS`",
+          "default": 8
         }
       }
     },

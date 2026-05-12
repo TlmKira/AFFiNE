@@ -48,7 +48,7 @@ export class EdgelessFrameOrderButton extends WithDisposable(LitElement) {
       <edgeless-tool-icon-button
         class="edgeless-frame-order-button"
         .iconSize=${'24px'}
-        .tooltip=${this.popperShow ? '' : 'Frame Order'}
+        .tooltip=${this.popperShow ? '' : '画框顺序'}
         @click=${() => {
           if (readonly) return;
           this._edgelessFrameOrderPopper?.toggle();

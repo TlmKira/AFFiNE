@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { resolveMx, resolveTxt, setServers } from 'node:dns/promises';
 
 import {
@@ -16,6 +17,7 @@ import type { Request, Response } from 'express';
 
 import {
   ActionForbidden,
+  BadRequest,
   Config,
   CryptoHelper,
   EmailTokenNotFound,
@@ -56,6 +58,42 @@ interface OpenAppSignInCredential {
   code: string;
 }
 
+interface PhoneCodeCredential {
+  phone: string;
+}
+
+interface PhoneSignInCredential {
+  phone: string;
+  code: string;
+}
+
+const PHONE_OTP_PREFIX = 'phone:';
+
+function normalizePhone(phone: string) {
+  const value = phone.trim().replace(/[\s-]/g, '');
+  if (/^1[3-9]\d{9}$/.test(value)) {
+    return `+86${value}`;
+  }
+  if (/^86(1[3-9]\d{9})$/.test(value)) {
+    return `+${value}`;
+  }
+  if (/^\+[1-9]\d{7,14}$/.test(value)) {
+    return value;
+  }
+  throw new BadRequest(
+    '手机号格式无效，请输入中国大陆手机号或 E.164 格式号码。'
+  );
+}
+
+function phoneOtpKey(phone: string) {
+  return `${PHONE_OTP_PREFIX}${phone}`;
+}
+
+function phonePlaceholderEmail(phone: string) {
+  const hash = createHash('sha256').update(phone).digest('hex').slice(0, 24);
+  return `phone_${hash}@local.invalid`;
+}
+
 @Throttle('strict')
 @Controller('/api/auth')
 export class AuthController {
@@ -76,6 +114,95 @@ export class AuthController {
       // set a public DNS server here to avoid this issue.
       setServers(['1.1.1.1', '8.8.8.8']);
     }
+  }
+
+  @Public()
+  @UseNamedGuard('version')
+  @Post('/phone/code')
+  async sendPhoneCode(@Body() credential: PhoneCodeCredential) {
+    if (!this.config.auth.phone.enabled) {
+      throw new ActionForbidden('手机号登录未启用。');
+    }
+
+    const phone = normalizePhone(credential.phone);
+    const otp = this.crypto.otp();
+    const token = await this.models.verificationToken.create(
+      TokenType.SignIn,
+      phone,
+      5 * 60
+    );
+
+    await this.models.magicLinkOtp.upsert(phoneOtpKey(phone), otp, token);
+    this.logger.log(`Phone sign-in code for ${phone}: ${otp}`);
+
+    return {
+      phone,
+      ...(env.dev || this.config.auth.phone.mockCodeVisible
+        ? { code: otp }
+        : {}),
+    };
+  }
+
+  @Public()
+  @UseNamedGuard('version')
+  @Post('/phone/sign-in')
+  async phoneSignIn(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() credential: PhoneSignInCredential
+  ) {
+    if (!this.config.auth.phone.enabled) {
+      throw new ActionForbidden('手机号登录未启用。');
+    }
+
+    const phone = normalizePhone(credential.phone);
+    if (!credential.code || !/^\d{6}$/.test(credential.code)) {
+      throw new InvalidEmailToken();
+    }
+
+    const consumed = await this.models.magicLinkOtp.consume(
+      phoneOtpKey(phone),
+      credential.code
+    );
+    if (!consumed.ok) {
+      throw new InvalidEmailToken();
+    }
+
+    const tokenRecord = await this.models.verificationToken.verify(
+      TokenType.SignIn,
+      consumed.token,
+      {
+        credential: phone,
+      }
+    );
+
+    if (!tokenRecord) {
+      throw new InvalidEmailToken();
+    }
+
+    let user = await this.models.user.getUserByPhone(phone, {
+      withDisabled: true,
+    });
+
+    if (!user) {
+      if (!this.config.auth.allowSignup) {
+        throw new SignUpForbidden();
+      }
+
+      user = await this.models.user.create({
+        email: phonePlaceholderEmail(phone),
+        phone,
+        phoneVerifiedAt: new Date(),
+        emailVerifiedAt: new Date(),
+        registered: true,
+        name: phone,
+      });
+    } else if (user.disabled) {
+      throw new WrongSignInCredentials({ email: phone });
+    }
+
+    await this.auth.setCookies(req, res, user.id);
+    res.status(HttpStatus.OK).send({ id: user.id, phone: user.phone });
   }
 
   @Public()
