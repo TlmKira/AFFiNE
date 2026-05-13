@@ -3,6 +3,7 @@ import {
   SettingHeader,
   SettingRow,
 } from '@affine/component/setting-components';
+import { ServerService, UserFeatureService } from '@affine/core/modules/cloud';
 import { WorkspacePermissionService } from '@affine/core/modules/permissions';
 import { WorkspaceQuotaService } from '@affine/core/modules/quota';
 import { WorkspaceService } from '@affine/core/modules/workspace';
@@ -82,6 +83,7 @@ export const WorkspaceSettingLicense = ({
         title={t['com.affine.settings.workspace.license']()}
         subtitle={t['com.affine.settings.workspace.license.description']()}
       />
+      <AdminEntryCard />
       {workspace.flavour === 'local' ? (
         <EnableCloudPanel onCloseSetting={onCloseSetting} />
       ) : (
@@ -91,6 +93,62 @@ export const WorkspaceSettingLicense = ({
         </>
       )}
     </FrameworkScope>
+  );
+};
+
+const AdminEntryCard = () => {
+  const t = useI18n();
+  const serverService = useService(ServerService);
+  const userFeatureService = useService(UserFeatureService);
+  const isAdmin = useLiveData(userFeatureService.userFeature.isAdmin$);
+
+  useEffect(() => {
+    userFeatureService.userFeature.revalidate();
+  }, [userFeatureService]);
+
+  const openAdmin = useCallback(
+    (path: string) => {
+      window.open(`${serverService.server.baseUrl}${path}`, '_blank');
+    },
+    [serverService.server.baseUrl]
+  );
+
+  if (!isAdmin) return null;
+
+  return (
+    <div className={styles.sectionCard}>
+      <div>
+        <h3 className={styles.cardTitle}>
+          {t['com.affine.settings.workspace.license.admin.title']()}
+        </h3>
+        <p className={styles.cardDescription}>
+          {t['com.affine.settings.workspace.license.admin.description']()}
+        </p>
+      </div>
+      <div className={styles.adminActions}>
+        <Button onClick={() => openAdmin('/admin')}>
+          {t['com.affine.settings.workspace.license.admin.open']()}
+        </Button>
+        <Button variant="secondary" onClick={() => openAdmin('/admin/ai')}>
+          {t['com.affine.settings.workspace.license.admin.ai']()}
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => openAdmin('/admin/accounts')}
+        >
+          {t['com.affine.settings.workspace.license.admin.accounts']()}
+        </Button>
+        <Button variant="secondary" onClick={() => openAdmin('/admin/queue')}>
+          {t['com.affine.settings.workspace.license.admin.queue']()}
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => openAdmin('/admin/settings#config-module-copilot')}
+        >
+          {t['com.affine.settings.workspace.license.admin.config']()}
+        </Button>
+      </div>
+    </div>
   );
 };
 

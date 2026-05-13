@@ -193,7 +193,7 @@ describe('SettingsPage', () => {
       return;
     }
 
-    const saveButton = within(serverItem).getByRole('button', { name: 'Save' });
+    const saveButton = within(serverItem).getByRole('button', { name: '保存' });
     expect(saveButton.hasAttribute('disabled')).toBe(false);
 
     fireEvent.click(

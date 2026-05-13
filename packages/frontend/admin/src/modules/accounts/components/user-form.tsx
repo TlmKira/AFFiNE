@@ -123,30 +123,30 @@ function UserForm({
       <div className="flex-grow space-y-3 overflow-y-auto p-4">
         <div className="flex flex-col rounded-xl border border-border bg-card shadow-sm">
           <InputItem
-            label="User name"
+            label="用户名"
             field="name"
             value={changes.name}
             onChange={setField}
-            placeholder="Enter user name"
+            placeholder="输入用户名"
           />
           <Separator />
           <InputItem
-            label="Email"
+            label="邮箱"
             field="email"
             value={changes.email}
             onChange={setField}
-            placeholder="Enter email address"
+            placeholder="输入邮箱地址"
           />
           {showOption && (
             <>
               <Separator />
               <InputItem
-                label="Password"
+                label="密码"
                 field="password"
                 value={changes.password}
                 onChange={setField}
                 optional
-                placeholder="Enter password"
+                placeholder="输入密码"
               />
             </>
           )}
@@ -195,7 +195,7 @@ function InputItem({
         {label}
         {optional && (
           <span className="ml-1 font-normal text-muted-foreground">
-            (optional)
+            （可选）
           </span>
         )}
       </Label>
@@ -256,7 +256,7 @@ export function CreateUserForm({
 
   return (
     <UserForm
-      title="Create User"
+      title="创建账号"
       onClose={onComplete}
       onConfirm={handleCreateUser}
       onValidate={validateCreateUser}
@@ -302,7 +302,7 @@ export function UpdateUserForm({
 
   return (
     <UserForm
-      title="Update User"
+      title="更新账号"
       defaultValue={user}
       onClose={onComplete}
       onConfirm={onUpdateUser}
@@ -315,7 +315,7 @@ export function UpdateUserForm({
             variant="outline"
             onClick={onResetPassword}
           >
-            <span>Reset Password</span>
+            <span>重置密码</span>
             <ChevronRightIcon size={16} className="text-muted-foreground" />
           </Button>
           <Button
@@ -323,7 +323,7 @@ export function UpdateUserForm({
             variant="outline"
             onClick={onDeleteAccount}
           >
-            <span>Delete Account</span>
+            <span>删除账号</span>
             <ChevronRightIcon size={16} />
           </Button>
         </div>

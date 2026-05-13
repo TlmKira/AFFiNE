@@ -32,12 +32,12 @@ export function ExportUsersDialog({
   const [fields, setFields] = useState<ExportField[]>([
     {
       id: 'name',
-      label: 'Username',
+      label: '用户名',
       checked: true,
     },
     {
       id: 'email',
-      label: 'Email',
+      label: '邮箱',
       checked: true,
     },
   ]);
@@ -59,11 +59,11 @@ export function ExportUsersDialog({
       await exportCSV(users, fields, () => {
         setIsExporting(false);
         onOpenChange(false);
-        toast('Users exported successfully');
+        toast('账号已导出');
       });
     } catch (error) {
       console.error('Failed to export users', error);
-      toast.error('Failed to export users');
+      toast.error('导出账号失败');
       setIsExporting(false);
     }
   }, [exportCSV, fields, onOpenChange, users]);
@@ -74,11 +74,11 @@ export function ExportUsersDialog({
       await copyToClipboard(users, fields, () => {
         setIsCopying(false);
         onOpenChange(false);
-        toast('Users copied successfully');
+        toast('账号信息已复制');
       });
     } catch (error) {
       console.error('Failed to copy users', error);
-      toast.error('Failed to copy users');
+      toast.error('复制账号信息失败');
       setIsCopying(false);
     }
   }, [copyToClipboard, fields, onOpenChange, users]);
@@ -87,7 +87,7 @@ export function ExportUsersDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Export</DialogTitle>
+          <DialogTitle>导出账号</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
@@ -112,7 +112,7 @@ export function ExportUsersDialog({
             className="w-full text-[15px] px-4 py-2 h-10"
             disabled={isExporting || isCopying}
           >
-            {isExporting ? 'Exporting...' : 'Download account information'}
+            {isExporting ? '导出中...' : '下载账号信息'}
           </Button>
           <Button
             variant="outline"

@@ -32,8 +32,8 @@ const getSecretConfigured = (value: unknown) =>
 
 const StatusBadge = ({
   configured,
-  enabledLabel = 'Configured',
-  disabledLabel = 'Not configured',
+  enabledLabel = '已配置',
+  disabledLabel = '未配置',
 }: {
   configured: boolean;
   enabledLabel?: string;
@@ -72,26 +72,25 @@ function AiPage() {
       id: 'openai',
       name: 'OpenAI / OpenAI-compatible',
       description:
-        'Chat, writing, summaries, and compatible private model APIs.',
+        '用于聊天、写作、总结，也支持兼容 OpenAI 协议的私有模型接口。',
       configured: getSecretConfigured(get(providers, 'openai.apiKey')),
     },
     {
       id: 'gemini',
       name: 'Gemini',
-      description:
-        'Google Gemini API provider for text and multimodal features.',
+      description: 'Google Gemini API，可用于文本和多模态能力。',
       configured: getSecretConfigured(get(providers, 'gemini.apiKey')),
     },
     {
       id: 'anthropic',
       name: 'Anthropic',
-      description: 'Claude API provider for text generation and reasoning.',
+      description: 'Claude API，可用于文本生成和推理。',
       configured: getSecretConfigured(get(providers, 'anthropic.apiKey')),
     },
     {
       id: 'fal',
       name: 'fal',
-      description: 'Optional image generation provider.',
+      description: '可选的图像生成 provider。',
       configured: getSecretConfigured(get(providers, 'fal.apiKey')),
     },
   ];
@@ -102,7 +101,7 @@ function AiPage() {
 
   return (
     <div className="h-dvh flex-1 flex-col flex">
-      <Header title="AI" />
+      <Header title="AI 配置" />
       <ScrollAreaPrimitive.Root
         className={cn('relative overflow-hidden w-full')}
       >
@@ -112,42 +111,42 @@ function AiPage() {
               <CardHeader className="gap-3">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <CardTitle>Self-hosted AI</CardTitle>
+                    <CardTitle>自部署 AI</CardTitle>
                     <CardDescription className="mt-2 max-w-2xl">
-                      AI uses your own external model API keys. No local model,
-                      GPU, or separate AI container is required.
+                      AI 使用你自己的外部模型 API Key。不需要本地模型、GPU
+                      或额外 AI 容器。
                     </CardDescription>
                   </div>
                   <StatusBadge
                     configured={aiEnabled}
-                    enabledLabel="Enabled"
-                    disabledLabel="Disabled"
+                    enabledLabel="已启用"
+                    disabledLabel="未启用"
                   />
                 </div>
               </CardHeader>
               <CardContent className="grid gap-4 md:grid-cols-3">
                 <div className="rounded-lg border border-border/70 p-4">
-                  <div className="text-sm font-semibold">Global AI switch</div>
+                  <div className="text-sm font-semibold">全局 AI 开关</div>
                   <div className="mt-2 text-sm text-muted-foreground">
                     {aiEnabled
-                      ? 'Server AI features are enabled.'
-                      : 'Enable copilot in Settings before users can use AI.'}
+                      ? '服务器 AI 功能已启用。'
+                      : '需要先在系统配置中启用 copilot，用户才能使用 AI。'}
                   </div>
                 </div>
                 <div className="rounded-lg border border-border/70 p-4">
-                  <div className="text-sm font-semibold">Server keys</div>
+                  <div className="text-sm font-semibold">服务器密钥</div>
                   <div className="mt-2 text-sm text-muted-foreground">
                     {configuredCount > 0
-                      ? `${configuredCount} provider${configuredCount > 1 ? 's' : ''} configured.`
-                      : 'No server provider key is configured yet.'}
+                      ? `已配置 ${configuredCount} 个 provider。`
+                      : '还没有配置服务器级 provider key。'}
                   </div>
                 </div>
                 <div className="rounded-lg border border-border/70 p-4">
-                  <div className="text-sm font-semibold">Workspace BYOK</div>
+                  <div className="text-sm font-semibold">工作区 BYOK</div>
                   <div className="mt-2 text-sm text-muted-foreground">
                     {byokEnabled
-                      ? 'Workspace owners can add their own provider keys.'
-                      : 'Workspace-level BYOK is disabled.'}
+                      ? '工作区管理员可以添加自己的 provider key。'
+                      : '工作区级 BYOK 已关闭。'}
                   </div>
                 </div>
               </CardContent>
@@ -155,10 +154,9 @@ function AiPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Provider status</CardTitle>
+                <CardTitle className="text-lg">Provider 状态</CardTitle>
                 <CardDescription>
-                  Keys are stored in server configuration or workspace BYOK.
-                  This page only shows whether a provider is configured.
+                  密钥保存在服务器配置或工作区 BYOK 中。本页只显示是否已配置。
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
@@ -183,10 +181,10 @@ function AiPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">How to configure</CardTitle>
+                <CardTitle className="text-lg">如何配置</CardTitle>
                 <CardDescription>
-                  Use the admin Settings page for server-wide keys, or workspace
-                  settings for BYOK keys controlled by workspace admins.
+                  服务器级密钥在系统配置页填写；工作区 BYOK
+                  密钥由工作区管理员在工作区设置中填写。
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
@@ -197,26 +195,24 @@ function AiPage() {
                       className="mt-0.5 text-amber-600"
                     />
                     <div className="text-sm text-muted-foreground">
-                      Do not commit real API keys. Configure them in the admin
-                      panel or in the server&apos;s private config file.
+                      不要把真实 API Key
+                      提交到仓库。请在管理后台或服务器私有配置文件中填写。
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <Button asChild>
                     <Link to="/admin/settings#config-module-copilot">
-                      Open AI settings
+                      打开密钥配置
                     </Link>
                   </Button>
                   <span className="text-sm text-muted-foreground">
-                    Workspace keys are configured from Workspace Settings /
-                    Integrations / AI BYOK.
+                    工作区密钥入口：工作区设置 / 集成 / AI BYOK。
                   </span>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Custom OpenAI-compatible endpoints are{' '}
-                  {customEndpointEnabled ? 'allowed' : 'disabled'} for workspace
-                  BYOK.
+                  工作区 BYOK 的自定义 OpenAI-compatible endpoint 当前
+                  {customEndpointEnabled ? '允许使用' : '未开放'}。
                 </div>
               </CardContent>
             </Card>

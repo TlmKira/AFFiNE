@@ -46,6 +46,12 @@ export const cardDescription = style({
   color: cssVarV2('text/secondary'),
 });
 
+export const adminActions = style({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '8px',
+});
+
 export const statusGrid = style({
   display: 'grid',
   gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',

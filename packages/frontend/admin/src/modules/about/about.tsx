@@ -6,7 +6,6 @@ import {
   ChevronRightIcon,
   GithubIcon,
   MailWarningIcon,
-  UploadCloudIcon,
 } from 'lucide-react';
 
 type Channel = 'stable' | 'canary' | 'beta' | 'internal';
@@ -23,22 +22,17 @@ const links = [
   {
     href: BUILD_CONFIG.githubUrl,
     icon: <GithubIcon size={20} />,
-    label: 'Star AFFiNE on GitHub',
+    label: '在 GitHub 查看源码',
   },
   {
     href: BUILD_CONFIG.githubUrl,
     icon: <MailWarningIcon size={20} />,
-    label: 'Report an Issue',
+    label: '反馈问题',
   },
   {
     href: 'https://docs.affine.pro/docs/self-host-affine',
     icon: <AlbumIcon size={20} />,
-    label: 'Self-host Document',
-  },
-  {
-    href: 'https://affine.pro/pricing/?type=selfhost#table',
-    icon: <UploadCloudIcon size={20} />,
-    label: 'Upgrade to Team',
+    label: '自部署文档',
   },
 ];
 
@@ -46,7 +40,7 @@ export function AboutAFFiNE() {
   return (
     <div className="flex flex-col h-full gap-3 py-5 px-6 w-full">
       <div className="flex items-center">
-        <span className="text-xl font-semibold">About AFFiNE</span>
+        <span className="text-xl font-semibold">关于部署</span>
       </div>
       <div className="overflow-y-auto space-y-[10px]">
         <div className="flex flex-col rounded-md border">
@@ -75,8 +69,8 @@ export function AboutAFFiNE() {
         </div>
       </div>
       <div className="space-y-3 text-sm font-normal text-muted-foreground">
-        <div>{`App Version: ${appName} ${BUILD_CONFIG.appVersion}`}</div>
-        <div>{`Editor Version: ${BUILD_CONFIG.editorVersion}`}</div>
+        <div>{`应用版本：${appName} ${BUILD_CONFIG.appVersion}`}</div>
+        <div>{`编辑器版本：${BUILD_CONFIG.editorVersion}`}</div>
       </div>
     </div>
   );

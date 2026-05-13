@@ -146,28 +146,61 @@ export const KNOWN_CONFIG_GROUPS = [
     fields: ['providers.google', 'providers.github', 'providers.oidc'],
   } as ConfigGroup<'oauth'>,
   {
-    name: 'AI',
+    name: 'AI 配置',
     module: 'copilot',
     fields: [
-      'enabled',
-      'byok.enabled',
+      {
+        key: 'enabled',
+        desc: '全局 AI 开关。开启后，用户才能使用 AI 助手、总结、写作等能力。',
+      },
+      {
+        key: 'byok.enabled',
+        desc: '是否允许工作区管理员配置自己的 AI Key（BYOK）。',
+      },
       {
         key: 'byok.allowedProviders',
         type: 'JSON',
-        desc: 'Workspace BYOK provider allowlist, for example ["openai","anthropic","gemini","fal"].',
+        desc: '工作区 BYOK 允许使用的 provider 列表，例如 ["openai","anthropic","gemini","fal"]。',
       },
-      'byok.allowCustomEndpoint',
-      'providers.openai',
-      'providers.gemini',
-      'providers.anthropic',
-      'providers.fal',
-      'providers.defaults',
-      'providers.profiles',
-      'unsplash',
-      'exa',
+      {
+        key: 'byok.allowCustomEndpoint',
+        desc: '是否允许工作区 BYOK 使用自定义 OpenAI-compatible endpoint。',
+      },
+      {
+        key: 'providers.openai',
+        desc: 'OpenAI 或 OpenAI-compatible 配置。填写 apiKey；如使用中转或私有模型，把 baseURL 改成对应 /v1 地址。',
+      },
+      {
+        key: 'providers.gemini',
+        desc: 'Google Gemini API 配置。填写 apiKey 后可使用 Gemini provider。',
+      },
+      {
+        key: 'providers.anthropic',
+        desc: 'Anthropic Claude API 配置。填写 apiKey 后可使用 Claude provider。',
+      },
+      {
+        key: 'providers.fal',
+        desc: 'fal 图像生成 provider 配置。仅需要图像生成时填写。',
+      },
+      {
+        key: 'providers.defaults',
+        desc: '默认模型路由配置。留空时系统会按可用 provider 自动选择；高级用户可在这里指定各类输出默认 provider。',
+      },
+      {
+        key: 'providers.profiles',
+        desc: '高级 provider profile 列表。一般自部署可先保持空数组。',
+      },
+      {
+        key: 'unsplash',
+        desc: 'Unsplash 图片搜索 Key。未配置时相关图片搜索能力不可用。',
+      },
+      {
+        key: 'exa',
+        desc: 'Exa 网页搜索 Key。未配置时 AI 联网搜索能力不可用。',
+      },
       {
         key: 'storage',
-        desc: 'The storage provider for copilot blobs',
+        desc: 'AI 附件和临时文件存储 provider',
         sub: 'provider',
         type: 'Enum',
         options: ['fs', 'aws-s3', 'cloudflare-r2'],
@@ -176,13 +209,13 @@ export const KNOWN_CONFIG_GROUPS = [
         key: 'storage',
         sub: 'bucket',
         type: 'String',
-        desc: 'The bucket name for copilot blobs storage',
+        desc: 'AI 附件存储 bucket 名称',
       },
       {
         key: 'storage',
         sub: 'config',
         type: 'JSON',
-        desc: 'The S3 compatible config for the storage provider (endpoint/region/credentials).',
+        desc: 'AI 附件存储配置。本地 fs 可保持默认；S3/R2 需填写 endpoint、region、credentials 等。',
       },
     ],
   } as ConfigGroup<'copilot'>,

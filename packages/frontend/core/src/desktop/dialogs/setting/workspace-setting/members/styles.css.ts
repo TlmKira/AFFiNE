@@ -35,6 +35,35 @@ export const localMembersPanel = style({
   flexDirection: 'column',
 });
 
+export const remoteMembersPanel = style({
+  gap: '16px',
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+export const managementCard = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '12px',
+  padding: '16px',
+  borderRadius: '8px',
+  border: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
+  background: cssVarV2('layer/white'),
+});
+
+export const managementTitle = style({
+  fontSize: cssVar('fontBase'),
+  fontWeight: 600,
+  color: cssVarV2('text/primary'),
+});
+
+export const managementDescription = style({
+  marginTop: '4px',
+  fontSize: cssVar('fontSm'),
+  color: cssVarV2('text/secondary'),
+});
+
 export const goUpgradeWrapper = style({
   display: 'inline-flex',
   alignItems: 'center',

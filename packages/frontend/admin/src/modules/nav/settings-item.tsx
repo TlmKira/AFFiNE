@@ -8,7 +8,7 @@ export const SettingsItem = ({ isCollapsed }: { isCollapsed: boolean }) => {
     <NavItem
       to={ROUTES.admin.settings.index}
       icon={<SettingsIcon fontSize={20} />}
-      label="Settings"
+      label="系统配置"
       isCollapsed={isCollapsed}
     />
   );
