@@ -1,5 +1,5 @@
 import type { RadioItem } from '@affine/component';
-import { RadioGroup, Switch } from '@affine/component';
+import { RadioGroup, Slider, Switch } from '@affine/component';
 import {
   SettingHeader,
   SettingRow,
@@ -8,7 +8,9 @@ import {
 import { LanguageMenu } from '@affine/core/components/affine/language-menu';
 import {
   getDynamicBackgroundPreference,
+  getDynamicWallpaperOpacityPreference,
   setDynamicBackgroundPreference,
+  setDynamicWallpaperOpacityPreference,
 } from '@affine/core/components/theme-provider/dynamic-background';
 import { SHOW_OPEN_IN_APP } from '@affine/core/modules/brand/constant';
 import { TraySettingService } from '@affine/core/modules/editor-setting/services/tray-settings';
@@ -20,7 +22,11 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { useAppSettingHelper } from '../../../../../components/hooks/affine/use-app-setting-helper';
 import { OpenInAppLinksMenu } from './links';
-import { settingWrapper } from './style.css';
+import {
+  settingWrapper,
+  wallpaperOpacityControl,
+  wallpaperOpacityValue,
+} from './style.css';
 import { ThemeEditorSetting } from './theme-editor-setting';
 
 export const getThemeOptions = (t: ReturnType<typeof useI18n>) =>
@@ -172,6 +178,9 @@ export const AppearanceSettings = () => {
   const [dynamicBackground, setDynamicBackground] = useState(() =>
     getDynamicBackgroundPreference()
   );
+  const [wallpaperOpacity, setWallpaperOpacity] = useState(() =>
+    getDynamicWallpaperOpacityPreference()
+  );
 
   return (
     <>
@@ -221,6 +230,32 @@ export const AppearanceSettings = () => {
               setDynamicBackgroundPreference(checked);
             }}
           />
+        </SettingRow>
+        <SettingRow
+          name={t.t(
+            'com.affine.appearanceSettings.dynamicBackground.opacity.title'
+          )}
+          desc={t.t(
+            'com.affine.appearanceSettings.dynamicBackground.opacity.description'
+          )}
+          disabled={!dynamicBackground}
+        >
+          <div className={wallpaperOpacityControl}>
+            <Slider
+              min={0}
+              max={100}
+              step={5}
+              value={[wallpaperOpacity]}
+              width={196}
+              disabled={!dynamicBackground}
+              onValueChange={value => {
+                const nextOpacity = value[0] ?? wallpaperOpacity;
+                setWallpaperOpacity(nextOpacity);
+                setDynamicWallpaperOpacityPreference(nextOpacity);
+              }}
+            />
+            <span className={wallpaperOpacityValue}>{wallpaperOpacity}%</span>
+          </div>
         </SettingRow>
       </SettingWrapper>
 

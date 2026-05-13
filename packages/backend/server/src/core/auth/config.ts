@@ -78,11 +78,11 @@ defineModuleConfig('auth', {
   'phone.enabled': {
     desc: 'Whether allow phone number sign-in with verification code.',
     default: false,
-    env: 'AFFINE_PHONE_AUTH_ENABLED',
+    env: ['AFFINE_PHONE_AUTH_ENABLED', 'boolean'],
   },
   'phone.mockCodeVisible': {
     desc: 'Whether return mock phone verification code in API response. Only use this for local development or trusted self-hosted previews.',
     default: false,
-    env: 'AFFINE_PHONE_AUTH_MOCK_CODE_VISIBLE',
+    env: ['AFFINE_PHONE_AUTH_MOCK_CODE_VISIBLE', 'boolean'],
   },
 });

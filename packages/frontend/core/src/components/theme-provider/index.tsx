@@ -8,6 +8,7 @@ import {
   applyDynamicBackgroundPreference,
   DYNAMIC_BACKGROUND_CHANGE_EVENT,
 } from './dynamic-background';
+import { DynamicWallpaperBackground } from './dynamic-wallpaper-background';
 
 const themes = ['dark', 'light', 'research'];
 
@@ -43,6 +44,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
   return (
     <NextThemeProvider themes={themes} enableSystem={true}>
       {children}
+      <DynamicWallpaperBackground />
       <ThemeObserver />
       <DynamicBackgroundObserver />
     </NextThemeProvider>

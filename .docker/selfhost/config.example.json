@@ -1,7 +1,7 @@
 {
   "$schema": "./schema.json",
   "server": {
-    "name": "私有知识库服务"
+    "name": "Private Knowledge Service"
   },
   "auth": {
     "phone": {

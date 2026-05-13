@@ -681,7 +681,9 @@ export function createNodeTargetConfig(
     stats: { errorDetails: true },
     optimization: {
       nodeEnv: false,
-      minimize: !dev,
+      // Keep Node bundles unminified. SWC minification can alter initialization
+      // order in decorated NestJS modules and break the self-host server at boot.
+      minimize: false,
       minimizer: [
         new rspack.SwcJsMinimizerRspackPlugin({
           extractComments: true,
