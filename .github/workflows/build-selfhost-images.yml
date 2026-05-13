@@ -14,7 +14,9 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    # Build native Node addons on Ubuntu 22.04 so the resulting glibc
+    # requirement stays compatible with the Debian 12 runtime image.
+    runs-on: ubuntu-22.04
     timeout-minutes: 120
 
     steps:
