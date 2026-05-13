@@ -13,6 +13,7 @@ import {
 import type { CitationMetadata } from './types';
 
 const CACHE_TTL = 1000 * 60 * 60 * 24;
+const CACHE_VERSION = 'v2';
 const FETCH_TIMEOUT_MS = 8000;
 const MAX_REDIRECTS = 3;
 const MAX_METADATA_BYTES = 1024 * 1024;
@@ -128,7 +129,9 @@ export class ResearchCitationService {
   ) {}
 
   async resolve(input: string): Promise<CitationMetadata> {
-    const cacheKey = `research-citation:${input.trim().toLowerCase()}`;
+    const cacheKey = `research-citation:${CACHE_VERSION}:${input
+      .trim()
+      .toLowerCase()}`;
     const cached = await this.cache.get<CitationMetadata>(cacheKey);
     if (cached) return cached;
 
