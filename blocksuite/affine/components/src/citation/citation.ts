@@ -19,15 +19,25 @@ export class CitationCard extends SignalWatcher(WithDisposable(LitElement)) {
       box-sizing: border-box;
       border-radius: 8px;
       display: flex;
-      gap: 2px;
+      gap: 8px;
       flex-direction: column;
       align-items: flex-start;
       align-self: stretch;
-      padding: 4px 8px;
+      padding: 12px;
       background-color: ${unsafeCSSVarV2('layer/background/primary')};
-      border: 0.5px solid ${unsafeCSSVarV2('layer/insideBorder/border')};
+      border: 1px solid ${unsafeCSSVarV2('layer/background/tertiary')};
       font-family: ${unsafeCSS(baseTheme.fontSansFamily)};
       cursor: pointer;
+      user-select: none;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+    }
+
+    .citation-container:hover {
+      border-color: ${unsafeCSSVarV2('layer/insideBorder/border')};
+      box-shadow: var(--affine-shadow-1);
     }
 
     .citation-header {
@@ -36,6 +46,7 @@ export class CitationCard extends SignalWatcher(WithDisposable(LitElement)) {
       gap: 8px;
       width: 100%;
       box-sizing: border-box;
+      min-height: 22px;
 
       .citation-icon {
         display: flex;
@@ -63,23 +74,25 @@ export class CitationCard extends SignalWatcher(WithDisposable(LitElement)) {
         line-height: 22px;
         color: ${unsafeCSSVarV2('text/primary')};
         font-size: var(--affine-font-sm);
-        font-weight: 500;
+        font-weight: 600;
       }
 
       .citation-identifier {
         display: flex;
-        width: 14px;
-        height: 14px;
+        min-width: 22px;
+        height: 20px;
+        padding: 0 6px;
+        box-sizing: border-box;
         justify-content: center;
         align-items: center;
-        border-radius: 36px;
+        border-radius: 999px;
         background: ${unsafeCSSVarV2('block/footnote/numberBg')};
-        color: ${unsafeCSSVarV2('text/primary')};
+        color: ${unsafeCSSVarV2('text/secondary')};
         text-align: center;
-        font-size: 10px;
+        font-size: var(--affine-font-xs);
         font-style: normal;
-        font-weight: 400;
-        line-height: 22px; /* 220% */
+        font-weight: 500;
+        line-height: 20px;
         transition: background-color 0.3s ease-in-out;
       }
     }
@@ -93,17 +106,21 @@ export class CitationCard extends SignalWatcher(WithDisposable(LitElement)) {
     .citation-content {
       width: 100%;
       box-sizing: border-box;
-      overflow: hidden;
       color: ${unsafeCSSVarV2('text/primary')};
       font-feature-settings:
         'liga' off,
         'clig' off;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: normal;
+      word-break: break-word;
       font-size: var(--affine-font-xs);
       font-style: normal;
       font-weight: 400;
-      line-height: 20px; /* 166.667% */
+      line-height: 20px;
     }
   `;
 

@@ -169,7 +169,9 @@ export class EmbedIframeBlockComponent extends CaptionedBlockComponent<EmbedIfra
       // get embed data and preview data in a promise
       const [embedData, previewData] = await Promise.all([
         embedIframeService.getEmbedIframeData(url),
-        linkPreviewService.query(url),
+        Promise.resolve()
+          .then(() => linkPreviewService.query(url))
+          .catch(() => null),
       ]);
 
       // if the embed data is not found, and the iframeUrl is not set, throw an error

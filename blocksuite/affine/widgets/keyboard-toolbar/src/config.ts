@@ -570,31 +570,21 @@ const embedToolGroup: KeyboardToolPanelGroup = {
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:embed-iframe'),
       action: async ({ std }) => {
-        const [_, { selectedModels }] = std.command.exec(
-          getSelectedModelsCommand
-        );
-        const model = selectedModels?.[0];
-        if (!model) return;
-
-        const parentModel = std.store.getParent(model);
-        if (!parentModel) return;
-
-        const index = parentModel.children.indexOf(model) + 1;
-        await toggleEmbedCardCreateModal(
-          std.host,
-          'Bilibili 视频',
-          '粘贴 BV、av 或 player.bilibili.com 视频链接。',
-          { mode: 'page', parentModel, index },
-          ({ mode }) => {
-            if (mode === 'edgeless') {
-              const gfx = std.get(GfxControllerIdentifier);
-              gfx.tool.setTool(DefaultTool);
-            }
-          }
-        );
-        if (model.text?.length === 0) {
-          std.store.deleteBlock(model);
-        }
+        std.command
+          .chain()
+          .pipe(getSelectedModelsCommand)
+          .pipe(insertEmptyEmbedIframeCommand, {
+            place: 'after',
+            removeEmptyLine: true,
+            linkInputPopupOptions: {
+              telemetrySegment: 'keyboard toolbar',
+              title: 'Bilibili 视频',
+              description: '粘贴 BV、av 或 player.bilibili.com 视频链接。',
+              placeholder:
+                'BV1... / av123456 / https://www.bilibili.com/video/...',
+            },
+          })
+          .run();
       },
     },
     {
@@ -752,7 +742,7 @@ const documentGroupFrameToolGroup: DynamicKeyboardToolPanelGroup = ({
     .map(block => block.model) as FrameBlockModel[];
 
   const frameItems = frameModels.map<KeyboardToolbarActionItem>(frameModel => ({
-    name: '画框：' + frameModel.props.title.toString(),
+    name: `画框：${frameModel.props.title.toString()}`,
     icon: FrameIcon(),
     action: ({ std }) => {
       std.command
@@ -774,7 +764,7 @@ const documentGroupFrameToolGroup: DynamicKeyboardToolPanelGroup = ({
     : [];
 
   const groupItems = groupElements.map<KeyboardToolbarActionItem>(group => ({
-    name: '分组：' + group.title.toString(),
+    name: `分组：${group.title.toString()}`,
     icon: GroupIcon(),
     action: ({ std }) => {
       std.command
@@ -1222,7 +1212,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
     ...listToolActionItems,
     ...textToolActionItems.filter(({ name }) => name === 'Divider'),
     {
-      name: '收起缩进',
+      name: '取消缩进',
       icon: CollapseTabIcon(),
       disableWhen: ({ std }) => {
         const [success] = std.command

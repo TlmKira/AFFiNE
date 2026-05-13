@@ -1,6 +1,7 @@
 import { DefaultTool } from '@blocksuite/affine-block-surface';
 import { toggleEmbedCardCreateModal } from '@blocksuite/affine-components/embed-card-modal';
 import { BookmarkBlockSchema } from '@blocksuite/affine-model';
+import { NotificationProvider } from '@blocksuite/affine-shared/services';
 import {
   type SlashMenuConfig,
   SlashMenuConfigIdentifier,
@@ -9,8 +10,8 @@ import { LinkIcon } from '@blocksuite/icons/lit';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
 import type { BlockModel, ExtensionType } from '@blocksuite/store';
 
-import { LinkTooltip } from './tooltips';
 import { createResearchCitationBookmarkProps } from './research-citation';
+import { LinkTooltip } from './tooltips';
 
 function getNextFootnoteIdentifier(model: BlockModel) {
   const parent = model.store.getParent(model);
@@ -75,10 +76,16 @@ const bookmarkSlashMenuConfig: SlashMenuConfig = {
       group: '4_Content & Media@3',
       when: ({ model }) =>
         model.store.schema.flavourSchemaMap.has('affine:bookmark'),
-      action: ({ std, model }) => {
-        const input = window.prompt(
-          '请输入 DOI、arXiv、论文 URL、BibTeX 或论文标题'
-        );
+      action: async ({ std, model }) => {
+        const notification = std.getOptional(NotificationProvider);
+        const input = await notification?.prompt({
+          title: '论文引用',
+          message: '输入 DOI、arXiv、论文 URL、BibTeX 或论文标题。',
+          placeholder: '10.1145/... / arXiv:2401.00001 / @article{...}',
+          confirmText: '插入引用',
+          cancelText: '取消',
+        });
+
         if (!input?.trim()) {
           return;
         }

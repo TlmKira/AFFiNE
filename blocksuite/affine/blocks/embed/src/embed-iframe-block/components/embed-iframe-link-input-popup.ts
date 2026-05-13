@@ -1,4 +1,4 @@
-import {
+﻿import {
   DocModeProvider,
   TelemetryProvider,
 } from '@blocksuite/affine-shared/services';
@@ -27,7 +27,7 @@ const DEFAULT_OPTIONS: EmbedLinkInputPopupOptions = {
   showCloseButton: false,
   variant: 'default',
   title: 'Embed Link',
-  description: 'Works with links of Google Drive, Spotify…',
+  description: 'Works with links of Google Drive, Spotify, Bilibili and more.',
   placeholder: 'Paste the Embed link...',
   telemetrySegment: 'editor',
 };

@@ -1,35 +1,68 @@
-import { Button, notify } from '@affine/component';
+import { Button } from '@affine/component';
 import {
   SettingHeader,
   SettingRow,
 } from '@affine/component/setting-components';
-import { getUpgradeQuestionnaireLink } from '@affine/core/components/hooks/affine/use-subscription-notify';
-import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
-import { useMutation } from '@affine/core/components/hooks/use-mutation';
-import {
-  AuthService,
-  SelfhostLicenseService,
-  WorkspaceSubscriptionService,
-} from '@affine/core/modules/cloud';
 import { WorkspacePermissionService } from '@affine/core/modules/permissions';
-import { UrlService } from '@affine/core/modules/url';
+import { WorkspaceQuotaService } from '@affine/core/modules/quota';
 import { WorkspaceService } from '@affine/core/modules/workspace';
-import { UserFriendlyError } from '@affine/error';
-import {
-  createSelfhostCustomerPortalMutation,
-  SubscriptionPlan,
-  SubscriptionRecurring,
-  SubscriptionVariant,
-} from '@affine/graphql';
 import { useI18n } from '@affine/i18n';
 import { FrameworkScope, useLiveData, useService } from '@toeverything/infra';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { EnableCloudPanel } from '../preference/enable-cloud';
-import { SelfHostTeamCard } from './self-host-team-card';
-import { SelfHostTeamPlan } from './self-host-team-plan';
 import * as styles from './styles.css';
-import { UploadLicenseModal } from './upload-license-modal';
+
+type ServiceStatus = 'ok' | 'disabled' | 'warning' | 'error';
+
+interface SelfhostStatus {
+  server: {
+    status: ServiceStatus;
+    version: string;
+    deploymentType: string;
+    flavor: string;
+    startedAt: string;
+    uptimeSeconds: number;
+    currentTime: string;
+  };
+  services: {
+    postgres: StatusCheck;
+    redis: StatusCheck;
+    notebook: StatusCheck;
+    ai: StatusCheck;
+    storage: StatusCheck & {
+      provider?: string;
+      writable?: boolean;
+      disk?: {
+        total: number;
+        free: number;
+        available: number;
+      } | null;
+    };
+  };
+  resources: {
+    processMemory: {
+      rss: number;
+      heapTotal: number;
+      heapUsed: number;
+      external: number;
+      arrayBuffers: number;
+    };
+    systemMemory: {
+      total: number;
+      free: number;
+    };
+    cpu: {
+      cores: number;
+      loadAverage: number[];
+    };
+  };
+}
+
+interface StatusCheck {
+  status: ServiceStatus;
+  message?: string;
+}
 
 export const WorkspaceSettingLicense = ({
   onCloseSetting,
@@ -37,7 +70,6 @@ export const WorkspaceSettingLicense = ({
   onCloseSetting: () => void;
 }) => {
   const workspace = useService(WorkspaceService).workspace;
-
   const t = useI18n();
 
   if (workspace === null) {
@@ -50,143 +82,351 @@ export const WorkspaceSettingLicense = ({
         title={t['com.affine.settings.workspace.license']()}
         subtitle={t['com.affine.settings.workspace.license.description']()}
       />
-      <SelfHostTeamPlan />
       {workspace.flavour === 'local' ? (
         <EnableCloudPanel onCloseSetting={onCloseSetting} />
       ) : (
         <>
-          <SelfHostTeamCard />
-          <ReplaceLicenseModal />
-          <TypeFormLink />
-          <PaymentMethodUpdater />
+          <ServerStatusCard />
+          <PrivateDeploymentCard />
         </>
       )}
     </FrameworkScope>
   );
 };
 
-const ReplaceLicenseModal = () => {
+const ServerStatusCard = () => {
   const t = useI18n();
-  const selfhostLicenseService = useService(SelfhostLicenseService);
-  const license = useLiveData(selfhostLicenseService.license$);
-  const isOneTimePurchase = license?.variant === SubscriptionVariant.Onetime;
-  const permission = useService(WorkspacePermissionService).permission;
-  const isTeam = useLiveData(permission.isTeam$);
-  const [openUploadModal, setOpenUploadModal] = useState(false);
+  const [status, setStatus] = useState<SelfhostStatus | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleClick = useCallback(() => {
-    setOpenUploadModal(true);
-  }, []);
+  const loadStatus = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/self-host/status', {
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          response.status === 403
+            ? t[
+                'com.affine.settings.workspace.license.server-status.forbidden'
+              ]()
+            : t['com.affine.settings.workspace.license.server-status.failed']()
+        );
+      }
+
+      setStatus((await response.json()) as SelfhostStatus);
+    } catch (err) {
+      setStatus(null);
+      setError(
+        err instanceof Error
+          ? err.message
+          : t['com.affine.settings.workspace.license.server-status.failed']()
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [t]);
 
   useEffect(() => {
-    selfhostLicenseService.revalidate();
-  }, [selfhostLicenseService]);
-
-  if (!isTeam || !isOneTimePurchase) {
-    return null;
-  }
+    loadStatus().catch(console.error);
+  }, [loadStatus]);
 
   return (
-    <>
-      <SettingRow
-        className={styles.paymentMethod}
-        name={t[
-          'com.affine.settings.workspace.license.self-host-team.replace-license.title'
-        ]()}
-        desc={t[
-          'com.affine.settings.workspace.license.self-host-team.replace-license.description'
-        ]()}
-      >
-        <Button onClick={handleClick}>
-          {t[
-            'com.affine.settings.workspace.license.self-host-team.replace-license.upload'
-          ]()}
+    <div className={styles.sectionCard}>
+      <div className={styles.cardHeader}>
+        <div>
+          <h3 className={styles.cardTitle}>
+            {t['com.affine.settings.workspace.license.server-status.title']()}
+          </h3>
+          <p className={styles.cardDescription}>
+            {t[
+              'com.affine.settings.workspace.license.server-status.description'
+            ]()}
+          </p>
+        </div>
+        <Button onClick={loadStatus} loading={loading} disabled={loading}>
+          {t['com.affine.settings.workspace.license.server-status.refresh']()}
         </Button>
-      </SettingRow>
-      <UploadLicenseModal
-        open={openUploadModal}
-        onOpenChange={setOpenUploadModal}
-      />
-    </>
+      </div>
+      {error ? (
+        <StatusGrid
+          items={[
+            {
+              label:
+                t[
+                  'com.affine.settings.workspace.license.server-status.overall'
+                ](),
+              status: 'error',
+              value: error,
+            },
+          ]}
+        />
+      ) : status ? (
+        <StatusGrid
+          items={[
+            {
+              label:
+                t[
+                  'com.affine.settings.workspace.license.server-status.backend'
+                ](),
+              status: status.server.status,
+              value: `${status.server.version} · ${status.server.flavor}`,
+            },
+            {
+              label:
+                t[
+                  'com.affine.settings.workspace.license.server-status.postgres'
+                ](),
+              ...toStatusView(status.services.postgres, t),
+            },
+            {
+              label:
+                t[
+                  'com.affine.settings.workspace.license.server-status.redis'
+                ](),
+              ...toStatusView(status.services.redis, t),
+            },
+            {
+              label:
+                t[
+                  'com.affine.settings.workspace.license.server-status.notebook'
+                ](),
+              ...toStatusView(status.services.notebook, t),
+            },
+            {
+              label:
+                t['com.affine.settings.workspace.license.server-status.ai'](),
+              ...toStatusView(status.services.ai, t),
+            },
+            {
+              label:
+                t[
+                  'com.affine.settings.workspace.license.server-status.storage'
+                ](),
+              status: status.services.storage.status,
+              value: formatStorage(status.services.storage, t),
+            },
+            {
+              label:
+                t[
+                  'com.affine.settings.workspace.license.server-status.memory'
+                ](),
+              status: 'ok',
+              value: `${formatBytes(
+                status.resources.systemMemory.total -
+                  status.resources.systemMemory.free
+              )} / ${formatBytes(status.resources.systemMemory.total)}`,
+            },
+            {
+              label:
+                t['com.affine.settings.workspace.license.server-status.cpu'](),
+              status: 'ok',
+              value: `${status.resources.cpu.cores} cores · ${status.resources.cpu.loadAverage
+                .slice(0, 3)
+                .map(value => value.toFixed(2))
+                .join(' / ')}`,
+            },
+            {
+              label:
+                t[
+                  'com.affine.settings.workspace.license.server-status.uptime'
+                ](),
+              status: 'ok',
+              value: formatUptime(status.server.uptimeSeconds),
+            },
+            {
+              label:
+                t['com.affine.settings.workspace.license.server-status.time'](),
+              status: 'ok',
+              value: new Date(status.server.currentTime).toLocaleString(),
+            },
+          ]}
+        />
+      ) : (
+        <StatusGrid
+          items={[
+            {
+              label:
+                t[
+                  'com.affine.settings.workspace.license.server-status.overall'
+                ](),
+              status: 'loading',
+              value:
+                t[
+                  'com.affine.settings.workspace.license.server-status.checking'
+                ](),
+            },
+          ]}
+        />
+      )}
+    </div>
   );
 };
 
-const TypeFormLink = () => {
+const PrivateDeploymentCard = () => {
   const t = useI18n();
-  const workspaceSubscriptionService = useService(WorkspaceSubscriptionService);
-  const authService = useService(AuthService);
-
-  const workspaceSubscription = useLiveData(
-    workspaceSubscriptionService.subscription.subscription$
-  );
-  const account = useLiveData(authService.session.account$);
-
-  if (!account) return null;
-
-  const link = getUpgradeQuestionnaireLink({
-    name: account.info?.name,
-    id: account.id,
-    email: account.email,
-    recurring: workspaceSubscription?.recurring ?? SubscriptionRecurring.Yearly,
-    plan: SubscriptionPlan.SelfHostedTeam,
-  });
-
-  return (
-    <SettingRow
-      className={styles.paymentMethod}
-      name={t['com.affine.payment.billing-type-form.title']()}
-      desc={t['com.affine.payment.billing-type-form.description']()}
-    >
-      <a target="_blank" href={link} rel="noreferrer">
-        <Button>{t['com.affine.payment.billing-type-form.go']()}</Button>
-      </a>
-    </SettingRow>
-  );
-};
-
-const PaymentMethodUpdater = () => {
-  const workspace = useService(WorkspaceService).workspace;
-
+  const workspaceQuotaService = useService(WorkspaceQuotaService);
   const permission = useService(WorkspacePermissionService).permission;
+  const workspaceQuota = useLiveData(workspaceQuotaService.quota.quota$);
   const isTeam = useLiveData(permission.isTeam$);
 
-  const { isMutating, trigger } = useMutation({
-    mutation: createSelfhostCustomerPortalMutation,
-  });
-  const urlService = useService(UrlService);
-  const t = useI18n();
+  useEffect(() => {
+    permission.revalidate();
+    workspaceQuotaService.quota.revalidate();
+  }, [permission, workspaceQuotaService]);
 
-  const update = useAsyncCallback(async () => {
-    await trigger(
+  const rows = useMemo(
+    () => [
       {
-        workspaceId: workspace.id,
+        name: t[
+          'com.affine.settings.workspace.license.private-deployment.workspace'
+        ](),
+        desc: isTeam
+          ? t['com.affine.settings.workspace.license.private-deployment.team']()
+          : t[
+              'com.affine.settings.workspace.license.private-deployment.self-host'
+            ](),
       },
       {
-        onSuccess: data => {
-          urlService.openExternal(data.createSelfhostWorkspaceCustomerPortal);
-        },
-      }
-    ).catch(e => {
-      const userFriendlyError = UserFriendlyError.fromAny(e);
-      notify.error(userFriendlyError);
-    });
-  }, [trigger, urlService, workspace.id]);
-
-  if (!isTeam) {
-    return null;
-  }
+        name: t[
+          'com.affine.settings.workspace.license.private-deployment.members'
+        ](),
+        desc: `${workspaceQuota?.memberCount ?? '-'} / ${
+          workspaceQuota?.memberLimit ?? '-'
+        }`,
+      },
+      {
+        name: t[
+          'com.affine.settings.workspace.license.private-deployment.services'
+        ](),
+        desc: t[
+          'com.affine.settings.workspace.license.private-deployment.services.description'
+        ](),
+      },
+    ],
+    [isTeam, t, workspaceQuota]
+  );
 
   return (
-    <SettingRow
-      className={styles.paymentMethod}
-      name={t['com.affine.payment.billing-setting.payment-method']()}
-      desc={t[
-        'com.affine.payment.billing-setting.payment-method.description'
-      ]()}
-    >
-      <Button onClick={update} loading={isMutating} disabled={isMutating}>
-        {t['com.affine.payment.billing-setting.payment-method.go']()}
-      </Button>
-    </SettingRow>
+    <div className={styles.sectionCard}>
+      <div>
+        <h3 className={styles.cardTitle}>
+          {t[
+            'com.affine.settings.workspace.license.private-deployment.title'
+          ]()}
+        </h3>
+        <p className={styles.cardDescription}>
+          {t[
+            'com.affine.settings.workspace.license.private-deployment.description'
+          ]()}
+        </p>
+      </div>
+      {rows.map(row => (
+        <SettingRow
+          key={row.name}
+          spreadCol={false}
+          name={row.name}
+          desc={row.desc}
+        />
+      ))}
+    </div>
   );
+};
+
+const StatusGrid = ({
+  items,
+}: {
+  items: {
+    label: string;
+    status: ServiceStatus | 'loading';
+    value: string;
+  }[];
+}) => {
+  return (
+    <div className={styles.statusGrid}>
+      {items.map(item => (
+        <div className={styles.statusItem} key={item.label}>
+          <div className={styles.statusLabel}>{item.label}</div>
+          <div className={styles.statusValue}>
+            <span className={styles.statusDot} data-status={item.status} />
+            <span className={styles.statusText} title={item.value}>
+              {item.value}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const toStatusView = (check: StatusCheck, t: ReturnType<typeof useI18n>) => {
+  return {
+    status: check.status,
+    value:
+      t[
+        `com.affine.settings.workspace.license.server-status.${check.status}`
+      ](),
+  };
+};
+
+const formatStorage = (
+  storage: SelfhostStatus['services']['storage'],
+  t: ReturnType<typeof useI18n>
+) => {
+  if (storage.message) {
+    return t[
+      `com.affine.settings.workspace.license.server-status.${storage.status}`
+    ]();
+  }
+
+  if (storage.disk) {
+    return `${storage.provider ?? 'fs'} · ${formatBytes(
+      storage.disk.available
+    )} ${t[
+      'com.affine.settings.workspace.license.server-status.storage.available'
+    ]()}`;
+  }
+
+  return `${storage.provider ?? '-'} · ${
+    storage.writable
+      ? t['com.affine.settings.workspace.license.server-status.ok']()
+      : t['com.affine.settings.workspace.license.server-status.error']()
+  }`;
+};
+
+const formatBytes = (bytes: number) => {
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return '0 B';
+  }
+
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const exponent = Math.min(
+    Math.floor(Math.log(bytes) / Math.log(1024)),
+    units.length - 1
+  );
+  const value = bytes / 1024 ** exponent;
+
+  return `${value.toFixed(value >= 10 || exponent === 0 ? 0 : 1)} ${
+    units[exponent]
+  }`;
+};
+
+const formatUptime = (seconds: number) => {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+
+  if (days > 0) {
+    return `${days}d ${hours}h`;
+  }
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+
+  return `${minutes}m`;
 };

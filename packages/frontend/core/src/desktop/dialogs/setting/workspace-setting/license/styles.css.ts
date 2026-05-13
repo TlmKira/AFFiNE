@@ -15,6 +15,97 @@ export const planCard = style({
   borderRadius: '8px',
 });
 
+export const sectionCard = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+  padding: '16px',
+  border: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
+  backgroundColor: cssVarV2('layer/white'),
+  borderRadius: '8px',
+  marginTop: '16px',
+});
+
+export const cardHeader = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '12px',
+});
+
+export const cardTitle = style({
+  margin: 0,
+  fontSize: cssVar('fontBase'),
+  fontWeight: 600,
+  color: cssVarV2('text/primary'),
+});
+
+export const cardDescription = style({
+  margin: 0,
+  fontSize: cssVar('fontSm'),
+  color: cssVarV2('text/secondary'),
+});
+
+export const statusGrid = style({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+  gap: '10px',
+});
+
+export const statusItem = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+  minWidth: 0,
+  padding: '10px',
+  borderRadius: '8px',
+  backgroundColor: cssVarV2('layer/background/secondary'),
+});
+
+export const statusLabel = style({
+  fontSize: cssVar('fontXs'),
+  color: cssVarV2('text/secondary'),
+});
+
+export const statusValue = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '6px',
+  minWidth: 0,
+  fontSize: cssVar('fontSm'),
+  color: cssVarV2('text/primary'),
+});
+
+export const statusText = style({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+});
+
+export const statusDot = style({
+  width: '8px',
+  height: '8px',
+  borderRadius: '999px',
+  flex: '0 0 auto',
+  selectors: {
+    '&[data-status="ok"]': {
+      backgroundColor: '#19a974',
+    },
+    '&[data-status="warning"]': {
+      backgroundColor: '#f5a623',
+    },
+    '&[data-status="disabled"]': {
+      backgroundColor: cssVarV2('text/disable'),
+    },
+    '&[data-status="error"]': {
+      backgroundColor: cssVarV2('status/error'),
+    },
+    '&[data-status="loading"]': {
+      backgroundColor: cssVarV2('text/secondary'),
+    },
+  },
+});
+
 export const container = style({
   display: 'flex',
   justifyContent: 'space-between',

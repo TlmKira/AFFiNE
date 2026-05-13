@@ -20,12 +20,13 @@ const biliPlayerValidationOptions: EmbedIframeUrlValidationOptions = {
   hostnames: ['player.bilibili.com'],
 };
 
-const AV_REGEX = /av([0-9]+)/i;
-const BV_REGEX = /(BV[0-9A-Za-z]{10})/;
+const AV_REGEX = /(?:^|\/)av([0-9]+)|[?&]aid=([0-9]+)/i;
+const BV_REGEX = /(BV[0-9A-Za-z]{10})/i;
+const PLAIN_BILI_ID_REGEX = /^(?:BV[0-9A-Za-z]{10}|av[0-9]+)$/i;
 
 const extractAvid = (url: string) => {
   const match = url.match(AV_REGEX);
-  return match ? match[1] : undefined;
+  return match ? (match[1] ?? match[2]) : undefined;
 };
 
 const extractBvid = (url: string) => {
@@ -34,6 +35,7 @@ const extractBvid = (url: string) => {
 };
 
 const buildBiliPlayerEmbedUrl = (url: string) => {
+  url = url.trim();
   // If the user pasted the embed URL directly, keep it
   if (isValidBiliPlayerUrl(url)) {
     return url;
@@ -75,10 +77,15 @@ function isValidBiliPlayerUrl(url: string) {
 
 export const bilibiliConfig = {
   name: 'bilibili',
-  match: (url: string) =>
-    isValidBiliPlayerUrl(url) ||
-    (validateEmbedIframeUrl(url, bilibiliValidationOptions) &&
-      (!!extractAvid(url) || !!extractBvid(url))),
+  match: (url: string) => {
+    url = url.trim();
+    return (
+      isValidBiliPlayerUrl(url) ||
+      PLAIN_BILI_ID_REGEX.test(url) ||
+      (validateEmbedIframeUrl(url, bilibiliValidationOptions) &&
+        (!!extractAvid(url) || !!extractBvid(url)))
+    );
+  },
   buildOEmbedUrl: buildBiliPlayerEmbedUrl,
   useOEmbedUrlDirectly: true,
   validateIframeUrl: (iframeUrl: string) => isValidBiliPlayerUrl(iframeUrl),
