@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: Image tag to publish
+        description: Image tag to publish. Leave empty to use the short Git SHA.
         required: false
-        default: latest
+        default: ''
 
 permissions:
   contents: read
@@ -47,9 +47,19 @@ jobs:
         run: corepack yarn install --immutable
 
       - name: Prepare image names
+        id: image
         shell: bash
         run: |
           echo "IMAGE_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
+          SHORT_SHA="${GITHUB_SHA::9}"
+          IMAGE_TAG="${{ inputs.image_tag }}"
+          if [ -z "$IMAGE_TAG" ]; then
+            IMAGE_TAG="$SHORT_SHA"
+          fi
+          echo "IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_ENV"
+          echo "SHORT_SHA=$SHORT_SHA" >> "$GITHUB_ENV"
+          echo "affine_image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/kite-affine:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+          echo "notebook_image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/kite-affine-notebook:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Build frontend assets
         run: |
@@ -85,7 +95,7 @@ jobs:
           file: .github/deployment/node/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.IMAGE_OWNER }}/kite-affine:${{ inputs.image_tag }}
+            ghcr.io/${{ env.IMAGE_OWNER }}/kite-affine:${{ env.IMAGE_TAG }}
             ghcr.io/${{ env.IMAGE_OWNER }}/kite-affine:${{ github.sha }}
 
       - name: Build and push Notebook image
@@ -95,5 +105,46 @@ jobs:
           file: .docker/selfhost/notebook/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.IMAGE_OWNER }}/kite-affine-notebook:${{ inputs.image_tag }}
+            ghcr.io/${{ env.IMAGE_OWNER }}/kite-affine-notebook:${{ env.IMAGE_TAG }}
             ghcr.io/${{ env.IMAGE_OWNER }}/kite-affine-notebook:${{ github.sha }}
+
+      - name: Write deploy environment
+        shell: bash
+        run: |
+          mkdir -p deploy-env
+          cat > deploy-env/selfhost-images.env <<EOF
+          IMAGE_OWNER=${IMAGE_OWNER}
+          IMAGE_TAG=${IMAGE_TAG}
+          AFFINE_IMAGE=ghcr.io/${IMAGE_OWNER}/kite-affine:${IMAGE_TAG}
+          NOTEBOOK_IMAGE=ghcr.io/${IMAGE_OWNER}/kite-affine-notebook:${IMAGE_TAG}
+          GIT_SHA=${GITHUB_SHA}
+          EOF
+
+      - name: Upload deploy environment
+        uses: actions/upload-artifact@v4
+        with:
+          name: selfhost-images-${{ env.IMAGE_TAG }}
+          path: deploy-env/selfhost-images.env
+          if-no-files-found: error
+
+      - name: Deployment summary
+        shell: bash
+        run: |
+          {
+            echo "## Self-host images published"
+            echo
+            echo "| Image | Tag |"
+            echo "| --- | --- |"
+            echo "| \`ghcr.io/${IMAGE_OWNER}/kite-affine\` | \`${IMAGE_TAG}\` |"
+            echo "| \`ghcr.io/${IMAGE_OWNER}/kite-affine-notebook\` | \`${IMAGE_TAG}\` |"
+            echo
+            echo "Run this on the test server after pulling the latest repository code:"
+            echo
+            echo '```bash'
+            echo "cd /opt/affine-fork"
+            echo "git fetch origin feature/graduate-toolkit"
+            echo "git checkout feature/graduate-toolkit"
+            echo "git pull --ff-only origin feature/graduate-toolkit"
+            echo "bash .docker/selfhost/deploy-ghcr.sh --owner ${IMAGE_OWNER} --tag ${IMAGE_TAG}"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

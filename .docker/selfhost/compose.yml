@@ -53,8 +53,6 @@ services:
         condition: service_healthy
 
   notebook:
-    build:
-      context: ./notebook
     image: ${NOTEBOOK_IMAGE:-kite-affine-notebook:local}
     container_name: affine_notebook
     expose:

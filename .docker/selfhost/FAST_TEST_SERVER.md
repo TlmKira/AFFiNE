@@ -7,6 +7,35 @@ AFFiNE fork on every new server.
 
 Build once, push once, then every test server only pulls images.
 
+Recommended flow:
+
+1. Commit and push your fork changes.
+2. Open GitHub Actions and run `Build self-host images`.
+3. Leave `image_tag` empty to use the short Git SHA, or enter a tag such as
+   `test-20260513`.
+4. Copy the deployment command from the workflow summary.
+5. Run it on the test server.
+
+Example command from the server:
+
+```bash
+cd /opt/affine-fork
+git fetch origin feature/graduate-toolkit
+git checkout feature/graduate-toolkit
+git pull --ff-only origin feature/graduate-toolkit
+bash .docker/selfhost/deploy-ghcr.sh --owner tlmkira --tag <image-tag>
+```
+
+The deploy script updates only these two lines in `.docker/selfhost/.env`:
+
+```env
+AFFINE_IMAGE=ghcr.io/tlmkira/kite-affine:<image-tag>
+NOTEBOOK_IMAGE=ghcr.io/tlmkira/kite-affine-notebook:<image-tag>
+```
+
+It does not modify database passwords, Notebook tokens, private keys, storage
+paths, or persisted data.
+
 Suggested image names:
 
 ```text
@@ -27,6 +56,14 @@ Then start:
 docker compose --env-file .docker/selfhost/.env -f .docker/selfhost/compose.yml pull
 docker compose --env-file .docker/selfhost/.env -f .docker/selfhost/compose.yml up -d
 ```
+
+If GHCR packages are private, log in on the server first:
+
+```bash
+echo '<github-token>' | docker login ghcr.io -u '<github-user>' --password-stdin
+```
+
+For fastest temporary-server testing, set both GHCR packages to Public.
 
 ## Minimal server bootstrap
 
