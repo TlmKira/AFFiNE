@@ -71,7 +71,7 @@ services:
         '--ServerApp.open_browser=False',
         '--ServerApp.disable_check_xsrf=True',
       ]
-    cpus: ${NOTEBOOK_CPU_LIMIT:-2}
+    cpus: ${NOTEBOOK_CPU_LIMIT:-1.0}
     mem_limit: ${NOTEBOOK_MEMORY_LIMIT:-2g}
     restart: unless-stopped
 
