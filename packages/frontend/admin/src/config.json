@@ -321,7 +321,8 @@
   "copilot": {
     "enabled": {
       "type": "Boolean",
-      "desc": "Whether to enable the copilot plugin. <br> Document: <a href=\"https://docs.affine.pro/self-host-affine/administer/ai\" target=\"_blank\">https://docs.affine.pro/self-host-affine/administer/ai</a>"
+      "desc": "Whether to enable the copilot plugin. <br> Document: <a href=\"https://docs.affine.pro/self-host-affine/administer/ai\" target=\"_blank\">https://docs.affine.pro/self-host-affine/administer/ai</a>",
+      "env": "AFFINE_COPILOT_ENABLED"
     },
     "byok.enabled": {
       "type": "Boolean",
@@ -515,6 +516,23 @@
       "type": "Object",
       "desc": "RevenueCat integration configs",
       "link": "https://www.revenuecat.com/docs/"
+    }
+  },
+  "researchCitation": {
+    "contactEmail": {
+      "type": "String",
+      "desc": "Contact email used in polite User-Agent headers for open academic metadata APIs.",
+      "env": "AFFINE_CITATION_CONTACT_EMAIL"
+    },
+    "openAlexApiKey": {
+      "type": "String",
+      "desc": "Optional OpenAlex API key. Leave empty for public low-volume usage.",
+      "env": "OPENALEX_API_KEY"
+    },
+    "semanticScholarApiKey": {
+      "type": "String",
+      "desc": "Optional Semantic Scholar API key. Leave empty for public low-volume usage.",
+      "env": "SEMANTIC_SCHOLAR_API_KEY"
     }
   },
   "worker": {

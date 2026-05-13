@@ -1002,7 +1002,7 @@
       "properties": {
         "enabled": {
           "type": "boolean",
-          "description": "Whether to enable the copilot plugin. <br> Document: <a href=\"https://docs.affine.pro/self-host-affine/administer/ai\" target=\"_blank\">https://docs.affine.pro/self-host-affine/administer/ai</a>\n@default false",
+          "description": "Whether to enable the copilot plugin. <br> Document: <a href=\"https://docs.affine.pro/self-host-affine/administer/ai\" target=\"_blank\">https://docs.affine.pro/self-host-affine/administer/ai</a>\n@default false\n@environment `AFFINE_COPILOT_ENABLED`",
           "default": false
         },
         "byok.enabled": {
@@ -1578,6 +1578,27 @@
             "environment": "production",
             "productMap": {}
           }
+        }
+      }
+    },
+    "researchCitation": {
+      "type": "object",
+      "description": "Configuration for researchCitation module",
+      "properties": {
+        "contactEmail": {
+          "type": "string",
+          "description": "Contact email used in polite User-Agent headers for open academic metadata APIs.\n@default \"\"\n@environment `AFFINE_CITATION_CONTACT_EMAIL`",
+          "default": ""
+        },
+        "openAlexApiKey": {
+          "type": "string",
+          "description": "Optional OpenAlex API key. Leave empty for public low-volume usage.\n@default \"\"\n@environment `OPENALEX_API_KEY`",
+          "default": ""
+        },
+        "semanticScholarApiKey": {
+          "type": "string",
+          "description": "Optional Semantic Scholar API key. Leave empty for public low-volume usage.\n@default \"\"\n@environment `SEMANTIC_SCHOLAR_API_KEY`",
+          "default": ""
         }
       }
     },

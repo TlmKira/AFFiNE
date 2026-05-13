@@ -150,11 +150,19 @@ export const KNOWN_CONFIG_GROUPS = [
     module: 'copilot',
     fields: [
       'enabled',
-      'scenarios',
+      'byok.enabled',
+      {
+        key: 'byok.allowedProviders',
+        type: 'JSON',
+        desc: 'Workspace BYOK provider allowlist, for example ["openai","anthropic","gemini","fal"].',
+      },
+      'byok.allowCustomEndpoint',
       'providers.openai',
       'providers.gemini',
       'providers.anthropic',
       'providers.fal',
+      'providers.defaults',
+      'providers.profiles',
       'unsplash',
       'exa',
       {

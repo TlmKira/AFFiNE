@@ -217,6 +217,7 @@ defineModuleConfig('copilot', {
   enabled: {
     desc: 'Whether to enable the copilot plugin. <br> Document: <a href="https://docs.affine.pro/self-host-affine/administer/ai" target="_blank">https://docs.affine.pro/self-host-affine/administer/ai</a>',
     default: false,
+    env: ['AFFINE_COPILOT_ENABLED', 'boolean'],
   },
   'byok.enabled': {
     desc: 'Whether to enable workspace BYOK.',

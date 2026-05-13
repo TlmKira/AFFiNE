@@ -1,6 +1,6 @@
 import { cn } from '@affine/admin/utils';
 import { ROUTES } from '@affine/routes';
-import { AccountIcon, SelfhostIcon } from '@blocksuite/icons/rc';
+import { AccountIcon, AiOutlineIcon, SelfhostIcon } from '@blocksuite/icons/rc';
 import {
   BarChart3Icon,
   LayoutDashboardIcon,
@@ -58,12 +58,12 @@ export function Nav({ isCollapsed = false }: NavProps) {
           label="Queue"
           isCollapsed={isCollapsed}
         />
-        {/* <NavItem
+        <NavItem
           to="/admin/ai"
           icon={<AiOutlineIcon fontSize={20} />}
           label="AI"
           isCollapsed={isCollapsed}
-        /> */}
+        />
         <SettingsItem isCollapsed={isCollapsed} />
         <NavItem
           to={ROUTES.admin.about}

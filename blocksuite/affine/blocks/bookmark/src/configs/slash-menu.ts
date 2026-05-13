@@ -10,7 +10,7 @@ import { LinkIcon } from '@blocksuite/icons/lit';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
 import type { BlockModel, ExtensionType } from '@blocksuite/store';
 
-import { createResearchCitationBookmarkProps } from './research-citation';
+import { createResolvedResearchCitationBookmarkProps } from './research-citation';
 import { LinkTooltip } from './tooltips';
 
 function getNextFootnoteIdentifier(model: BlockModel) {
@@ -95,15 +95,16 @@ const bookmarkSlashMenuConfig: SlashMenuConfig = {
           return;
         }
 
-        const index = parentModel.children.indexOf(model) + 1;
-        std.host.store.addBlock(
-          'affine:bookmark',
-          createResearchCitationBookmarkProps(
+        notification?.toast('正在补全论文信息...');
+        const { props, resolved } =
+          await createResolvedResearchCitationBookmarkProps(
             input,
             getNextFootnoteIdentifier(model)
-          ),
-          parentModel,
-          index
+          );
+        const index = parentModel.children.indexOf(model) + 1;
+        std.host.store.addBlock('affine:bookmark', props, parentModel, index);
+        notification?.toast(
+          resolved ? '已补全论文信息' : '未能可靠补全，已插入可编辑引用卡片'
         );
 
         if (model.text?.length === 0) {

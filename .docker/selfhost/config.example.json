@@ -11,6 +11,11 @@
   },
   "copilot": {
     "enabled": false,
+    "byok": {
+      "enabled": true,
+      "allowCustomEndpoint": false,
+      "allowedProviders": ["openai", "anthropic", "gemini", "fal"]
+    },
     "providers": {
       "openai": {
         "apiKey": "",

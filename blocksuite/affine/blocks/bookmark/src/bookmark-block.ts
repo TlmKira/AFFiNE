@@ -165,6 +165,7 @@ export class BookmarkBlockComponent extends CaptionedBlockComponent<BookmarkBloc
         .citationTitle=${title || url}
         .citationContent=${description}
         .citationIdentifier=${footnoteIdentifier}
+        .citationUrl=${url}
         .onClickCallback=${this.handleClick}
         .onDoubleClickCallback=${this.handleDoubleClick}
         .active=${this.selected$.value}
