@@ -16,6 +16,13 @@ const CACHE_TTL = 1000 * 60 * 60 * 24;
 const FETCH_TIMEOUT_MS = 8000;
 const MAX_REDIRECTS = 3;
 const MAX_METADATA_BYTES = 1024 * 1024;
+const TRUSTED_METADATA_HOSTS = new Set([
+  'api.crossref.org',
+  'api.datacite.org',
+  'api.openalex.org',
+  'api.semanticscholar.org',
+  'export.arxiv.org',
+]);
 const DOI_PATTERN = /\b10\.\d{4,9}\/[-._;()/:A-Z0-9]+\b/i;
 const ARXIV_PATTERN =
   /(?:arxiv:|arxiv\.org\/(?:abs|pdf)\/)?([a-z-]+\/\d{7}|\d{4}\.\d{4,5})(?:v\d+)?/i;
@@ -171,17 +178,49 @@ export class ResearchCitationService {
     url: string,
     provider: Parameters<typeof this.headers>[0]
   ) {
-    const response = await safeFetch(
-      url,
-      { headers: this.headers(provider) },
-      {
-        timeoutMs: FETCH_TIMEOUT_MS,
-        maxRedirects: MAX_REDIRECTS,
-        maxBytes: MAX_METADATA_BYTES,
+    const text = await this.fetchTrustedMetadataText(url, provider);
+    return text ? (JSON.parse(text) as T) : null;
+  }
+
+  private async fetchTrustedMetadataText(
+    url: string,
+    provider: Parameters<typeof this.headers>[0]
+  ) {
+    const requestUrl = new URL(url);
+    if (!TRUSTED_METADATA_HOSTS.has(requestUrl.hostname)) {
+      throw new BadRequest('不支持的论文元数据来源。');
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const response = await fetch(requestUrl, {
+        headers: this.headers(provider),
+        redirect: 'follow',
+        signal: controller.signal,
+      });
+      if (!response.ok) return null;
+
+      const contentLength = Number(response.headers.get('content-length') ?? 0);
+      if (contentLength > MAX_METADATA_BYTES) {
+        throw new ResponseTooLargeError({
+          limitBytes: MAX_METADATA_BYTES,
+          receivedBytes: contentLength,
+        });
       }
-    );
-    if (!response.ok) return null;
-    return (await response.json()) as T;
+
+      const body = await response.arrayBuffer();
+      if (body.byteLength > MAX_METADATA_BYTES) {
+        throw new ResponseTooLargeError({
+          limitBytes: MAX_METADATA_BYTES,
+          receivedBytes: body.byteLength,
+        });
+      }
+
+      return new TextDecoder().decode(body);
+    } finally {
+      clearTimeout(timeout);
+    }
   }
 
   private async resolveDoiInput(input: string) {
@@ -307,19 +346,14 @@ export class ResearchCitationService {
 
   private async resolveArxivApi(arxivId: string) {
     try {
-      const response = await safeFetch(
+      const text = await this.fetchTrustedMetadataText(
         `https://export.arxiv.org/api/query?id_list=${encodeURIComponent(
           arxivId
         )}`,
-        { headers: { 'User-Agent': this.headers('default')['User-Agent'] } },
-        {
-          timeoutMs: FETCH_TIMEOUT_MS,
-          maxRedirects: MAX_REDIRECTS,
-          maxBytes: MAX_METADATA_BYTES,
-        }
+        'default'
       );
-      if (!response.ok) return null;
-      const parsed = this.xml.parse(await response.text()) as {
+      if (!text) return null;
+      const parsed = this.xml.parse(text) as {
         feed?: { entry?: Record<string, unknown> | Record<string, unknown>[] };
       };
       const entry = first(parsed.feed?.entry);

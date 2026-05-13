@@ -24,6 +24,7 @@ services:
       - REDIS_SERVER_HOST=redis
       - DATABASE_URL=postgresql://${DB_USERNAME}:${DB_PASSWORD}@postgres:5432/${DB_DATABASE:-affine}
       - AFFINE_INDEXER_ENABLED=false
+      - AFFINE_COPILOT_ENABLED=${AFFINE_COPILOT_ENABLED:-false}
       - AFFINE_NOTEBOOK_ENABLED=${AFFINE_NOTEBOOK_ENABLED:-true}
       - AFFINE_NOTEBOOK_GATEWAY_URL=http://notebook:8888
       - AFFINE_NOTEBOOK_GATEWAY_TOKEN=${NOTEBOOK_TOKEN}
@@ -49,6 +50,7 @@ services:
       - REDIS_SERVER_HOST=redis
       - DATABASE_URL=postgresql://${DB_USERNAME}:${DB_PASSWORD}@postgres:5432/${DB_DATABASE:-affine}
       - AFFINE_INDEXER_ENABLED=false
+      - AFFINE_COPILOT_ENABLED=${AFFINE_COPILOT_ENABLED:-false}
     depends_on:
       postgres:
         condition: service_healthy
