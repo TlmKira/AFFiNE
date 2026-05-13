@@ -8,6 +8,7 @@ import * as styles from './index.css';
 
 type LocalDemoTipsProps = {
   isLoggedIn: boolean;
+  message?: string;
   onLogin: () => void;
   onEnableCloud: () => void;
   onClose: () => void;
@@ -16,6 +17,7 @@ type LocalDemoTipsProps = {
 export const LocalDemoTips = ({
   onClose,
   isLoggedIn,
+  message,
   onLogin,
   onEnableCloud,
 }: LocalDemoTipsProps) => {
@@ -34,7 +36,7 @@ export const LocalDemoTips = ({
   return (
     <div className={styles.tipsContainer} data-testid="local-demo-tips">
       <div className={styles.tipsMessage}>
-        {t['com.affine.banner.local-warning']()}
+        {message ?? t['com.affine.banner.local-warning']()}
       </div>
 
       <div className={styles.tipsRightItem}>

@@ -241,6 +241,8 @@
   "com.affine.appearanceSettings.dynamicBackground.opacity.description": "调节壁纸本身的可见程度，不影响设置页和弹窗透明度。",
   "com.affine.appearanceSettings.dynamicBackground.opacity.title": "壁纸强度",
   "com.affine.appearanceSettings.dynamicBackground.title": "动态背景",
+  "com.affine.appearanceSettings.autoCloudSync.description": "登录后自动把本地工作区连接到你的私有同步服务，分享、Notebook 和协作功能将直接使用自部署后端。",
+  "com.affine.appearanceSettings.autoCloudSync.title": "自动连接私有同步服务",
   "com.affine.appearanceSettings.noisyBackground.description": "在侧边栏使用噪点背景效果。",
   "com.affine.appearanceSettings.noisyBackground.title": "侧边栏噪点背景",
   "com.affine.appearanceSettings.sidebar.title": "侧边栏",

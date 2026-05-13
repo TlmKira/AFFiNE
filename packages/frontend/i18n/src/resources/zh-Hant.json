@@ -240,6 +240,8 @@
   "com.affine.appearanceSettings.dynamicBackground.opacity.description": "調整桌布本身的可見程度，不影響設定頁和彈窗透明度。",
   "com.affine.appearanceSettings.dynamicBackground.opacity.title": "桌布強度",
   "com.affine.appearanceSettings.dynamicBackground.title": "動態背景",
+  "com.affine.appearanceSettings.autoCloudSync.description": "登入後自動把本機工作區連接到你的私有同步服務，分享、Notebook 和協作功能將直接使用自部署後端。",
+  "com.affine.appearanceSettings.autoCloudSync.title": "自動連接私有同步服務",
   "com.affine.appearanceSettings.noisyBackground.description": "在側邊欄使用噪點背景效果。",
   "com.affine.appearanceSettings.noisyBackground.title": "側邊欄噪點背景",
   "com.affine.appearanceSettings.sidebar.title": "側邊欄",

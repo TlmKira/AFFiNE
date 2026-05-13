@@ -7,6 +7,10 @@ import {
 } from '@affine/component/setting-components';
 import { LanguageMenu } from '@affine/core/components/affine/language-menu';
 import {
+  getAutoCloudSyncPreference,
+  setAutoCloudSyncPreference,
+} from '@affine/core/components/cloud/auto-cloud-sync';
+import {
   getDynamicBackgroundPreference,
   getDynamicWallpaperOpacityPreference,
   setDynamicBackgroundPreference,
@@ -181,6 +185,9 @@ export const AppearanceSettings = () => {
   const [wallpaperOpacity, setWallpaperOpacity] = useState(() =>
     getDynamicWallpaperOpacityPreference()
   );
+  const [autoCloudSync, setAutoCloudSync] = useState(() =>
+    getAutoCloudSyncPreference()
+  );
 
   return (
     <>
@@ -256,6 +263,18 @@ export const AppearanceSettings = () => {
             />
             <span className={wallpaperOpacityValue}>{wallpaperOpacity}%</span>
           </div>
+        </SettingRow>
+        <SettingRow
+          name={t.t('com.affine.appearanceSettings.autoCloudSync.title')}
+          desc={t.t('com.affine.appearanceSettings.autoCloudSync.description')}
+        >
+          <Switch
+            checked={autoCloudSync}
+            onChange={checked => {
+              setAutoCloudSync(checked);
+              setAutoCloudSyncPreference(checked);
+            }}
+          />
         </SettingRow>
       </SettingWrapper>
 
