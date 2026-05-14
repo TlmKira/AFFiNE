@@ -12,8 +12,10 @@ import {
 } from '@affine/core/components/cloud/auto-cloud-sync';
 import {
   getDynamicBackgroundPreference,
+  getDynamicWallpaperClarityPreference,
   getDynamicWallpaperOpacityPreference,
   setDynamicBackgroundPreference,
+  setDynamicWallpaperClarityPreference,
   setDynamicWallpaperOpacityPreference,
 } from '@affine/core/components/theme-provider/dynamic-background';
 import { useDynamicWallpaperImage } from '@affine/core/components/theme-provider/dynamic-wallpaper-background';
@@ -29,8 +31,8 @@ import { useAppSettingHelper } from '../../../../../components/hooks/affine/use-
 import { OpenInAppLinksMenu } from './links';
 import {
   settingWrapper,
-  wallpaperOpacityControl,
-  wallpaperOpacityValue,
+  wallpaperSliderControl,
+  wallpaperSliderValue,
 } from './style.css';
 import { ThemeEditorSetting } from './theme-editor-setting';
 
@@ -186,6 +188,9 @@ export const AppearanceSettings = () => {
   const [wallpaperOpacity, setWallpaperOpacity] = useState(() =>
     getDynamicWallpaperOpacityPreference()
   );
+  const [wallpaperClarity, setWallpaperClarity] = useState(() =>
+    getDynamicWallpaperClarityPreference()
+  );
   const wallpaper = useDynamicWallpaperImage();
   const [autoCloudSync, setAutoCloudSync] = useState(() =>
     getAutoCloudSyncPreference()
@@ -256,7 +261,7 @@ export const AppearanceSettings = () => {
           )}
           disabled={!dynamicBackground}
         >
-          <div className={wallpaperOpacityControl}>
+          <div className={wallpaperSliderControl}>
             <Slider
               min={0}
               max={100}
@@ -270,7 +275,33 @@ export const AppearanceSettings = () => {
                 setDynamicWallpaperOpacityPreference(nextOpacity);
               }}
             />
-            <span className={wallpaperOpacityValue}>{wallpaperOpacity}%</span>
+            <span className={wallpaperSliderValue}>{wallpaperOpacity}%</span>
+          </div>
+        </SettingRow>
+        <SettingRow
+          name={t.t(
+            'com.affine.appearanceSettings.dynamicBackground.clarity.title'
+          )}
+          desc={t.t(
+            'com.affine.appearanceSettings.dynamicBackground.clarity.description'
+          )}
+          disabled={!dynamicBackground}
+        >
+          <div className={wallpaperSliderControl}>
+            <Slider
+              min={0}
+              max={100}
+              step={5}
+              value={[wallpaperClarity]}
+              width={196}
+              disabled={!dynamicBackground}
+              onValueChange={value => {
+                const nextClarity = value[0] ?? wallpaperClarity;
+                setWallpaperClarity(nextClarity);
+                setDynamicWallpaperClarityPreference(nextClarity);
+              }}
+            />
+            <span className={wallpaperSliderValue}>{wallpaperClarity}%</span>
           </div>
         </SettingRow>
         <SettingRow

@@ -238,6 +238,8 @@
   "com.affine.appearanceSettings.language.description": "选择界面语言。",
   "com.affine.appearanceSettings.language.title": "显示语言",
   "com.affine.appearanceSettings.dynamicBackground.description": "为写作和演示添加本地随机壁纸背景。",
+  "com.affine.appearanceSettings.dynamicBackground.clarity.description": "调节背景壁纸的清晰程度，数值越高越清晰。",
+  "com.affine.appearanceSettings.dynamicBackground.clarity.title": "壁纸清晰度",
   "com.affine.appearanceSettings.dynamicBackground.opacity.description": "调节壁纸本身的可见程度，不影响设置页和弹窗透明度。",
   "com.affine.appearanceSettings.dynamicBackground.opacity.title": "壁纸强度",
   "com.affine.appearanceSettings.dynamicBackground.title": "动态背景",

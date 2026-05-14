@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import {
   DYNAMIC_BACKGROUND_CHANGE_EVENT,
   getDynamicBackgroundPreference,
+  getDynamicWallpaperBlur,
+  getDynamicWallpaperClarityPreference,
   getDynamicWallpaperOpacityPreference,
 } from './dynamic-background';
 
@@ -82,12 +84,16 @@ export function DynamicWallpaperBackground() {
   const [opacity, setOpacity] = useState(() =>
     getDynamicWallpaperOpacityPreference()
   );
+  const [clarity, setClarity] = useState(() =>
+    getDynamicWallpaperClarityPreference()
+  );
   const wallpaper = useDynamicWallpaperImage();
 
   useEffect(() => {
     const update = () => {
       setEnabled(getDynamicBackgroundPreference());
       setOpacity(getDynamicWallpaperOpacityPreference());
+      setClarity(getDynamicWallpaperClarityPreference());
     };
 
     window.addEventListener(DYNAMIC_BACKGROUND_CHANGE_EVENT, update);
@@ -111,6 +117,9 @@ export function DynamicWallpaperBackground() {
         {
           '--affine-dynamic-wallpaper-image': `url("${wallpaper}")`,
           '--affine-dynamic-wallpaper-opacity': `${opacity / 100}`,
+          '--affine-dynamic-wallpaper-blur': `${getDynamicWallpaperBlur(
+            clarity
+          )}px`,
         } as CSSProperties
       }
     />

@@ -8,7 +8,7 @@ export const settingWrapper = style({
   maxWidth: '250px',
 });
 
-export const wallpaperOpacityControl = style({
+export const wallpaperSliderControl = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',
@@ -16,7 +16,7 @@ export const wallpaperOpacityControl = style({
   width: '250px',
 });
 
-export const wallpaperOpacityValue = style({
+export const wallpaperSliderValue = style({
   width: '42px',
   textAlign: 'right',
   fontVariantNumeric: 'tabular-nums',

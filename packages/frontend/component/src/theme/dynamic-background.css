@@ -2,8 +2,8 @@ html[data-dynamic-background='on'] {
   --affine-dynamic-wallpaper-app-surface: rgba(255, 255, 255, 0.34);
   --affine-dynamic-wallpaper-panel-surface: rgba(255, 255, 255, 0.96);
   --affine-dynamic-wallpaper-content-surface: rgba(255, 255, 255, 0.58);
-  --affine-dynamic-wallpaper-image-filter: blur(20px) saturate(0.72)
-    contrast(0.94) brightness(1.08);
+  --affine-dynamic-wallpaper-image-adjustment: saturate(0.72) contrast(0.94)
+    brightness(1.08);
   --affine-dynamic-wallpaper-image-scale: 1.07;
   --affine-dynamic-wallpaper-image-opacity-factor: 0.34;
   --affine-dynamic-wallpaper-veil:
@@ -71,7 +71,8 @@ html[data-dynamic-background='on'] [class*='route-container_header'] {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  filter: var(--affine-dynamic-wallpaper-image-filter);
+  filter: blur(var(--affine-dynamic-wallpaper-blur, 7px))
+    var(--affine-dynamic-wallpaper-image-adjustment);
   opacity: calc(
     var(--affine-dynamic-wallpaper-opacity, 0.35) *
       var(--affine-dynamic-wallpaper-image-opacity-factor)
@@ -92,8 +93,8 @@ html[data-theme='dark'][data-dynamic-background='on'] {
   --affine-dynamic-wallpaper-app-surface: rgba(12, 16, 24, 0.42);
   --affine-dynamic-wallpaper-panel-surface: rgba(18, 22, 30, 0.96);
   --affine-dynamic-wallpaper-content-surface: rgba(18, 22, 30, 0.62);
-  --affine-dynamic-wallpaper-image-filter: blur(22px) saturate(0.68)
-    contrast(0.92) brightness(0.78);
+  --affine-dynamic-wallpaper-image-adjustment: saturate(0.68) contrast(0.92)
+    brightness(0.78);
   --affine-dynamic-wallpaper-image-opacity-factor: 0.3;
   --affine-dynamic-wallpaper-veil:
     linear-gradient(rgba(8, 12, 20, 0.26), rgba(8, 12, 20, 0.34)),
@@ -114,8 +115,8 @@ html[data-theme='research'][data-dynamic-background='on'] {
   --affine-dynamic-wallpaper-app-surface: rgba(247, 252, 255, 0.42);
   --affine-dynamic-wallpaper-panel-surface: rgba(247, 252, 255, 0.97);
   --affine-dynamic-wallpaper-content-surface: rgba(250, 253, 255, 0.64);
-  --affine-dynamic-wallpaper-image-filter: blur(20px) saturate(0.62)
-    contrast(0.92) brightness(1.1);
+  --affine-dynamic-wallpaper-image-adjustment: saturate(0.62) contrast(0.92)
+    brightness(1.1);
   --affine-dynamic-wallpaper-image-opacity-factor: 0.3;
   --affine-dynamic-wallpaper-veil:
     linear-gradient(rgba(247, 252, 255, 0.2), rgba(247, 252, 255, 0.3)),

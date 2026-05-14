@@ -241,6 +241,8 @@
   "com.affine.appearanceSettings.language.description": "Select the language for the interface.",
   "com.affine.appearanceSettings.language.title": "Display language",
   "com.affine.appearanceSettings.dynamicBackground.description": "Add a local random wallpaper background for writing and presentation.",
+  "com.affine.appearanceSettings.dynamicBackground.clarity.description": "Adjust wallpaper sharpness. Higher values show more detail.",
+  "com.affine.appearanceSettings.dynamicBackground.clarity.title": "Wallpaper clarity",
   "com.affine.appearanceSettings.dynamicBackground.opacity.description": "Adjust the wallpaper visibility without changing settings or popup opacity.",
   "com.affine.appearanceSettings.dynamicBackground.opacity.title": "Wallpaper strength",
   "com.affine.appearanceSettings.dynamicBackground.title": "Dynamic background",
