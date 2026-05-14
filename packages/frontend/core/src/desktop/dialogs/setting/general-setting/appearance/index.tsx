@@ -16,6 +16,7 @@ import {
   setDynamicBackgroundPreference,
   setDynamicWallpaperOpacityPreference,
 } from '@affine/core/components/theme-provider/dynamic-background';
+import { useDynamicWallpaperImage } from '@affine/core/components/theme-provider/dynamic-wallpaper-background';
 import { SHOW_OPEN_IN_APP } from '@affine/core/modules/brand/constant';
 import { TraySettingService } from '@affine/core/modules/editor-setting/services/tray-settings';
 import { FeatureFlagService } from '@affine/core/modules/feature-flag';
@@ -185,6 +186,7 @@ export const AppearanceSettings = () => {
   const [wallpaperOpacity, setWallpaperOpacity] = useState(() =>
     getDynamicWallpaperOpacityPreference()
   );
+  const wallpaper = useDynamicWallpaperImage();
   const [autoCloudSync, setAutoCloudSync] = useState(() =>
     getAutoCloudSyncPreference()
   );
@@ -229,6 +231,13 @@ export const AppearanceSettings = () => {
           desc={t.t(
             'com.affine.appearanceSettings.dynamicBackground.description'
           )}
+          style={{
+            backgroundImage: `url("${wallpaper}")`,
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            overflow: 'hidden',
+          }}
         >
           <Switch
             checked={dynamicBackground}

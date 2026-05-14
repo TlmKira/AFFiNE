@@ -44,13 +44,7 @@ function getWallpaperPath(item: unknown) {
   return undefined;
 }
 
-export function DynamicWallpaperBackground() {
-  const [enabled, setEnabled] = useState(() =>
-    getDynamicBackgroundPreference()
-  );
-  const [opacity, setOpacity] = useState(() =>
-    getDynamicWallpaperOpacityPreference()
-  );
+export function useDynamicWallpaperImage() {
   const [wallpaper, setWallpaper] = useState(pickWallpaper);
 
   useEffect(() => {
@@ -77,6 +71,18 @@ export function DynamicWallpaperBackground() {
       cancelled = true;
     };
   }, []);
+
+  return wallpaper;
+}
+
+export function DynamicWallpaperBackground() {
+  const [enabled, setEnabled] = useState(() =>
+    getDynamicBackgroundPreference()
+  );
+  const [opacity, setOpacity] = useState(() =>
+    getDynamicWallpaperOpacityPreference()
+  );
+  const wallpaper = useDynamicWallpaperImage();
 
   useEffect(() => {
     const update = () => {
