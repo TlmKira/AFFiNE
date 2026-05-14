@@ -8,28 +8,40 @@ import {
 } from './dynamic-background';
 
 const WALLPAPERS = [
-  '/dynamic-background/wallpapers/wallpaper-01.jpg',
-  '/dynamic-background/wallpapers/wallpaper-02.jpg',
-  '/dynamic-background/wallpapers/wallpaper-03.jpg',
-  '/dynamic-background/wallpapers/wallpaper-04.png',
-  '/dynamic-background/wallpapers/wallpaper-05.jpg',
-  '/dynamic-background/wallpapers/wallpaper-06.png',
-  '/dynamic-background/wallpapers/wallpaper-07.png',
-  '/dynamic-background/wallpapers/wallpaper-08.jpg',
-  '/dynamic-background/wallpapers/wallpaper-09.jpg',
-  '/dynamic-background/wallpapers/wallpaper-10.png',
-  '/dynamic-background/wallpapers/wallpaper-11.png',
-  '/dynamic-background/wallpapers/wallpaper-12.jpg',
-  '/dynamic-background/wallpapers/wallpaper-13.jpg',
+  '/dynamic-background/wallpapers/wallpaper-lolita-01.jpg',
+  '/dynamic-background/wallpapers/wallpaper-lolita-02.jpg',
+  '/dynamic-background/wallpapers/wallpaper-lolita-03.jpg',
 ] as const;
+
+const WALLPAPER_MANIFEST = '/dynamic-background/wallpapers/manifest.json';
+
+type WallpaperManifestItem = {
+  path?: unknown;
+};
 
 let selectedWallpaper: string | undefined;
 
-function pickWallpaper() {
-  selectedWallpaper ??=
-    WALLPAPERS[Math.floor(Math.random() * WALLPAPERS.length)] ?? WALLPAPERS[0];
+function pickWallpaper(wallpapers: readonly string[] = WALLPAPERS) {
+  selectedWallpaper =
+    wallpapers[Math.floor(Math.random() * wallpapers.length)] ?? WALLPAPERS[0];
 
   return selectedWallpaper;
+}
+
+function isWallpaperPath(value: unknown): value is string {
+  return (
+    typeof value === 'string' &&
+    value.startsWith('/dynamic-background/wallpapers/') &&
+    /\.(jpe?g|png|webp)$/i.test(value)
+  );
+}
+
+function getWallpaperPath(item: unknown) {
+  if (item && typeof item === 'object' && 'path' in item) {
+    return (item as WallpaperManifestItem).path;
+  }
+
+  return undefined;
 }
 
 export function DynamicWallpaperBackground() {
@@ -39,7 +51,32 @@ export function DynamicWallpaperBackground() {
   const [opacity, setOpacity] = useState(() =>
     getDynamicWallpaperOpacityPreference()
   );
-  const [wallpaper] = useState(pickWallpaper);
+  const [wallpaper, setWallpaper] = useState(pickWallpaper);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch(WALLPAPER_MANIFEST)
+      .then(response => (response.ok ? response.json() : []))
+      .then((manifest: unknown) => {
+        if (cancelled || !Array.isArray(manifest)) {
+          return;
+        }
+
+        const wallpapers = manifest
+          .map(getWallpaperPath)
+          .filter(isWallpaperPath);
+
+        if (wallpapers.length > 0) {
+          setWallpaper(pickWallpaper(wallpapers));
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const update = () => {

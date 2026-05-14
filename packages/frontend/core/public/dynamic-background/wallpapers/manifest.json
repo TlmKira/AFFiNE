@@ -3,7 +3,6 @@
         "id":  "wallpaper-01",
         "file":  "wallpaper-01.jpg",
         "path":  "/dynamic-background/wallpapers/wallpaper-01.jpg",
-        "originalName":  "其他 (1).jpg",
         "width":  3840,
         "height":  2400,
         "bytes":  3250537
@@ -12,7 +11,6 @@
         "id":  "wallpaper-02",
         "file":  "wallpaper-02.jpg",
         "path":  "/dynamic-background/wallpapers/wallpaper-02.jpg",
-        "originalName":  "收藏量110662画师Y-K作品36633503_p0.jpg",
         "width":  3840,
         "height":  2160,
         "bytes":  2048718
@@ -21,7 +19,6 @@
         "id":  "wallpaper-03",
         "file":  "wallpaper-03.jpg",
         "path":  "/dynamic-background/wallpapers/wallpaper-03.jpg",
-        "originalName":  "收藏量1309画师smile作品56576131_p1.jpg",
         "width":  3840,
         "height":  2160,
         "bytes":  1753848
@@ -30,7 +27,6 @@
         "id":  "wallpaper-04",
         "file":  "wallpaper-04.png",
         "path":  "/dynamic-background/wallpapers/wallpaper-04.png",
-        "originalName":  "收藏量18378画师mocha＠３日目南-ナ31a作品79152593_p0.png",
         "width":  2666,
         "height":  1886,
         "bytes":  8296466
@@ -39,7 +35,6 @@
         "id":  "wallpaper-05",
         "file":  "wallpaper-05.jpg",
         "path":  "/dynamic-background/wallpapers/wallpaper-05.jpg",
-        "originalName":  "收藏量1998作品89206202_p0.jpg",
         "width":  1920,
         "height":  1080,
         "bytes":  3120926
@@ -48,7 +43,6 @@
         "id":  "wallpaper-06",
         "file":  "wallpaper-06.png",
         "path":  "/dynamic-background/wallpapers/wallpaper-06.png",
-        "originalName":  "收藏量249597画师mocha＠３日目南-ナ31a作品68296699_p0.png",
         "width":  2400,
         "height":  1696,
         "bytes":  5369599
@@ -57,7 +51,6 @@
         "id":  "wallpaper-07",
         "file":  "wallpaper-07.png",
         "path":  "/dynamic-background/wallpapers/wallpaper-07.png",
-        "originalName":  "收藏量2576画师あんよ@お仕事募集中作品80506254_p0.png",
         "width":  3840,
         "height":  2160,
         "bytes":  13800740
@@ -66,7 +59,6 @@
         "id":  "wallpaper-08",
         "file":  "wallpaper-08.jpg",
         "path":  "/dynamic-background/wallpapers/wallpaper-08.jpg",
-        "originalName":  "收藏量39008画师磯部トースト作品5290131_p0.jpg",
         "width":  3840,
         "height":  2400,
         "bytes":  2287672
@@ -75,7 +67,6 @@
         "id":  "wallpaper-09",
         "file":  "wallpaper-09.jpg",
         "path":  "/dynamic-background/wallpapers/wallpaper-09.jpg",
-        "originalName":  "收藏量59514画师なつ作品54341472_p0.jpg",
         "width":  3236,
         "height":  2000,
         "bytes":  2154734
@@ -84,7 +75,6 @@
         "id":  "wallpaper-10",
         "file":  "wallpaper-10.png",
         "path":  "/dynamic-background/wallpapers/wallpaper-10.png",
-        "originalName":  "收藏量721画师K.Hati作品62547614_p0.png",
         "width":  3840,
         "height":  2160,
         "bytes":  4336065
@@ -93,7 +83,6 @@
         "id":  "wallpaper-11",
         "file":  "wallpaper-11.png",
         "path":  "/dynamic-background/wallpapers/wallpaper-11.png",
-        "originalName":  "收藏量7550作品85944638_p0.png",
         "width":  3840,
         "height":  2160,
         "bytes":  15809016
@@ -102,7 +91,6 @@
         "id":  "wallpaper-12",
         "file":  "wallpaper-12.jpg",
         "path":  "/dynamic-background/wallpapers/wallpaper-12.jpg",
-        "originalName":  "收藏量78135画师ArseniXC作品53117853_p0.jpg",
         "width":  2000,
         "height":  1125,
         "bytes":  1780454
@@ -111,9 +99,200 @@
         "id":  "wallpaper-13",
         "file":  "wallpaper-13.jpg",
         "path":  "/dynamic-background/wallpapers/wallpaper-13.jpg",
-        "originalName":  "收藏量90486画师K,Kanehira作品12904418_p0.jpg",
         "width":  3840,
         "height":  2278,
         "bytes":  4021915
+    },
+    {
+        "id":  "wallpaper-ai-01",
+        "file":  "wallpaper-ai-01.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-ai-01.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  303713
+    },
+    {
+        "id":  "wallpaper-ai-02",
+        "file":  "wallpaper-ai-02.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-ai-02.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  258649
+    },
+    {
+        "id":  "wallpaper-ai-03",
+        "file":  "wallpaper-ai-03.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-ai-03.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  256074
+    },
+    {
+        "id":  "wallpaper-ai-04",
+        "file":  "wallpaper-ai-04.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-ai-04.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  245009
+    },
+    {
+        "id":  "wallpaper-ai-05",
+        "file":  "wallpaper-ai-05.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-ai-05.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  257241
+    },
+    {
+        "id":  "wallpaper-ai-06",
+        "file":  "wallpaper-ai-06.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-ai-06.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  202535
+    },
+    {
+        "id":  "wallpaper-aquarium-01",
+        "file":  "wallpaper-aquarium-01.png",
+        "path":  "/dynamic-background/wallpapers/wallpaper-aquarium-01.png",
+        "width":  1672,
+        "height":  941,
+        "bytes":  1955732
+    },
+    {
+        "id":  "wallpaper-lolita-01",
+        "file":  "wallpaper-lolita-01.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-lolita-01.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  391733
+    },
+    {
+        "id":  "wallpaper-lolita-02",
+        "file":  "wallpaper-lolita-02.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-lolita-02.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  459466
+    },
+    {
+        "id":  "wallpaper-lolita-03",
+        "file":  "wallpaper-lolita-03.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-lolita-03.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  419517
+    },
+    {
+        "id":  "wallpaper-nouveau-01",
+        "file":  "wallpaper-nouveau-01.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-nouveau-01.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  347782
+    },
+    {
+        "id":  "wallpaper-nouveau-02",
+        "file":  "wallpaper-nouveau-02.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-nouveau-02.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  326800
+    },
+    {
+        "id":  "wallpaper-nouveau-03",
+        "file":  "wallpaper-nouveau-03.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-nouveau-03.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  347163
+    },
+    {
+        "id":  "wallpaper-nouveau-04",
+        "file":  "wallpaper-nouveau-04.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-nouveau-04.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  334217
+    },
+    {
+        "id":  "wallpaper-nouveau-05",
+        "file":  "wallpaper-nouveau-05.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-nouveau-05.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  303654
+    },
+    {
+        "id":  "wallpaper-nouveau-06",
+        "file":  "wallpaper-nouveau-06.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-nouveau-06.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  315436
+    },
+    {
+        "id":  "wallpaper-polar-01",
+        "file":  "wallpaper-polar-01.png",
+        "path":  "/dynamic-background/wallpapers/wallpaper-polar-01.png",
+        "width":  1672,
+        "height":  941,
+        "bytes":  1843040
+    },
+    {
+        "id":  "wallpaper-style-01",
+        "file":  "wallpaper-style-01.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-style-01.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  266427
+    },
+    {
+        "id":  "wallpaper-style-02",
+        "file":  "wallpaper-style-02.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-style-02.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  246807
+    },
+    {
+        "id":  "wallpaper-style-03",
+        "file":  "wallpaper-style-03.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-style-03.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  370569
+    },
+    {
+        "id":  "wallpaper-style-04",
+        "file":  "wallpaper-style-04.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-style-04.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  317035
+    },
+    {
+        "id":  "wallpaper-style-05",
+        "file":  "wallpaper-style-05.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-style-05.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  242627
+    },
+    {
+        "id":  "wallpaper-style-06",
+        "file":  "wallpaper-style-06.jpg",
+        "path":  "/dynamic-background/wallpapers/wallpaper-style-06.jpg",
+        "width":  1920,
+        "height":  1080,
+        "bytes":  184854
+    },
+    {
+        "id":  "wallpaper-temple-01",
+        "file":  "wallpaper-temple-01.png",
+        "path":  "/dynamic-background/wallpapers/wallpaper-temple-01.png",
+        "width":  1672,
+        "height":  941,
+        "bytes":  2171848
     }
 ]
