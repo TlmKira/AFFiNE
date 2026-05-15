@@ -144,7 +144,7 @@ export class UserSettingsType implements UserSettings {
   @Field(() => Int, { description: 'Dynamic wallpaper clarity' })
   dynamicWallpaperClarity!: number;
 
-  @Field({
+  @Field(() => String, {
     description: 'Selected dynamic wallpaper id',
     nullable: true,
   })
@@ -195,7 +195,7 @@ export class UpdateUserSettingsInput implements UserSettingsInput {
   })
   dynamicWallpaperClarity?: number;
 
-  @Field({
+  @Field(() => String, {
     description: 'Selected dynamic wallpaper id',
     nullable: true,
   })
