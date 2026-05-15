@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -21,10 +22,21 @@ import { ResearchZoteroRuntimeService } from './zotero-runtime';
 
 const FETCH_TIMEOUT_MS = 12_000;
 const MAX_TRANSLATOR_BYTES = 2 * 1024 * 1024;
-const ZOTERO_TRANSLATOR_ROOT = join(
-  dirname(fileURLToPath(import.meta.url)),
-  '../../../vendor/zotero-translators'
-);
+const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
+
+function resolveZoteroTranslatorRoot() {
+  const candidates = [
+    // Source/tests: packages/backend/server/src/plugins/research-citation
+    join(MODULE_DIR, '../../../vendor/zotero-translators'),
+    // Bundled Docker image: /app/dist/main.js
+    join(MODULE_DIR, '../vendor/zotero-translators'),
+    join(process.cwd(), 'vendor/zotero-translators'),
+    join(process.cwd(), 'packages/backend/server/vendor/zotero-translators'),
+  ];
+  return candidates.find(candidate => existsSync(candidate)) ?? candidates[0];
+}
+
+const ZOTERO_TRANSLATOR_ROOT = resolveZoteroTranslatorRoot();
 
 const DOI_PATTERN = /\b10\.\d{4,9}\/[-._;()/:A-Z0-9]+\b/i;
 const ARXIV_PATTERN =

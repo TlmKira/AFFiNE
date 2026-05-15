@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -26,7 +27,25 @@ const TRANSLATOR_TYPES = {
   search: 8,
 } as const;
 
-const SERVER_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..');
+const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
+
+function resolveServerRoot() {
+  const candidates = [
+    // Source/tests: packages/backend/server/src/plugins/research-citation
+    join(MODULE_DIR, '../../..'),
+    // Bundled Docker image: /app/dist/main.js
+    join(MODULE_DIR, '..'),
+    process.cwd(),
+    join(process.cwd(), 'packages/backend/server'),
+  ];
+  return (
+    candidates.find(candidate =>
+      existsSync(join(candidate, 'vendor/zotero-translate/src/zotero.js'))
+    ) ?? candidates[0]
+  );
+}
+
+const SERVER_ROOT = resolveServerRoot();
 const ZOTERO_TRANSLATE_ROOT = join(SERVER_ROOT, 'vendor/zotero-translate');
 const ZOTERO_TRANSLATOR_ROOT = join(SERVER_ROOT, 'vendor/zotero-translators');
 const ZOTERO_UTILITIES_ROOT = join(ZOTERO_TRANSLATE_ROOT, 'modules/utilities');
@@ -352,7 +371,10 @@ export class ResearchZoteroRuntimeService {
   }
 
   private async getContext() {
-    this.contextPromise ??= this.createContext();
+    this.contextPromise ??= this.createContext().catch(error => {
+      this.contextPromise = null;
+      throw error;
+    });
     return await this.contextPromise;
   }
 

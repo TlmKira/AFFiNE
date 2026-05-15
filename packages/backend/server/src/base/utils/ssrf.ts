@@ -100,8 +100,90 @@ export async function safeFetch(
     });
     return webResponse;
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes('failed to build http client')) {
+      return await safeFetchWithWebApi(rawUrl, init, options, method);
+    }
     throw mapNativeFetchError(error, options.maxBytes);
   }
+}
+
+async function safeFetchWithWebApi(
+  rawUrl: string | URL,
+  init: RequestInit,
+  options: SafeFetchOptions,
+  method: string
+) {
+  let url = await assertSsrFSafeUrl(rawUrl);
+  const maxRedirects = options.maxRedirects ?? 0;
+  let redirects = 0;
+
+  while (true) {
+    const controller = new AbortController();
+    const timeout = options.timeoutMs
+      ? setTimeout(() => controller.abort(), options.timeoutMs)
+      : null;
+    try {
+      const response = await fetch(url, {
+        headers: normalizeHeaders(init.headers),
+        method,
+        redirect: 'manual',
+        signal: controller.signal,
+      });
+      if (timeout) clearTimeout(timeout);
+
+      const location = response.headers.get('location');
+      if (
+        location &&
+        response.status >= 300 &&
+        response.status < 400 &&
+        ![304, 305, 306].includes(response.status)
+      ) {
+        if (redirects >= maxRedirects) {
+          throw createSsrfBlockedError('too_many_redirects');
+        }
+        url = await assertSsrFSafeUrl(new URL(location, url));
+        redirects += 1;
+        continue;
+      }
+
+      const body =
+        method === 'HEAD' || [204, 205, 304].includes(response.status)
+          ? null
+          : await limitedResponseBody(response, options.maxBytes);
+      const webResponse = new Response(body, {
+        headers: response.headers,
+        status: response.status,
+        statusText: response.statusText,
+      });
+      Object.defineProperty(webResponse, 'url', {
+        value: response.url || url.toString(),
+      });
+      return webResponse;
+    } catch (error) {
+      if (timeout) clearTimeout(timeout);
+      throw error;
+    }
+  }
+}
+
+async function limitedResponseBody(response: Response, maxBytes?: number) {
+  const contentLength = Number(response.headers.get('content-length') ?? 0);
+  if (maxBytes && contentLength > maxBytes) {
+    throw new ResponseTooLargeError({
+      limitBytes: maxBytes,
+      receivedBytes: contentLength,
+    });
+  }
+
+  const body = await response.arrayBuffer();
+  if (maxBytes && body.byteLength > maxBytes) {
+    throw new ResponseTooLargeError({
+      limitBytes: maxBytes,
+      receivedBytes: body.byteLength,
+    });
+  }
+  return body;
 }
 
 function normalizeHeaders(headers: RequestInit['headers'] | undefined) {
