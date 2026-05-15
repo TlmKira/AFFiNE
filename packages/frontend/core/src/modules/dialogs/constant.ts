@@ -7,6 +7,8 @@ export const SHOW_PRICING_PLANS = false;
 export type SettingTab =
   | 'shortcuts'
   | 'notifications'
+  | 'ai'
+  | 'papers'
   | 'appearance'
   | 'about'
   | 'plans'

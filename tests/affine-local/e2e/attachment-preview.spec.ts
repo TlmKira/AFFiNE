@@ -148,7 +148,7 @@ test('should preview PDF in embed view', async ({ page }) => {
 
   // Switches to embed view
   await toolbar.getByLabel('Switch view').click();
-  await toolbar.getByLabel('Embed view').click();
+  await toolbar.getByLabel('嵌入视图').click();
 
   await page.waitForTimeout(500);
 
@@ -258,7 +258,7 @@ test('should sync name in pdf embed view', async ({ page }) => {
   await expect(attachmentTitle).toHaveText('lorem-ipsum.pdf');
 
   // Renames
-  await toolbar.getByRole('button', { name: 'Rename' }).click();
+  await toolbar.getByRole('button', { name: '重命名' }).click();
   const input = page
     .locator('.affine-attachment-rename-input-wrapper')
     .locator('input');
@@ -270,7 +270,7 @@ test('should sync name in pdf embed view', async ({ page }) => {
 
   // Switches to embed view
   await toolbar.getByLabel('Switch view').click();
-  await toolbar.getByLabel('Embed view').click();
+  await toolbar.getByLabel('嵌入视图').click();
 
   await page.waitForTimeout(500);
 
@@ -284,7 +284,7 @@ test('should sync name in pdf embed view', async ({ page }) => {
   await attachment.click();
 
   // Renames
-  await toolbar.getByRole('button', { name: 'Rename' }).click();
+  await toolbar.getByRole('button', { name: '重命名' }).click();
   await input.fill('lorem-ipsum');
   await page.keyboard.press('Enter');
   await expect(portalName).toHaveText('lorem-ipsum.pdf');
@@ -314,7 +314,7 @@ test('should enable pointer event in pdf viewer', async ({ page }) => {
 
   // Switches to embed view
   await toolbar.getByLabel('Switch view').click();
-  await toolbar.getByLabel('Embed view').click();
+  await toolbar.getByLabel('嵌入视图').click();
 
   await attachment
     .locator('.affine-attachment-embed-container')
@@ -367,7 +367,7 @@ test('should re-render pdf viewer', async ({ page }) => {
 
   // Switches to embed view
   await toolbar.getByLabel('Switch view').click();
-  await toolbar.getByLabel('Embed view').click();
+  await toolbar.getByLabel('嵌入视图').click();
 
   const portal = attachment.locator('lit-react-portal');
   await expect(portal).toBeVisible();
@@ -408,7 +408,7 @@ test('should display status when an error is thrown in peek view', async ({
 
   // Switches to embed view
   await toolbar.getByLabel('Switch view').click();
-  await toolbar.getByLabel('Embed view').click();
+  await toolbar.getByLabel('嵌入视图').click();
 
   await context.setOffline(true);
 
@@ -441,7 +441,7 @@ test('should display 404 when attachment is not found', async ({ page }) => {
 
   // Switches to embed view
   await toolbar.getByLabel('Switch view').click();
-  await toolbar.getByLabel('Embed view').click();
+  await toolbar.getByLabel('嵌入视图').click();
 
   await attachment.dblclick();
 

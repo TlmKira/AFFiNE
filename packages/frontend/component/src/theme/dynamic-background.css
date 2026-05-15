@@ -5,7 +5,7 @@ html[data-dynamic-background='on'] {
   --affine-dynamic-wallpaper-image-adjustment: saturate(0.72) contrast(0.94)
     brightness(1.08);
   --affine-dynamic-wallpaper-image-scale: 1.07;
-  --affine-dynamic-wallpaper-image-opacity-factor: 0.34;
+  --affine-dynamic-wallpaper-image-opacity-factor: 0.44;
   --affine-dynamic-wallpaper-veil:
     linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.2)),
     radial-gradient(
@@ -71,8 +71,9 @@ html[data-dynamic-background='on'] [class*='route-container_header'] {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  filter: blur(var(--affine-dynamic-wallpaper-blur, 7px))
-    var(--affine-dynamic-wallpaper-image-adjustment);
+  filter: blur(var(--affine-dynamic-wallpaper-blur, 3px))
+    var(--affine-dynamic-wallpaper-image-adjustment)
+    var(--affine-dynamic-wallpaper-sharpness-filter, contrast(1) saturate(1));
   opacity: calc(
     var(--affine-dynamic-wallpaper-opacity, 0.35) *
       var(--affine-dynamic-wallpaper-image-opacity-factor)
@@ -95,7 +96,7 @@ html[data-theme='dark'][data-dynamic-background='on'] {
   --affine-dynamic-wallpaper-content-surface: rgba(18, 22, 30, 0.62);
   --affine-dynamic-wallpaper-image-adjustment: saturate(0.68) contrast(0.92)
     brightness(0.78);
-  --affine-dynamic-wallpaper-image-opacity-factor: 0.3;
+  --affine-dynamic-wallpaper-image-opacity-factor: 0.38;
   --affine-dynamic-wallpaper-veil:
     linear-gradient(rgba(8, 12, 20, 0.26), rgba(8, 12, 20, 0.34)),
     radial-gradient(
@@ -117,7 +118,7 @@ html[data-theme='research'][data-dynamic-background='on'] {
   --affine-dynamic-wallpaper-content-surface: rgba(250, 253, 255, 0.64);
   --affine-dynamic-wallpaper-image-adjustment: saturate(0.62) contrast(0.92)
     brightness(1.1);
-  --affine-dynamic-wallpaper-image-opacity-factor: 0.3;
+  --affine-dynamic-wallpaper-image-opacity-factor: 0.38;
   --affine-dynamic-wallpaper-veil:
     linear-gradient(rgba(247, 252, 255, 0.2), rgba(247, 252, 255, 0.3)),
     radial-gradient(

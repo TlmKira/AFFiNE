@@ -8,6 +8,10 @@ export const UserSettingsSchema = z.object({
   receiveInvitationEmail: z.boolean().default(true),
   receiveMentionEmail: z.boolean().default(true),
   receiveCommentEmail: z.boolean().default(true),
+  dynamicWallpaperEnabled: z.boolean().default(false),
+  dynamicWallpaperOpacity: z.number().int().min(0).max(100).default(75),
+  dynamicWallpaperClarity: z.number().int().min(0).max(120).default(85),
+  dynamicWallpaperId: z.string().nullable().default(null),
 });
 
 export type UserSettingsInput = z.input<typeof UserSettingsSchema>;

@@ -10,7 +10,9 @@ import {
   safeFetch,
   SsrfBlockedError,
 } from '../../base';
+import { parseCitationFormatEntries } from './citation-format';
 import type { CitationMetadata } from './types';
+import { ResearchZoteroTranslatorService } from './zotero-translator';
 
 const CACHE_TTL = 1000 * 60 * 60 * 24;
 const CACHE_VERSION = 'v2';
@@ -125,7 +127,8 @@ export class ResearchCitationService {
 
   constructor(
     private readonly cache: Cache,
-    private readonly config: Config
+    private readonly config: Config,
+    private readonly zoteroTranslators: ResearchZoteroTranslatorService
   ) {}
 
   async resolve(input: string): Promise<CitationMetadata> {
@@ -136,7 +139,7 @@ export class ResearchCitationService {
     if (cached) return cached;
 
     const resolved =
-      (await this.resolveBibTeX(input)) ??
+      (await this.resolveCitationFormat(input)) ??
       (await this.resolveDoiInput(input)) ??
       (await this.resolveArxivInput(input)) ??
       (await this.resolveUrlInput(input)) ??
@@ -145,6 +148,23 @@ export class ResearchCitationService {
 
     await this.cache.set(cacheKey, resolved, { ttl: CACHE_TTL });
     return resolved;
+  }
+
+  async parseCitationFormats(input: string): Promise<CitationMetadata[]> {
+    const parsed = parseCitationFormatEntries(input);
+    if (!parsed.length) return [];
+
+    return await Promise.all(
+      parsed.map(async item => {
+        if (item.doi) {
+          return (await this.resolveDoiInput(item.doi)) ?? item;
+        }
+        if (item.arxivId) {
+          return (await this.resolveArxivInput(item.arxivId)) ?? item;
+        }
+        return item;
+      })
+    );
   }
 
   private headers(provider: 'crossref' | 'openalex' | 'semantic' | 'default') {
@@ -405,6 +425,23 @@ export class ResearchCitationService {
     if (/arxiv\.org/i.test(url.hostname)) {
       return await this.resolveArxivInput(input);
     }
+    try {
+      const translated = await this.zoteroTranslators.translateUrl(
+        url.toString()
+      );
+      if (translated?.kind === 'single') {
+        const metadata = translated.metadata;
+        if (metadata.doi) {
+          return (await this.resolveDoiInput(metadata.doi)) ?? metadata;
+        }
+        if (metadata.arxivId) {
+          return (await this.resolveArxivInput(metadata.arxivId)) ?? metadata;
+        }
+        return metadata;
+      }
+    } catch (error) {
+      this.logProviderFailure('Zotero translator lookup failed', error);
+    }
     return await this.resolveUrlMetadata(url);
   }
 
@@ -655,32 +692,10 @@ export class ResearchCitationService {
     });
   }
 
-  private async resolveBibTeX(input: string) {
-    if (!input.trim().startsWith('@')) return null;
-    const read = (field: string) => {
-      const match = input.match(
-        new RegExp(`${field}\\s*=\\s*[{\"]([^}\"]+)`, 'i')
-      );
-      return clean(match?.[1]);
-    };
-    const doi = read('doi');
-    if (doi) {
-      return (await this.resolveDoiInput(doi)) ?? null;
-    }
-    const title = read('title');
-    if (!title) return null;
-    return this.withReliability({
-      title,
-      authors: read('author')
-        .split(/\s+and\s+/i)
-        .map(clean)
-        .filter(Boolean),
-      year: read('year'),
-      source: read('journal') || read('booktitle') || read('publisher'),
-      url: read('url'),
-      provider: 'local',
-      confidence: 0.82,
-    });
+  private async resolveCitationFormat(input: string) {
+    const parsed = (await this.parseCitationFormats(input))[0];
+    if (!parsed) return null;
+    return parsed;
   }
 
   private localFallback(input: string): CitationMetadata {

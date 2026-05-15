@@ -9,6 +9,7 @@ export const workbenchViewIconNameSchema = z.enum([
   'page',
   'edgeless',
   'journal',
+  'paper',
   'attachment',
   'pdf',
   'ai',

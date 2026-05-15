@@ -64,6 +64,7 @@ import { OAuthModule } from './plugins/oauth';
 import { NotebookRuntimeModule } from './plugins/notebook';
 import { PaymentModule } from './plugins/payment';
 import { ResearchCitationModule } from './plugins/research-citation';
+import { ResearchLibraryModule } from './plugins/research-library';
 import { WorkerModule } from './plugins/worker';
 
 export const FunctionalityModules = [
@@ -217,7 +218,8 @@ export function buildAppModule(env: Env) {
       () => env.dev || env.selfhosted,
       WorkerModule,
       SelfhostModule,
-      ResearchCitationModule
+      ResearchCitationModule,
+      ResearchLibraryModule
     )
     // static frontend routes for front flavor
     .useIf(() => env.flavors.front, StaticFileModule)

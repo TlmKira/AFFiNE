@@ -15,7 +15,7 @@ export const attachmentSlashMenuConfig: SlashMenuConfig = {
         figure: AttachmentTooltip,
         caption: '附件',
       },
-      searchAlias: ['file'],
+      searchAlias: ['attachment', 'file'],
       group: '4_Content & Media@3',
       when: ({ model }) =>
         model.store.schema.flavourSchemaMap.has('affine:attachment'),

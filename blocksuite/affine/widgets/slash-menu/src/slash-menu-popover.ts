@@ -440,7 +440,7 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
       }}
       @click=${() => this.context.onClickItem(item)}
     >
-      ${icon && html`<div class="slash-menu-item-icon">${icon}</div>`}
+      <div class="slash-menu-item-icon ${icon ? '' : 'empty'}">${icon}</div>
       ${tooltip &&
       html`<affine-tooltip
         tip-position="right"
@@ -500,7 +500,7 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
             : this._openSubMenu(item));
       }}
     >
-      ${icon && html`<div class="slash-menu-item-icon">${icon}</div>`}
+      <div class="slash-menu-item-icon ${icon ? '' : 'empty'}">${icon}</div>
       <div slot="suffix" style="transform: rotate(-90deg);">
         ${ArrowDownSmallIcon()}
       </div>

@@ -160,10 +160,61 @@ model Workspace {
   workspaceAdminStatsDaily   WorkspaceAdminStatsDaily[]
   workspaceDocViewDaily      WorkspaceDocViewDaily[]
   workspaceMemberLastAccess  WorkspaceMemberLastAccess[]
+  researchFeedSubscriptions  ResearchFeedSubscription[]
+  researchFeedItems          ResearchFeedItem[]
 
   @@index([lastCheckEmbeddings])
   @@index([createdAt])
   @@map("workspaces")
+}
+
+model ResearchFeedSubscription {
+  id                     String    @id @db.VarChar
+  workspaceId            String    @map("workspace_id") @db.VarChar
+  url                    String    @db.Text
+  type                   String    @db.VarChar
+  title                  String?   @db.VarChar
+  enabled                Boolean   @default(true)
+  refreshIntervalMinutes Int       @default(360) @map("refresh_interval_minutes")
+  lastSyncAt             DateTime? @map("last_sync_at") @db.Timestamptz(3)
+  nextSyncAt             DateTime? @map("next_sync_at") @db.Timestamptz(3)
+  lastError              String?   @map("last_error") @db.Text
+  createdAt              DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  workspace Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  items     ResearchFeedItem[]
+
+  @@unique([workspaceId, url])
+  @@index([workspaceId])
+  @@index([enabled, nextSyncAt])
+  @@map("research_feed_subscriptions")
+}
+
+model ResearchFeedItem {
+  id             String    @id @db.VarChar
+  subscriptionId String    @map("subscription_id") @db.VarChar
+  workspaceId    String    @map("workspace_id") @db.VarChar
+  fingerprint    String    @db.VarChar
+  title          String    @db.Text
+  authors        Json      @default("[]")
+  url            String?   @db.Text
+  doi            String?   @db.VarChar
+  arxivId        String?   @map("arxiv_id") @db.VarChar
+  abstract       String?   @db.Text
+  publishedAt    DateTime? @map("published_at") @db.Timestamptz(3)
+  raw            Json
+  importedDocId  String?   @map("imported_doc_id") @db.VarChar
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  subscription ResearchFeedSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  workspace    Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, fingerprint])
+  @@index([subscriptionId])
+  @@index([workspaceId, publishedAt])
+  @@map("research_feed_items")
 }
 
 // Table for workspace page meta data

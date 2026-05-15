@@ -2539,6 +2539,18 @@ input UpdateUserInput {
 }
 
 input UpdateUserSettingsInput {
+  """Dynamic wallpaper clarity"""
+  dynamicWallpaperClarity: Int
+
+  """Enable dynamic wallpaper background"""
+  dynamicWallpaperEnabled: Boolean
+
+  """Selected dynamic wallpaper id"""
+  dynamicWallpaperId: String
+
+  """Dynamic wallpaper opacity"""
+  dynamicWallpaperOpacity: Int
+
   """Receive comment email"""
   receiveCommentEmail: Boolean
 
@@ -2623,6 +2635,18 @@ type UserQuotaUsageType {
 }
 
 type UserSettingsType {
+  """Dynamic wallpaper clarity"""
+  dynamicWallpaperClarity: Int!
+
+  """Enable dynamic wallpaper background"""
+  dynamicWallpaperEnabled: Boolean!
+
+  """Selected dynamic wallpaper id"""
+  dynamicWallpaperId: String
+
+  """Dynamic wallpaper opacity"""
+  dynamicWallpaperOpacity: Int!
+
   """Receive comment email"""
   receiveCommentEmail: Boolean!
 

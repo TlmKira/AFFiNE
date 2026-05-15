@@ -1,0 +1,6 @@
+[submodule "packages/backend/server/vendor/zotero-translators"]
+	path = packages/backend/server/vendor/zotero-translators
+	url = https://github.com/zotero/translators.git
+[submodule "packages/backend/server/vendor/zotero-translate"]
+	path = packages/backend/server/vendor/zotero-translate
+	url = https://github.com/zotero/translate.git

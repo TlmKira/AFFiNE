@@ -15,6 +15,10 @@ export async function getUserSettings(
           receiveInvitationEmail
           receiveMentionEmail
           receiveCommentEmail
+          dynamicWallpaperEnabled
+          dynamicWallpaperOpacity
+          dynamicWallpaperClarity
+          dynamicWallpaperId
         }
       }
     }

@@ -2,6 +2,7 @@ import {
   createUnionType,
   Field,
   ID,
+  Int,
   InputType,
   ObjectType,
 } from '@nestjs/graphql';
@@ -133,6 +134,21 @@ export class UserSettingsType implements UserSettings {
 
   @Field({ description: 'Receive comment email' })
   receiveCommentEmail!: boolean;
+
+  @Field({ description: 'Enable dynamic wallpaper background' })
+  dynamicWallpaperEnabled!: boolean;
+
+  @Field(() => Int, { description: 'Dynamic wallpaper opacity' })
+  dynamicWallpaperOpacity!: number;
+
+  @Field(() => Int, { description: 'Dynamic wallpaper clarity' })
+  dynamicWallpaperClarity!: number;
+
+  @Field({
+    description: 'Selected dynamic wallpaper id',
+    nullable: true,
+  })
+  dynamicWallpaperId!: string | null;
 }
 
 @InputType()
@@ -160,4 +176,28 @@ export class UpdateUserSettingsInput implements UserSettingsInput {
 
   @Field({ description: 'Receive comment email', nullable: true })
   receiveCommentEmail?: boolean;
+
+  @Field({
+    description: 'Enable dynamic wallpaper background',
+    nullable: true,
+  })
+  dynamicWallpaperEnabled?: boolean;
+
+  @Field(() => Int, {
+    description: 'Dynamic wallpaper opacity',
+    nullable: true,
+  })
+  dynamicWallpaperOpacity?: number;
+
+  @Field(() => Int, {
+    description: 'Dynamic wallpaper clarity',
+    nullable: true,
+  })
+  dynamicWallpaperClarity?: number;
+
+  @Field({
+    description: 'Selected dynamic wallpaper id',
+    nullable: true,
+  })
+  dynamicWallpaperId?: string | null;
 }

@@ -3277,6 +3277,14 @@ export interface UpdateUserInput {
 }
 
 export interface UpdateUserSettingsInput {
+  /** Dynamic wallpaper clarity */
+  dynamicWallpaperClarity?: InputMaybe<Scalars['Int']['input']>;
+  /** Enable dynamic wallpaper background */
+  dynamicWallpaperEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Selected dynamic wallpaper id */
+  dynamicWallpaperId?: InputMaybe<Scalars['String']['input']>;
+  /** Dynamic wallpaper opacity */
+  dynamicWallpaperOpacity?: InputMaybe<Scalars['Int']['input']>;
   /** Receive comment email */
   receiveCommentEmail?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive invitation email */
@@ -3358,6 +3366,14 @@ export interface UserQuotaUsageType {
 
 export interface UserSettingsType {
   __typename?: 'UserSettingsType';
+  /** Dynamic wallpaper clarity */
+  dynamicWallpaperClarity: Scalars['Int']['output'];
+  /** Enable dynamic wallpaper background */
+  dynamicWallpaperEnabled: Scalars['Boolean']['output'];
+  /** Selected dynamic wallpaper id */
+  dynamicWallpaperId: Maybe<Scalars['String']['output']>;
+  /** Dynamic wallpaper opacity */
+  dynamicWallpaperOpacity: Scalars['Int']['output'];
   /** Receive comment email */
   receiveCommentEmail: Scalars['Boolean']['output'];
   /** Receive invitation email */
@@ -6282,6 +6298,10 @@ export type CurrentUserProfileFragment = {
     receiveInvitationEmail: boolean;
     receiveMentionEmail: boolean;
     receiveCommentEmail: boolean;
+    dynamicWallpaperEnabled: boolean;
+    dynamicWallpaperOpacity: number;
+    dynamicWallpaperClarity: number;
+    dynamicWallpaperId: string | null;
   };
   quota: {
     __typename?: 'UserQuotaType';
@@ -6405,6 +6425,10 @@ export type GetCurrentUserProfileQuery = {
       receiveInvitationEmail: boolean;
       receiveMentionEmail: boolean;
       receiveCommentEmail: boolean;
+      dynamicWallpaperEnabled: boolean;
+      dynamicWallpaperOpacity: number;
+      dynamicWallpaperClarity: number;
+      dynamicWallpaperId: string | null;
     };
     quota: {
       __typename?: 'UserQuotaType';
@@ -6776,6 +6800,10 @@ export type GetUserSettingsQuery = {
       receiveInvitationEmail: boolean;
       receiveMentionEmail: boolean;
       receiveCommentEmail: boolean;
+      dynamicWallpaperEnabled: boolean;
+      dynamicWallpaperOpacity: number;
+      dynamicWallpaperClarity: number;
+      dynamicWallpaperId: string | null;
     };
   } | null;
 };

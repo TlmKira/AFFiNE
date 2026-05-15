@@ -9,6 +9,10 @@ fragment CurrentUserProfile on UserType {
     receiveInvitationEmail
     receiveMentionEmail
     receiveCommentEmail
+    dynamicWallpaperEnabled
+    dynamicWallpaperOpacity
+    dynamicWallpaperClarity
+    dynamicWallpaperId
   }
   quota {
     name

@@ -48,7 +48,7 @@ export const attachmentViewDropdownMenu = {
   actions: [
     {
       id: 'card',
-      label: 'Card view',
+      label: '卡片视图',
       run(ctx) {
         const model = ctx.getCurrentModelByType(AttachmentBlockModel);
         if (!model) return;
@@ -69,7 +69,7 @@ export const attachmentViewDropdownMenu = {
     },
     {
       id: 'embed',
-      label: 'Embed view',
+      label: '嵌入视图',
       disabled: ctx => {
         const block = ctx.getCurrentBlockByType(AttachmentBlockComponent);
         return block ? !block.embedded() : true;
@@ -151,7 +151,7 @@ export const attachmentViewDropdownMenu = {
 
 const replaceAction = {
   id: 'c.replace',
-  tooltip: 'Replace attachment',
+  tooltip: '替换附件',
   icon: ReplaceIcon(),
   disabled(ctx) {
     const block = ctx.getCurrentBlockByType(AttachmentBlockComponent);
@@ -169,7 +169,7 @@ const replaceAction = {
 
 const downloadAction = {
   id: 'd.download',
-  tooltip: 'Download',
+  tooltip: '下载',
   icon: DownloadIcon(),
   run(ctx) {
     const block = ctx.getCurrentBlockByType(AttachmentBlockComponent);
@@ -185,7 +185,7 @@ const downloadAction = {
 
 const captionAction = {
   id: 'e.caption',
-  tooltip: 'Caption',
+  tooltip: '说明',
   icon: CaptionIcon(),
   run(ctx) {
     const block = ctx.getCurrentBlockByType(AttachmentBlockComponent);
@@ -211,8 +211,8 @@ const builtinToolbarConfig = {
 
         return html`
           <editor-icon-button
-            aria-label="Rename"
-            .tooltip="${'Rename'}"
+            aria-label="重命名"
+            .tooltip="${'重命名'}"
             @click=${() => {
               ctx.hide();
 
@@ -317,11 +317,11 @@ const builtinSurfaceToolbarConfig = {
       actions: [
         {
           id: 'horizontalThin',
-          label: 'Horizontal style',
+          label: '横向样式',
         },
         {
           id: 'cubeThick',
-          label: 'Vertical style',
+          label: '纵向样式',
         },
       ],
       content(ctx) {

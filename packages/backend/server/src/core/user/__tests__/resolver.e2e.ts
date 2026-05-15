@@ -24,6 +24,10 @@ test('should get user settings', async t => {
     receiveInvitationEmail: true,
     receiveMentionEmail: true,
     receiveCommentEmail: true,
+    dynamicWallpaperEnabled: false,
+    dynamicWallpaperOpacity: 75,
+    dynamicWallpaperClarity: 85,
+    dynamicWallpaperId: null,
   });
 });
 
@@ -39,6 +43,10 @@ test('should update user settings', async t => {
     receiveInvitationEmail: false,
     receiveMentionEmail: false,
     receiveCommentEmail: false,
+    dynamicWallpaperEnabled: false,
+    dynamicWallpaperOpacity: 75,
+    dynamicWallpaperClarity: 85,
+    dynamicWallpaperId: null,
   });
 
   await updateUserSettings(app, {
@@ -49,6 +57,10 @@ test('should update user settings', async t => {
     receiveInvitationEmail: false,
     receiveMentionEmail: true,
     receiveCommentEmail: false,
+    dynamicWallpaperEnabled: false,
+    dynamicWallpaperOpacity: 75,
+    dynamicWallpaperClarity: 85,
+    dynamicWallpaperId: null,
   });
 
   await updateUserSettings(app, {
@@ -60,6 +72,10 @@ test('should update user settings', async t => {
     receiveInvitationEmail: false,
     receiveMentionEmail: true,
     receiveCommentEmail: false,
+    dynamicWallpaperEnabled: false,
+    dynamicWallpaperOpacity: 75,
+    dynamicWallpaperClarity: 85,
+    dynamicWallpaperId: null,
   });
 });
 
@@ -75,6 +91,10 @@ test('should update user settings with comment email', async t => {
     receiveCommentEmail: true,
     receiveInvitationEmail: true,
     receiveMentionEmail: true,
+    dynamicWallpaperEnabled: false,
+    dynamicWallpaperOpacity: 75,
+    dynamicWallpaperClarity: 85,
+    dynamicWallpaperId: null,
   });
 
   await updateUserSettings(app, {
@@ -86,6 +106,44 @@ test('should update user settings with comment email', async t => {
     receiveCommentEmail: false,
     receiveInvitationEmail: true,
     receiveMentionEmail: true,
+    dynamicWallpaperEnabled: false,
+    dynamicWallpaperOpacity: 75,
+    dynamicWallpaperClarity: 85,
+    dynamicWallpaperId: null,
+  });
+});
+
+test('should update dynamic wallpaper settings', async t => {
+  await app.signup();
+  await updateUserSettings(app, {
+    dynamicWallpaperEnabled: true,
+    dynamicWallpaperOpacity: 90,
+    dynamicWallpaperClarity: 120,
+    dynamicWallpaperId: 'wallpaper-polar-01',
+  });
+  const settings = await getUserSettings(app);
+  t.deepEqual(settings, {
+    receiveInvitationEmail: true,
+    receiveMentionEmail: true,
+    receiveCommentEmail: true,
+    dynamicWallpaperEnabled: true,
+    dynamicWallpaperOpacity: 90,
+    dynamicWallpaperClarity: 120,
+    dynamicWallpaperId: 'wallpaper-polar-01',
+  });
+
+  await updateUserSettings(app, {
+    dynamicWallpaperOpacity: 45,
+  });
+  const settings2 = await getUserSettings(app);
+  t.deepEqual(settings2, {
+    receiveInvitationEmail: true,
+    receiveMentionEmail: true,
+    receiveCommentEmail: true,
+    dynamicWallpaperEnabled: true,
+    dynamicWallpaperOpacity: 45,
+    dynamicWallpaperClarity: 120,
+    dynamicWallpaperId: 'wallpaper-polar-01',
   });
 });
 
@@ -99,6 +157,24 @@ test('should throw error when update user settings with invalid input', async t 
     }),
     {
       message: /Expected boolean, received null/,
+    }
+  );
+
+  await t.throwsAsync(
+    updateUserSettings(app, {
+      dynamicWallpaperOpacity: 101,
+    }),
+    {
+      message: /Number must be less than or equal to 100/,
+    }
+  );
+
+  await t.throwsAsync(
+    updateUserSettings(app, {
+      dynamicWallpaperClarity: 121,
+    }),
+    {
+      message: /Number must be less than or equal to 120/,
     }
   );
 });

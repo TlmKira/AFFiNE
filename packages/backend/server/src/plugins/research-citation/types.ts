@@ -2,6 +2,10 @@ export type CitationResolveRequest = {
   input?: string;
 };
 
+export type CitationTranslateUrlRequest = {
+  url?: string;
+};
+
 export type CitationProviderName =
   | 'local'
   | 'crossref'
@@ -9,7 +13,18 @@ export type CitationProviderName =
   | 'openalex'
   | 'arxiv'
   | 'semantic-scholar'
-  | 'url';
+  | 'url'
+  | 'zotero-translator'
+  | 'google-scholar'
+  | 'cnki'
+  | 'baidu-scholar'
+  | 'generic-meta';
+
+export type CitationAttachment = {
+  title?: string;
+  url?: string;
+  mimeType?: string;
+};
 
 export type CitationMetadata = {
   title: string;
@@ -20,7 +35,27 @@ export type CitationMetadata = {
   arxivId?: string;
   url?: string;
   abstract?: string;
+  attachments?: CitationAttachment[];
   provider: CitationProviderName;
   confidence: number;
   reliable: boolean;
 };
+
+export type CitationTranslationCandidate = {
+  id: string;
+  title: string;
+  url?: string;
+  metadata?: CitationMetadata;
+};
+
+export type CitationTranslationResult =
+  | {
+      kind: 'single';
+      translator: string;
+      metadata: CitationMetadata;
+    }
+  | {
+      kind: 'multiple';
+      translator: string;
+      items: CitationTranslationCandidate[];
+    };

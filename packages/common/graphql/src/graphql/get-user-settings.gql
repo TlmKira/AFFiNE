@@ -4,6 +4,10 @@ query getUserSettings {
       receiveInvitationEmail
       receiveMentionEmail
       receiveCommentEmail
+      dynamicWallpaperEnabled
+      dynamicWallpaperOpacity
+      dynamicWallpaperClarity
+      dynamicWallpaperId
     }
   }
 }

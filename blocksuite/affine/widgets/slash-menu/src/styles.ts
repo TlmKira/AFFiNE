@@ -49,13 +49,16 @@ export const styles = css`
   }
 
   .slash-menu-item {
+    box-sizing: border-box;
     padding: 2px 8px 2px 8px;
     justify-content: flex-start;
+    align-items: center;
     gap: 10px;
   }
 
   .slash-menu-item-icon {
     box-sizing: border-box;
+    flex: 0 0 28px;
     width: 28px;
     height: 28px;
     padding: 4px;
@@ -67,6 +70,11 @@ export const styles = css`
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .slash-menu-item-icon.empty {
+    border-color: transparent;
+    background: transparent;
   }
 
   .slash-menu-item-icon svg {

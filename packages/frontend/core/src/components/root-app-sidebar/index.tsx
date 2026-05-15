@@ -23,6 +23,7 @@ import {
   AllDocsIcon,
   ImportIcon,
   JournalIcon,
+  PageIcon,
   SettingsIcon,
 } from '@blocksuite/icons/rc';
 import { useLiveData, useService, useServices } from '@toeverything/infra';
@@ -116,6 +117,22 @@ const AIChatButton = () => {
       <span data-testid="ai-chat">
         {t['com.affine.workspaceSubPath.chat']()}
       </span>
+    </MenuLinkItem>
+  );
+};
+
+const PapersButton = () => {
+  const { workbenchService } = useServices({
+    WorkbenchService,
+  });
+  const workbench = workbenchService.workbench;
+  const papersActive = useLiveData(
+    workbench.location$.selector(location => location.pathname === '/papers')
+  );
+
+  return (
+    <MenuLinkItem icon={<PageIcon />} active={papersActive} to={'/papers'}>
+      <span data-testid="papers-library">论文库</span>
     </MenuLinkItem>
   );
 };
@@ -216,6 +233,7 @@ export const RootAppSidebar = memo((): ReactElement => {
           <AddPageButton />
         </div>
         <AllDocsButton />
+        <PapersButton />
         <AppSidebarJournalButton />
         {sessionStatus === 'authenticated' && <NotificationButton />}
         <AIChatButton />

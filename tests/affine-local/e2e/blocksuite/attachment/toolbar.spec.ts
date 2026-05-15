@@ -39,7 +39,7 @@ test.describe('Replaces attachment', () => {
     await expect(name).toHaveText('lorem-ipsum.pdf');
 
     const toolbar = locateToolbar(page);
-    const replaceButton = toolbar.getByLabel('Replace attachment');
+    const replaceButton = toolbar.getByLabel('替换附件');
 
     await importFile(page, 'v1-color-palettes-snapshot.zip', async () => {
       await replaceButton.click({ delay: 50 });
@@ -73,7 +73,7 @@ test.describe('Replaces attachment', () => {
     await expect(name).toHaveText('lorem-ipsum.pdf');
 
     const toolbar = locateToolbar(page);
-    const replaceButton = toolbar.getByLabel('Replace attachment');
+    const replaceButton = toolbar.getByLabel('替换附件');
 
     await importFile(page, 'v1-color-palettes-snapshot.zip', async () => {
       await replaceButton.click({ delay: 50 });
@@ -100,12 +100,12 @@ test.describe('Replaces attachment', () => {
 
     // Switches to embed view
     await toolbar.getByLabel('Switch view').click();
-    await toolbar.getByLabel('Embed view').click();
+    await toolbar.getByLabel('嵌入视图').click();
 
     const portal = attachment.locator('lit-react-portal');
     await expect(portal).toBeVisible();
 
-    const replaceButton = toolbar.getByLabel('Replace attachment');
+    const replaceButton = toolbar.getByLabel('替换附件');
     await importFile(page, 'v1-color-palettes-snapshot.zip', async () => {
       await replaceButton.click({ delay: 50 });
     });

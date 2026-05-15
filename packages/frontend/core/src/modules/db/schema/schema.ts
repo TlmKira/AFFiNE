@@ -29,6 +29,7 @@ export const AFFiNE_WORKSPACE_DB_SCHEMA = {
     pageWidth: f.string().optional(),
     isTemplate: f.boolean().optional(),
     integrationType: integrationType.optional(),
+    paper: f.json().optional(),
     createdBy: f.string().optional(),
     updatedBy: f.string().optional(),
   }),

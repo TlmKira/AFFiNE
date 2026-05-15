@@ -3,29 +3,56 @@ export const DYNAMIC_WALLPAPER_OPACITY_STORAGE_KEY =
   'affine:dynamic-wallpaper-opacity';
 export const DYNAMIC_WALLPAPER_CLARITY_STORAGE_KEY =
   'affine:dynamic-wallpaper-clarity';
+export const DYNAMIC_WALLPAPER_ID_STORAGE_KEY = 'affine:dynamic-wallpaper-id';
 export const DYNAMIC_BACKGROUND_CHANGE_EVENT =
   'affine-dynamic-background-change';
 export const DEFAULT_DYNAMIC_WALLPAPER_OPACITY = 75;
-export const DEFAULT_DYNAMIC_WALLPAPER_CLARITY = 70;
-const MAX_DYNAMIC_WALLPAPER_BLUR = 24;
+export const DEFAULT_DYNAMIC_WALLPAPER_CLARITY = 85;
+export const MAX_DYNAMIC_WALLPAPER_CLARITY = 120;
+const MAX_DYNAMIC_WALLPAPER_BLUR = 20;
 
-function normalizeWallpaperPercentage(value: number, fallback: number) {
+export type DynamicWallpaperUserSettings = {
+  dynamicWallpaperEnabled?: boolean;
+  dynamicWallpaperOpacity?: number;
+  dynamicWallpaperClarity?: number;
+  dynamicWallpaperId?: string | null;
+};
+
+function normalizeWallpaperRange(value: number, fallback: number, max = 100) {
   if (!Number.isFinite(value)) {
     return fallback;
   }
 
-  return Math.min(100, Math.max(0, Math.round(value)));
+  return Math.min(max, Math.max(0, Math.round(value)));
 }
 
 export function getDynamicWallpaperBlur(clarity: number) {
-  const normalizedClarity = normalizeWallpaperPercentage(
+  const normalizedClarity = normalizeWallpaperRange(
     clarity,
-    DEFAULT_DYNAMIC_WALLPAPER_CLARITY
+    DEFAULT_DYNAMIC_WALLPAPER_CLARITY,
+    MAX_DYNAMIC_WALLPAPER_CLARITY
   );
+
+  if (normalizedClarity >= 100) {
+    return 0;
+  }
 
   return Math.round(
     (MAX_DYNAMIC_WALLPAPER_BLUR * (100 - normalizedClarity)) / 100
   );
+}
+
+export function getDynamicWallpaperSharpnessFilter(clarity: number) {
+  const normalizedClarity = normalizeWallpaperRange(
+    clarity,
+    DEFAULT_DYNAMIC_WALLPAPER_CLARITY,
+    MAX_DYNAMIC_WALLPAPER_CLARITY
+  );
+  const extraClarity = Math.max(0, normalizedClarity - 100) / 20;
+  const contrast = 1 + extraClarity * 0.1;
+  const saturate = 1 + extraClarity * 0.14;
+
+  return `contrast(${contrast.toFixed(2)}) saturate(${saturate.toFixed(2)})`;
 }
 
 export function getDynamicBackgroundPreference() {
@@ -43,7 +70,7 @@ export function getDynamicWallpaperOpacityPreference() {
     return DEFAULT_DYNAMIC_WALLPAPER_OPACITY;
   }
 
-  return normalizeWallpaperPercentage(
+  return normalizeWallpaperRange(
     Number(storedValue),
     DEFAULT_DYNAMIC_WALLPAPER_OPACITY
   );
@@ -59,10 +86,39 @@ export function getDynamicWallpaperClarityPreference() {
     return DEFAULT_DYNAMIC_WALLPAPER_CLARITY;
   }
 
-  return normalizeWallpaperPercentage(
+  return normalizeWallpaperRange(
     Number(storedValue),
-    DEFAULT_DYNAMIC_WALLPAPER_CLARITY
+    DEFAULT_DYNAMIC_WALLPAPER_CLARITY,
+    MAX_DYNAMIC_WALLPAPER_CLARITY
   );
+}
+
+export function getDynamicWallpaperIdPreference() {
+  if (typeof window === 'undefined') return undefined;
+
+  return (
+    window.localStorage.getItem(DYNAMIC_WALLPAPER_ID_STORAGE_KEY) ?? undefined
+  );
+}
+
+export function getLocalDynamicWallpaperUserSettings() {
+  return {
+    dynamicWallpaperEnabled: getDynamicBackgroundPreference(),
+    dynamicWallpaperOpacity: getDynamicWallpaperOpacityPreference(),
+    dynamicWallpaperClarity: getDynamicWallpaperClarityPreference(),
+    dynamicWallpaperId: getDynamicWallpaperIdPreference() ?? null,
+  } satisfies Required<DynamicWallpaperUserSettings>;
+}
+
+export function hasLocalDynamicWallpaperPreference() {
+  if (typeof window === 'undefined') return false;
+
+  return [
+    DYNAMIC_BACKGROUND_STORAGE_KEY,
+    DYNAMIC_WALLPAPER_OPACITY_STORAGE_KEY,
+    DYNAMIC_WALLPAPER_CLARITY_STORAGE_KEY,
+    DYNAMIC_WALLPAPER_ID_STORAGE_KEY,
+  ].some(key => window.localStorage.getItem(key) !== null);
 }
 
 export function applyDynamicBackgroundPreference() {
@@ -78,6 +134,14 @@ export function applyDynamicBackgroundPreference() {
     '--affine-dynamic-wallpaper-blur',
     `${getDynamicWallpaperBlur(getDynamicWallpaperClarityPreference())}px`
   );
+  document.documentElement.style.setProperty(
+    '--affine-dynamic-wallpaper-sharpness-filter',
+    getDynamicWallpaperSharpnessFilter(getDynamicWallpaperClarityPreference())
+  );
+}
+
+function dispatchDynamicBackgroundChange() {
+  window.dispatchEvent(new CustomEvent(DYNAMIC_BACKGROUND_CHANGE_EVENT));
 }
 
 export function setDynamicBackgroundPreference(enabled: boolean) {
@@ -88,7 +152,7 @@ export function setDynamicBackgroundPreference(enabled: boolean) {
     enabled ? 'true' : 'false'
   );
   applyDynamicBackgroundPreference();
-  window.dispatchEvent(new CustomEvent(DYNAMIC_BACKGROUND_CHANGE_EVENT));
+  dispatchDynamicBackgroundChange();
 }
 
 export function setDynamicWallpaperOpacityPreference(opacity: number) {
@@ -96,12 +160,10 @@ export function setDynamicWallpaperOpacityPreference(opacity: number) {
 
   window.localStorage.setItem(
     DYNAMIC_WALLPAPER_OPACITY_STORAGE_KEY,
-    String(
-      normalizeWallpaperPercentage(opacity, DEFAULT_DYNAMIC_WALLPAPER_OPACITY)
-    )
+    String(normalizeWallpaperRange(opacity, DEFAULT_DYNAMIC_WALLPAPER_OPACITY))
   );
   applyDynamicBackgroundPreference();
-  window.dispatchEvent(new CustomEvent(DYNAMIC_BACKGROUND_CHANGE_EVENT));
+  dispatchDynamicBackgroundChange();
 }
 
 export function setDynamicWallpaperClarityPreference(clarity: number) {
@@ -110,9 +172,76 @@ export function setDynamicWallpaperClarityPreference(clarity: number) {
   window.localStorage.setItem(
     DYNAMIC_WALLPAPER_CLARITY_STORAGE_KEY,
     String(
-      normalizeWallpaperPercentage(clarity, DEFAULT_DYNAMIC_WALLPAPER_CLARITY)
+      normalizeWallpaperRange(
+        clarity,
+        DEFAULT_DYNAMIC_WALLPAPER_CLARITY,
+        MAX_DYNAMIC_WALLPAPER_CLARITY
+      )
     )
   );
   applyDynamicBackgroundPreference();
-  window.dispatchEvent(new CustomEvent(DYNAMIC_BACKGROUND_CHANGE_EVENT));
+  dispatchDynamicBackgroundChange();
+}
+
+export function setDynamicWallpaperIdPreference(id: string | null) {
+  if (typeof window === 'undefined') return;
+
+  if (id) {
+    window.localStorage.setItem(DYNAMIC_WALLPAPER_ID_STORAGE_KEY, id);
+  } else {
+    window.localStorage.removeItem(DYNAMIC_WALLPAPER_ID_STORAGE_KEY);
+  }
+  dispatchDynamicBackgroundChange();
+}
+
+export function applyDynamicWallpaperUserSettings(
+  settings: DynamicWallpaperUserSettings
+) {
+  if (typeof window === 'undefined') return;
+
+  if (typeof settings.dynamicWallpaperEnabled === 'boolean') {
+    window.localStorage.setItem(
+      DYNAMIC_BACKGROUND_STORAGE_KEY,
+      settings.dynamicWallpaperEnabled ? 'true' : 'false'
+    );
+  }
+
+  if (typeof settings.dynamicWallpaperOpacity === 'number') {
+    window.localStorage.setItem(
+      DYNAMIC_WALLPAPER_OPACITY_STORAGE_KEY,
+      String(
+        normalizeWallpaperRange(
+          settings.dynamicWallpaperOpacity,
+          DEFAULT_DYNAMIC_WALLPAPER_OPACITY
+        )
+      )
+    );
+  }
+
+  if (typeof settings.dynamicWallpaperClarity === 'number') {
+    window.localStorage.setItem(
+      DYNAMIC_WALLPAPER_CLARITY_STORAGE_KEY,
+      String(
+        normalizeWallpaperRange(
+          settings.dynamicWallpaperClarity,
+          DEFAULT_DYNAMIC_WALLPAPER_CLARITY,
+          MAX_DYNAMIC_WALLPAPER_CLARITY
+        )
+      )
+    );
+  }
+
+  if ('dynamicWallpaperId' in settings) {
+    if (settings.dynamicWallpaperId) {
+      window.localStorage.setItem(
+        DYNAMIC_WALLPAPER_ID_STORAGE_KEY,
+        settings.dynamicWallpaperId
+      );
+    } else {
+      window.localStorage.removeItem(DYNAMIC_WALLPAPER_ID_STORAGE_KEY);
+    }
+  }
+
+  applyDynamicBackgroundPreference();
+  dispatchDynamicBackgroundChange();
 }

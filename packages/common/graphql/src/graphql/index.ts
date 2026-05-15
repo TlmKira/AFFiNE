@@ -52,6 +52,10 @@ export const currentUserProfileFragment = `fragment CurrentUserProfile on UserTy
     receiveInvitationEmail
     receiveMentionEmail
     receiveCommentEmail
+    dynamicWallpaperEnabled
+    dynamicWallpaperOpacity
+    dynamicWallpaperClarity
+    dynamicWallpaperId
   }
   quota {
     name
@@ -2236,6 +2240,10 @@ export const getUserSettingsQuery = {
       receiveInvitationEmail
       receiveMentionEmail
       receiveCommentEmail
+      dynamicWallpaperEnabled
+      dynamicWallpaperOpacity
+      dynamicWallpaperClarity
+      dynamicWallpaperId
     }
   }
 }`,

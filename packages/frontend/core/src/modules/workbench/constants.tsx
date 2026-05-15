@@ -19,6 +19,7 @@ export const iconNameToIcon = {
   page: <PageIcon />,
   edgeless: <EdgelessIcon />,
   journal: <TodayIcon />,
+  paper: <PageIcon />,
   tag: <TagIcon />,
   trash: <DeleteIcon />,
   attachment: <AttachmentIcon />,
