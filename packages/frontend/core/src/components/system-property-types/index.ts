@@ -10,6 +10,7 @@ import {
   IntegrationsIcon,
   LongerIcon,
   MemberIcon,
+  PageIcon,
   TagIcon,
   TemplateIcon,
   TitleIcon,
@@ -211,6 +212,15 @@ export const SystemPropertyTypes = {
     },
     filterValue: IntegrationTypeFilterValue,
     defaultFilter: { method: 'is', value: 'readwise' },
+  },
+  paper: {
+    icon: PageIcon,
+    name: '论文',
+    filterMethod: {
+      is: 'com.affine.editCollection.rules.include.is',
+      'is-not': 'com.affine.editCollection.rules.include.is-not',
+    },
+    defaultFilter: { method: 'is', value: 'true' },
   },
 } as {
   [type: string]: {

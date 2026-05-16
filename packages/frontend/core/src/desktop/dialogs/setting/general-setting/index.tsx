@@ -15,7 +15,6 @@ import {
   KeyboardIcon,
   MeetingIcon,
   NotificationIcon,
-  PageIcon,
   PenIcon,
 } from '@blocksuite/icons/rc';
 import { useLiveData, useServices } from '@toeverything/infra';
@@ -34,7 +33,6 @@ import { PaymentIcon, UpgradeIcon } from './icons';
 import { MeetingsSettings } from './meetings';
 import { NotificationSettings } from './notifications';
 import { AFFiNEPricingPlans } from './plans';
-import { PaperLibrarySettings } from '../../../pages/workspace/papers/library';
 import { Shortcuts } from './shortcuts';
 
 export type GeneralSettingList = SettingSidebarItem[];
@@ -111,14 +109,6 @@ export const useGeneralSettingList = (): GeneralSettingList => {
         testId: 'ai-panel-trigger',
       });
     }
-
-    const aiIndex = settings.findIndex(item => item.key === 'ai');
-    settings.splice(aiIndex >= 0 ? aiIndex + 1 : 2, 0, {
-      key: 'papers',
-      title: '论文库',
-      icon: <PageIcon />,
-      testId: 'papers-settings-panel-trigger',
-    });
 
     if (
       (environment.isMacOs || environment.isWindows) &&
@@ -200,8 +190,6 @@ export const GeneralSetting = ({
       return <NotificationSettings />;
     case 'ai':
       return <AISettings />;
-    case 'papers':
-      return <PaperLibrarySettings />;
     case 'editor':
       return <EditorSettings />;
     case 'appearance':

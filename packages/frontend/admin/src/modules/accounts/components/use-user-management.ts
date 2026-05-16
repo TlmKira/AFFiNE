@@ -60,9 +60,9 @@ export const useCreateUser = () => {
           features,
         });
         await revalidate(listUsersQuery);
-        toast('Account updated successfully');
+        toast('账号创建成功');
       } catch (e) {
-        toast.error('Failed to update account: ' + (e as Error).message);
+        toast.error('创建账号失败：' + (e as Error).message);
       }
     },
     [createAccount, revalidate, updateAccountFeatures]
@@ -106,9 +106,9 @@ export const useUpdateUser = () => {
           features,
         });
         await revalidate(listUsersQuery);
-        toast('Account updated successfully');
+        toast('账号更新成功');
       } catch (e) {
-        toast.error('Failed to update account: ' + (e as Error).message);
+        toast.error('更新账号失败：' + (e as Error).message);
       }
     },
     [revalidate, updateAccount, updateAccountFeatures]
@@ -135,7 +135,7 @@ export const useResetUserPassword = () => {
           callback?.();
         })
         .catch(e => {
-          toast.error('Failed to reset password: ' + e.message);
+          toast.error('重置密码失败：' + e.message);
         });
     },
     [resetPassword]
@@ -161,11 +161,11 @@ export const useDeleteUser = () => {
       await deleteUserById({ id })
         .then(async () => {
           await revalidate(listUsersQuery);
-          toast('User deleted successfully');
+          toast('账号删除成功');
           callback?.();
         })
         .catch(e => {
-          toast.error('Failed to delete user: ' + e.message);
+          toast.error('删除账号失败：' + e.message);
         });
     },
     [deleteUserById, revalidate]
@@ -186,11 +186,11 @@ export const useEnableUser = () => {
       await enableUserById({ id })
         .then(async ({ enableUser }) => {
           await revalidate(listUsersQuery);
-          toast(`User ${enableUser.email} enabled successfully`);
+          toast(`账号 ${enableUser.email} 已启用`);
           callback?.();
         })
         .catch(e => {
-          toast.error('Failed to enable user: ' + e.message);
+          toast.error('启用账号失败：' + e.message);
         });
     },
     [enableUserById, revalidate]
@@ -210,11 +210,11 @@ export const useDisableUser = () => {
       await disableUserById({ id })
         .then(async ({ banUser }) => {
           await revalidate(listUsersQuery);
-          toast(`User ${banUser.email} disabled successfully`);
+          toast(`账号 ${banUser.email} 已禁用`);
           callback?.();
         })
         .catch(e => {
-          toast.error('Failed to disable user: ' + e.message);
+          toast.error('禁用账号失败：' + e.message);
         });
     },
     [disableUserById, revalidate]
@@ -240,7 +240,7 @@ export const useImportUsers = () => {
           callback?.(importUsers);
         })
         .catch(e => {
-          toast.error('Failed to import users: ' + e.message);
+          toast.error('导入账号失败：' + e.message);
         });
     },
     [importUsers, revalidate]
@@ -257,7 +257,7 @@ export const useExportUsers = () => {
         .map(field => field.id);
 
       if (selectedFields.length === 0) {
-        alert('Please select at least one field to export');
+        alert('请至少选择一个要导出的字段');
         return;
       }
 

@@ -14,6 +14,7 @@ import { uiHandlers } from './ui/handlers';
 import { updaterHandlers } from './updater';
 import { popupHandlers } from './windows-manager/popup';
 import { workerHandlers } from './worker/handlers';
+import { researchBrowserHandlers } from './research-browser/handlers';
 
 export const debugHandlers = {
   revealLogFile: async () => {
@@ -44,6 +45,7 @@ export const allHandlers = {
   popup: popupHandlers,
   i18n: i18nHandlers,
   byokStorage: byokStorageHandlers,
+  researchBrowser: researchBrowserHandlers,
 };
 
 export const registerHandlers = () => {

@@ -17,6 +17,8 @@ export type ResearchPaperMetadata = {
   abstract?: string;
   pdfBlobId?: string;
   pdfName?: string;
+  pdfSize?: number;
+  pdfAttachmentBlockId?: string;
   tags?: string[];
   status: ResearchPaperStatus;
   createdFrom: 'manual' | 'pdf' | 'feed';

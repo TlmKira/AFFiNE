@@ -6,6 +6,11 @@ export type CitationTranslateUrlRequest = {
   url?: string;
 };
 
+export type CitationTranslateHtmlRequest = {
+  url?: string;
+  html?: string;
+};
+
 export type CitationProviderName =
   | 'local'
   | 'crossref'

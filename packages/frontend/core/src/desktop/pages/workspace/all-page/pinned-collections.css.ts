@@ -10,6 +10,7 @@ export const item = style({
   minWidth: '46px',
   lineHeight: '24px',
   fontSize: cssVar('fontBase'),
+  whiteSpace: 'nowrap',
   color: cssVarV2('text/secondary'),
   borderRadius: 4,
   backgroundColor: 'var(--affine-background-primary-color)',

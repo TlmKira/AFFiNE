@@ -52,12 +52,12 @@ const ALL_CONFIGURABLE_MODULES = Object.keys(CONFIG_DESCRIPTORS).filter(
 
 export const KNOWN_CONFIG_GROUPS = [
   {
-    name: 'Server',
+    name: '服务器',
     module: 'server',
     fields: ['externalUrl', 'name', 'hosts'],
   } as ConfigGroup<'server'>,
   {
-    name: 'Auth',
+    name: '认证',
     module: 'auth',
     fields: [
       'allowSignup',
@@ -67,18 +67,18 @@ export const KNOWN_CONFIG_GROUPS = [
         key: 'passwordRequirements',
         sub: 'min',
         type: 'Number',
-        desc: 'Minimum length requirement of password',
+        desc: '密码最小长度要求',
       },
       {
         key: 'passwordRequirements',
         sub: 'max',
         type: 'Number',
-        desc: 'Maximum length requirement of password',
+        desc: '密码最大长度要求',
       },
     ],
   } as ConfigGroup<'auth'>,
   {
-    name: 'Notification',
+    name: '通知',
     module: 'mailer',
     fields: [
       'SMTP.name',
@@ -92,12 +92,12 @@ export const KNOWN_CONFIG_GROUPS = [
     operations: [SendTestEmail],
   } as ConfigGroup<'mailer'>,
   {
-    name: 'Storage',
+    name: '存储',
     module: 'storages',
     fields: [
       {
         key: 'blob.storage',
-        desc: 'The storage provider for user uploaded blobs',
+        desc: '用户上传 Blob 使用的存储 provider',
         sub: 'provider',
         type: 'Enum',
         options: ['fs', 'aws-s3', 'cloudflare-r2'],
@@ -106,17 +106,17 @@ export const KNOWN_CONFIG_GROUPS = [
         key: 'blob.storage',
         sub: 'bucket',
         type: 'String',
-        desc: 'The bucket name for user uploaded blobs storage',
+        desc: '用户上传 Blob 存储 bucket 名称',
       },
       {
         key: 'blob.storage',
         sub: 'config',
         type: 'JSON',
-        desc: 'The S3 compatible config for the storage provider (endpoint/region/credentials).',
+        desc: '该存储 provider 的 S3 兼容配置（endpoint/region/credentials）。',
       },
       {
         key: 'avatar.storage',
-        desc: 'The storage provider for user avatars',
+        desc: '用户头像使用的存储 provider',
         sub: 'provider',
         type: 'Enum',
         options: ['fs', 'aws-s3', 'cloudflare-r2'],
@@ -125,18 +125,18 @@ export const KNOWN_CONFIG_GROUPS = [
         key: 'avatar.storage',
         sub: 'bucket',
         type: 'String',
-        desc: 'The bucket name for user avatars storage',
+        desc: '用户头像存储 bucket 名称',
       },
       {
         key: 'avatar.storage',
         sub: 'config',
         type: 'JSON',
-        desc: 'The S3 compatible config for the storage provider (endpoint/region/credentials).',
+        desc: '该存储 provider 的 S3 兼容配置（endpoint/region/credentials）。',
       },
       {
         key: 'avatar.publicPath',
         type: 'String',
-        desc: 'The public path prefix for user avatars(e.g. https://my-bucket.s3.amazonaws.com/)',
+        desc: '用户头像公开访问路径前缀，例如 https://my-bucket.s3.amazonaws.com/',
       },
     ],
   } as ConfigGroup<'storages'>,

@@ -4,6 +4,7 @@ import { BadRequest, Throttle } from '../../base';
 import { ResearchCitationService } from './service';
 import type {
   CitationResolveRequest,
+  CitationTranslateHtmlRequest,
   CitationTranslateUrlRequest,
 } from './types';
 import { ResearchZoteroTranslatorService } from './zotero-translator';
@@ -32,6 +33,20 @@ export class ResearchCitationController {
       throw new BadRequest('Translator URL is required.');
     }
     const result = await this.zoteroTranslators.translateUrl(url);
+    if (!result) {
+      return await this.service.resolve(url);
+    }
+    return result;
+  }
+
+  @Post('/translate-html')
+  async translateHtml(@Body() body: CitationTranslateHtmlRequest) {
+    const url = body.url?.trim();
+    const html = body.html?.trim();
+    if (!url || !html) {
+      throw new BadRequest('Translator URL and HTML are required.');
+    }
+    const result = await this.zoteroTranslators.translateHtml(url, html);
     if (!result) {
       return await this.service.resolve(url);
     }

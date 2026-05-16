@@ -21,6 +21,12 @@ export type CitationMetadata = {
   }>;
 };
 
+export type ImportedPdfAttachment = {
+  pdfBlobId: string;
+  pdfName: string;
+  pdfSize?: number;
+};
+
 export type CitationTranslationCandidate = {
   id: string;
   title: string;
@@ -52,7 +58,34 @@ export type PaperTagGroup = {
   latestReadTime: string;
 };
 
+export const PAPER_COLLECTION_NAME = '论文库';
+export const PAPER_COLLECTION_FILTER = {
+  type: 'system',
+  key: 'paper',
+  method: 'is',
+  value: 'true',
+} as const;
+
 export const UNCATEGORIZED_PAPER_TAG = '未分类';
+
+export function isPaperCollectionRules(
+  rules?: {
+    filters?: Array<{
+      type: string;
+      key: string;
+      method: string;
+      value?: string;
+    }>;
+  } | null
+) {
+  return !!rules?.filters?.some(
+    filter =>
+      filter.type === PAPER_COLLECTION_FILTER.type &&
+      filter.key === PAPER_COLLECTION_FILTER.key &&
+      filter.method === PAPER_COLLECTION_FILTER.method &&
+      filter.value === PAPER_COLLECTION_FILTER.value
+  );
+}
 
 export function parsePaperProperty(
   value: unknown

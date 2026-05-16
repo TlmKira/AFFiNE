@@ -55,7 +55,7 @@ function AuthenticatedRoutes() {
 
   useEffect(() => {
     if (user && !isAdmin(user)) {
-      toast.error('You are not an admin, please login the admin account.');
+      toast.error('当前账号不是管理员，请使用管理员账号登录。');
     }
   }, [user]);
 

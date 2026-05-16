@@ -52,6 +52,15 @@ export class ResearchLibraryController {
     return await this.library.recognizePdf(user.id, workspaceId, file);
   }
 
+  @Post('/papers/import-pdf-url')
+  @HttpCode(HttpStatus.OK)
+  async importPdfUrl(
+    @CurrentUser() user: CurrentUser,
+    @Body() input: { workspaceId?: string; url?: string; filename?: string }
+  ) {
+    return await this.library.importPdfUrl(user.id, input);
+  }
+
   @Get('/feeds')
   async listFeeds(
     @CurrentUser() user: CurrentUser,

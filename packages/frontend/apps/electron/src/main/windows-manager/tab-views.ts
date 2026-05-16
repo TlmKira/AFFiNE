@@ -42,6 +42,20 @@ import { globalStateStorage } from '../shared-storage/storage';
 import { buildWebPreferences } from '../web-preferences';
 import { getMainWindow, MainWindowManager } from './main-window';
 
+const devServerBase = process.env.DEV_SERVER_URL;
+
+function resolveAppViewUrl(url: string) {
+  if (!devServerBase) {
+    return url;
+  }
+
+  const parsed = new URL(url);
+  return new URL(
+    `${parsed.pathname}${parsed.search}${parsed.hash}`,
+    devServerBase
+  ).href;
+}
+
 async function getAdditionalArguments() {
   const { getExposedMeta } = await import('../exposed');
   const mainExposedMeta = getExposedMeta();
@@ -551,14 +565,20 @@ export class WebContentViewsManager {
     const workbench = this.tabViewsMeta.workbenches.find(w => w.id === id);
     const viewMeta = workbench?.views[workbench.activeViewIndex];
     if (workbench && viewMeta) {
+      const pathname =
+        viewMeta.path?.pathname ??
+        (workbench.basename.startsWith('/workspace') ? '/all' : '/');
+      const basePath =
+        workbench.basename === '/' ? '' : workbench.basename.replace(/\/$/, '');
       const url = new URL(
-        workbench.basename + (viewMeta.path?.pathname ?? ''),
+        `${basePath}${pathname.startsWith('/') ? pathname : `/${pathname}`}`,
         mainWindowOrigin
       );
       url.hash = viewMeta.path?.hash ?? '';
       url.search = viewMeta.path?.search ?? '';
-      logger.info(`loading tab ${id} at ${url.href}`);
-      view.webContents.loadURL(url.href).catch(err => logger.error(err));
+      const href = resolveAppViewUrl(url.href);
+      logger.info(`loading tab ${id} at ${href}`);
+      view.webContents.loadURL(href).catch(err => logger.error(err));
     }
     return view;
   };
@@ -968,7 +988,9 @@ export class WebContentViewsManager {
         });
       });
 
-      view.webContents.loadURL(shellViewUrl).catch(err => logger.error(err));
+      view.webContents
+        .loadURL(resolveAppViewUrl(shellViewUrl))
+        .catch(err => logger.error(err));
     }
 
     view.webContents.on('destroyed', () => {

@@ -16,7 +16,7 @@ export const useColumns = () => {
     return [
       {
         accessorKey: 'workspace',
-        header: () => <div className="text-xs font-medium">Workspace</div>,
+        header: () => <div className="text-xs font-medium">工作区</div>,
         cell: ({ row }) => {
           const workspace = row.original;
           return (
@@ -46,7 +46,7 @@ export const useColumns = () => {
                     </span>
                   ))
                 ) : (
-                  <span className="text-muted-foreground">No features</span>
+                  <span className="text-muted-foreground">无特性</span>
                 )}
               </div>
             </div>
@@ -55,11 +55,11 @@ export const useColumns = () => {
       },
       {
         accessorKey: 'owner',
-        header: () => <div className="text-xs font-medium">Owner</div>,
+        header: () => <div className="text-xs font-medium">所有者</div>,
         cell: ({ row }) => {
           const owner = row.original.owner;
           if (!owner) {
-            return <div className="text-xs text-muted-foreground">Unknown</div>;
+            return <div className="text-xs text-muted-foreground">未知</div>;
           }
           return (
             <div className="flex items-center gap-3 min-w-0">
@@ -81,7 +81,7 @@ export const useColumns = () => {
       },
       {
         accessorKey: 'usage',
-        header: () => <div className="text-xs font-medium">Usage</div>,
+        header: () => <div className="text-xs font-medium">用量</div>,
         cell: ({ row }) => {
           const ws = row.original;
           return (
@@ -102,18 +102,18 @@ export const useColumns = () => {
       },
       {
         accessorKey: 'members',
-        header: () => <div className="text-xs font-medium">Members</div>,
+        header: () => <div className="text-xs font-medium">成员</div>,
         cell: ({ row }) => {
           const ws = row.original;
           return (
             <div className="flex flex-col text-xs gap-1">
               <div className="flex gap-2">
                 <span className="font-medium">{ws.memberCount}</span>
-                <span className="text-muted-foreground">members</span>
+                <span className="text-muted-foreground">成员</span>
               </div>
               <div className="flex gap-2">
                 <span className="font-medium">{ws.publicPageCount}</span>
-                <span className="text-muted-foreground">shared pages</span>
+                <span className="text-muted-foreground">分享页面</span>
               </div>
             </div>
           );
@@ -125,7 +125,7 @@ export const useColumns = () => {
           className: 'w-[190px] justify-end',
         },
         header: () => (
-          <div className="text-xs font-medium text-right">Actions</div>
+          <div className="text-xs font-medium text-right">操作</div>
         ),
         cell: ({ row }) => (
           <div className="flex justify-end w-full">

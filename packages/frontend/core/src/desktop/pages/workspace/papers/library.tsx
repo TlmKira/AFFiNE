@@ -1,9 +1,7 @@
 import { Button, notify } from '@affine/component';
-import {
-  SettingHeader,
-  SettingWrapper,
-} from '@affine/component/setting-components';
+import { apis, appInfo } from '@affine/electron-api';
 import { DocsService, type DocRecord } from '@affine/core/modules/doc';
+import { AppSidebarService } from '@affine/core/modules/app-sidebar';
 import {
   type PDF,
   type PDFPage,
@@ -16,6 +14,7 @@ import { WorkspaceService } from '@affine/core/modules/workspace';
 import { Text, type Store } from '@blocksuite/affine/store';
 import { LiveData, useLiveData, useService } from '@toeverything/infra';
 import {
+  type DragEvent,
   type ReactNode,
   useCallback,
   useEffect,
@@ -28,40 +27,44 @@ import * as styles from './index.css';
 import {
   PAPER_STATUS_LABELS,
   PAPER_STATUS_ORDER,
-  type ResearchFeedItem,
-  type ResearchFeedSubscription,
   type ResearchPaperMetadata,
   type ResearchPaperStatus,
 } from './types';
 import {
   citationInputFromPaper,
   duplicateReasonLabel,
-  feedItemToPaper,
   findDuplicatePaper,
   findFuzzyDuplicate,
   formatPaperCitation,
   getPaperReadTime,
   groupPapersByTags,
   metadataToPaper,
+  normalizeArxivId,
   normalizePaperTags,
   parseCitationInput,
   parseCitationInputs,
   parsePaperProperty,
   sortPapersByReadTimeDesc,
   type CitationMetadata,
+  type CitationTranslationCandidate,
   type CitationTranslationResult,
+  type ImportedPdfAttachment,
   type PaperRecord,
 } from './utils';
 
-const QUICK_FEEDS = [
-  { title: 'arXiv cs.CV', url: 'https://export.arxiv.org/rss/cs.CV' },
-  { title: 'arXiv cs.RO', url: 'https://export.arxiv.org/rss/cs.RO' },
-  { title: 'arXiv cs.AI', url: 'https://export.arxiv.org/rss/cs.AI' },
-];
-
-type FetchState = 'idle' | 'loading';
-
 const COLLAPSED_TAGS_STORAGE_PREFIX = 'affine:papers:collapsed-tags:';
+
+type ImportQueueItem = {
+  id: string;
+  label: string;
+  status: 'loading' | 'done' | 'failed' | 'multiple';
+  message?: string;
+  candidates?: CitationTranslationCandidate[];
+};
+
+function makeQueueId() {
+  return `${Date.now()}:${Math.random().toString(36).slice(2)}`;
+}
 
 function readCollapsedTags(workspaceId: string) {
   if (typeof localStorage === 'undefined') return new Set<string>();
@@ -85,11 +88,20 @@ function formatReadTime(value?: string) {
   });
 }
 
+function isCitationTextFile(file: File) {
+  return (
+    /\.(bib|ris|enw|nbib|txt|json|csl)$/i.test(file.name) ||
+    /^text\//i.test(file.type) ||
+    file.type === 'application/json'
+  );
+}
+
 function addTemplateBlocks(
   store: Store,
   noteId: string,
   paper: ResearchPaperMetadata
 ) {
+  let pdfAttachmentBlockId: string | undefined;
   const addParagraph = (text: string, type: 'text' | 'h2' = 'text') => {
     store.addBlock(
       'affine:paragraph',
@@ -104,11 +116,22 @@ function addTemplateBlocks(
   addParagraph('摘要', 'h2');
   addParagraph(paper.abstract || '在这里整理论文摘要、核心问题和主要贡献。');
   addParagraph('PDF', 'h2');
-  addParagraph(
-    paper.pdfBlobId
-      ? `已关联 PDF：${paper.pdfName || paper.pdfBlobId}`
-      : '将 PDF 拖到论文库后会记录在论文属性中，也可以在这里补充附件。'
-  );
+  if (paper.pdfBlobId) {
+    pdfAttachmentBlockId = store.addBlock(
+      'affine:attachment',
+      {
+        name: paper.pdfName || `${paper.title}.pdf`,
+        type: 'application/pdf',
+        size: paper.pdfSize ?? 0,
+        sourceId: paper.pdfBlobId,
+        embed: true,
+      },
+      noteId
+    );
+    addParagraph(`已自动关联 PDF：${paper.pdfName || paper.pdfBlobId}`);
+  } else {
+    addParagraph('未找到可自动下载的 PDF，可以稍后把 PDF 拖入全部文档补充。');
+  }
   addParagraph('精读笔记', 'h2');
   addParagraph('问题定义：\n方法亮点：\n关键假设：\n局限性：');
   addParagraph('方法', 'h2');
@@ -117,6 +140,15 @@ function addTemplateBlocks(
   addParagraph('记录数据集、指标、对比方法、消融实验和复现差异。');
   addParagraph('复现记录', 'h2');
   addParagraph('代码仓库：\n环境：\n进度：\n遇到的问题：');
+  return pdfAttachmentBlockId;
+}
+
+async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}`);
+  }
+  return (await response.json()) as T;
 }
 
 async function resolveCitation(input: string): Promise<CitationMetadata> {
@@ -126,9 +158,7 @@ async function resolveCitation(input: string): Promise<CitationMetadata> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ input }),
     });
-    if (!response.ok) {
-      throw new Error(`resolve failed: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`resolve failed: ${response.status}`);
     return (await response.json()) as CitationMetadata;
   } catch {
     return parseCitationInput(input);
@@ -143,9 +173,22 @@ async function translateCitationUrl(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url }),
   });
-  if (!response.ok) {
-    throw new Error(`translate failed: ${response.status}`);
-  }
+  if (!response.ok) throw new Error(`translate failed: ${response.status}`);
+  return (await response.json()) as
+    | CitationTranslationResult
+    | CitationMetadata;
+}
+
+async function translateCitationHtml(
+  url: string,
+  html: string
+): Promise<CitationTranslationResult | CitationMetadata> {
+  const response = await fetch('/api/research/citation/translate-html', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url, html }),
+  });
+  if (!response.ok) throw new Error(`translate failed: ${response.status}`);
   return (await response.json()) as
     | CitationTranslationResult
     | CitationMetadata;
@@ -159,20 +202,10 @@ async function parseCitationText(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ input }),
   });
-  if (!response.ok) {
-    throw new Error(`parse failed: ${response.status}`);
-  }
+  if (!response.ok) throw new Error(`parse failed: ${response.status}`);
   return (await response.json()) as
     | CitationTranslationResult
     | CitationMetadata;
-}
-
-async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(url, options);
-  if (!response.ok) {
-    throw new Error(`${response.status} ${response.statusText}`);
-  }
-  return (await response.json()) as T;
 }
 
 function usePaperRecords(docs: DocRecord[], version: number): PaperRecord[] {
@@ -191,6 +224,48 @@ function usePaperRecords(docs: DocRecord[], version: number): PaperRecord[] {
 
     return sortPapersByReadTimeDesc(records);
   }, [docs, version]);
+}
+
+function bestPdfAttachment(metadata: CitationMetadata) {
+  const attachments = metadata.attachments ?? [];
+  const direct = attachments.find(
+    attachment =>
+      attachment.url &&
+      (/application\/pdf/i.test(attachment.mimeType ?? '') ||
+        /\.pdf(?:[?#].*)?$/i.test(attachment.url) ||
+        /pdf/i.test(attachment.title ?? ''))
+  );
+  if (direct?.url) return direct;
+
+  const arxivId =
+    normalizeArxivId(metadata.arxivId) || normalizeArxivId(metadata.url);
+  if (arxivId) {
+    return {
+      title: `${metadata.title || arxivId}.pdf`,
+      url: `https://arxiv.org/pdf/${arxivId}.pdf`,
+      mimeType: 'application/pdf',
+    };
+  }
+  return null;
+}
+
+async function importPdfFromUrl(
+  workspaceId: string,
+  attachment: { url?: string; title?: string }
+): Promise<ImportedPdfAttachment | null> {
+  if (!attachment.url) return null;
+  return await fetchJson<ImportedPdfAttachment>(
+    '/api/research/papers/import-pdf-url',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        workspaceId,
+        url: attachment.url,
+        filename: attachment.title,
+      }),
+    }
+  );
 }
 
 const PaperStatusSelect = ({
@@ -229,18 +304,22 @@ const PaperCover = ({ paper }: { paper: ResearchPaperMetadata }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const pdfState = useLiveData(
-    useMemo(() => {
-      return pdfEntity
-        ? pdfEntity.pdf.state$
-        : new LiveData<PDFRendererState>({ status: PDFStatus.IDLE });
-    }, [pdfEntity])
+    useMemo(
+      () =>
+        pdfEntity
+          ? pdfEntity.pdf.state$
+          : new LiveData<PDFRendererState>({ status: PDFStatus.IDLE }),
+      [pdfEntity]
+    )
   );
   const bitmap = useLiveData(
-    useMemo(() => {
-      return pageEntity
-        ? pageEntity.page.bitmap$
-        : new LiveData<ImageBitmap | null>(null);
-    }, [pageEntity])
+    useMemo(
+      () =>
+        pageEntity
+          ? pageEntity.page.bitmap$
+          : new LiveData<ImageBitmap | null>(null),
+      [pageEntity]
+    )
   );
 
   useEffect(() => {
@@ -258,14 +337,10 @@ const PaperCover = ({ paper }: { paper: ResearchPaperMetadata }) => {
     const sourceSize = pdfState.meta.pageSizes[0];
     if (!sourceSize) return;
     const width = 220;
-    const height = Math.max(
-      260,
-      Math.round((sourceSize.height / sourceSize.width) * width)
-    );
-    const scale = Math.min(window.devicePixelRatio || 1, 2);
-    const entity = pdfEntity.pdf.page(0, `${width}:${height}:${scale}`);
+    const height = Math.round((sourceSize.height / sourceSize.width) * width);
+    const entity = pdfEntity.pdf.page(0, `${width}:${height}:1`);
+    entity.page.render({ width, height, scale: 1 });
     setPageEntity(entity);
-    entity.page.render({ width, height, scale });
     return () => {
       entity.page.render.unsubscribe();
       entity.release();
@@ -275,14 +350,12 @@ const PaperCover = ({ paper }: { paper: ResearchPaperMetadata }) => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!bitmap || !canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!canvas || !bitmap) return;
     canvas.width = bitmap.width;
     canvas.height = bitmap.height;
-    ctx.clearRect(0, 0, bitmap.width, bitmap.height);
-    ctx.drawImage(bitmap, 0, 0);
-    canvas.dataset.ready = 'true';
+    const context = canvas.getContext('2d');
+    context?.clearRect(0, 0, canvas.width, canvas.height);
+    context?.drawImage(bitmap, 0, 0);
   }, [bitmap]);
 
   const showCanvas = paper.pdfBlobId && pdfState.status !== PDFStatus.Error;
@@ -291,12 +364,11 @@ const PaperCover = ({ paper }: { paper: ResearchPaperMetadata }) => {
     <div className={styles.coverFrame}>
       {showCanvas ? (
         <canvas
-          aria-label="PDF 第一页封面"
-          className={styles.coverCanvas}
           ref={canvasRef}
+          className={styles.coverCanvas}
+          aria-label={`${paper.title} PDF 首页`}
         />
-      ) : null}
-      {!bitmap || !showCanvas ? (
+      ) : (
         <div className={styles.coverPlaceholder}>
           <div className={styles.coverSource}>{paper.source || '论文'}</div>
           <div className={styles.coverTitle}>{paper.title}</div>
@@ -304,7 +376,7 @@ const PaperCover = ({ paper }: { paper: ResearchPaperMetadata }) => {
             {paper.year || '年份未知'} · {PAPER_STATUS_LABELS[paper.status]}
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
@@ -366,17 +438,22 @@ export function usePaperLibraryCore() {
         return null;
       }
 
+      let attachmentBlockId: string | undefined;
       const fuzzyDuplicate = findFuzzyDuplicate(papers, paper);
       const record = docsService.createDoc({
         title: paper.title,
         docProps: {
           onStoreLoad: (store, { noteId }) => {
-            addTemplateBlocks(store, noteId, paper);
+            attachmentBlockId = addTemplateBlocks(store, noteId, paper);
           },
         },
       });
       record.setMeta({ title: paper.title });
-      record.updateProperties({ paper });
+      record.updateProperties({
+        paper: attachmentBlockId
+          ? { ...paper, pdfAttachmentBlockId: attachmentBlockId }
+          : paper,
+      });
       setVersion(value => value + 1);
 
       if (fuzzyDuplicate) {
@@ -385,7 +462,7 @@ export function usePaperLibraryCore() {
           message: `存在标题、第一作者和年份相同的疑似重复：${fuzzyDuplicate.paper.title}`,
         });
       } else {
-        notify.success({ title: '已添加到论文库' });
+        notify.success({ title: '已创建论文文档' });
       }
       if (options.open ?? true) {
         openDoc(record.id);
@@ -436,15 +513,28 @@ export function usePaperLibraryCore() {
   }, []);
 
   const importPaperFromMetadata = useCallback(
-    (
+    async (
       metadata: CitationMetadata,
       createdFrom: ResearchPaperMetadata['createdFrom']
     ) => {
-      return createPaperDoc(metadataToPaper(metadata, createdFrom), {
-        open: false,
-      });
+      let pdfExtra: ImportedPdfAttachment | null = null;
+      const attachment = bestPdfAttachment(metadata);
+      if (attachment?.url) {
+        try {
+          pdfExtra = await importPdfFromUrl(workspace.id, attachment);
+        } catch {
+          notify({
+            title: '未能自动下载 PDF',
+            message: '论文已继续导入，可以稍后把 PDF 拖入全部文档补充。',
+          });
+        }
+      }
+      return createPaperDoc(
+        metadataToPaper(metadata, createdFrom, pdfExtra ?? {}),
+        { open: false }
+      );
     },
-    [createPaperDoc]
+    [createPaperDoc, workspace.id]
   );
 
   const importPaperFromPdf = useCallback(
@@ -473,6 +563,7 @@ export function usePaperLibraryCore() {
         metadataToPaper(metadata, 'pdf', {
           pdfBlobId,
           pdfName: file.name,
+          pdfSize: file.size,
         }),
         { open: false }
       );
@@ -491,7 +582,10 @@ export function usePaperLibraryCore() {
           if (translated.kind === 'single') {
             return {
               kind: 'single' as const,
-              docId: importPaperFromMetadata(translated.metadata, 'manual'),
+              docId: await importPaperFromMetadata(
+                translated.metadata,
+                'manual'
+              ),
               metadata: translated.metadata,
               translator: translated.translator,
             };
@@ -500,7 +594,7 @@ export function usePaperLibraryCore() {
         }
         return {
           kind: 'single' as const,
-          docId: importPaperFromMetadata(translated, 'manual'),
+          docId: await importPaperFromMetadata(translated, 'manual'),
           metadata: translated,
         };
       } catch (error) {
@@ -532,7 +626,7 @@ export function usePaperLibraryCore() {
             if (parsed.kind === 'single') {
               return {
                 kind: 'single' as const,
-                docId: importPaperFromMetadata(parsed.metadata, 'manual'),
+                docId: await importPaperFromMetadata(parsed.metadata, 'manual'),
                 metadata: parsed.metadata,
                 translator: parsed.translator,
               };
@@ -541,7 +635,7 @@ export function usePaperLibraryCore() {
           }
           return {
             kind: 'single' as const,
-            docId: importPaperFromMetadata(parsed, 'manual'),
+            docId: await importPaperFromMetadata(parsed, 'manual'),
             metadata: parsed,
           };
         }
@@ -708,7 +802,7 @@ export const PaperShelf = ({
                   data-collapsed={collapsed}
                   onClick={() => toggleTagGroup(group.tag)}
                 >
-                  <span className={styles.shelfGroupChevron}>⌄</span>
+                  <span className={styles.shelfGroupChevron}>›</span>
                   <span className={styles.shelfGroupTitle}>{group.tag}</span>
                   <span className={styles.shelfGroupMeta}>
                     {group.records.length} 篇 · 最近阅读{' '}
@@ -864,366 +958,1104 @@ export const PaperShelf = ({
   );
 };
 
-export const PaperLibrarySettings = () => {
-  const { workspace, papers, createPaperDoc, openDoc } = usePaperLibraryCore();
-  const [manualInput, setManualInput] = useState('');
-  const [manualState, setManualState] = useState<FetchState>('idle');
-  const [pdfState, setPdfState] = useState<FetchState>('idle');
-  const [dragging, setDragging] = useState(false);
-  const [feedUrl, setFeedUrl] = useState('');
-  const [feedState, setFeedState] = useState<FetchState>('idle');
-  const [feeds, setFeeds] = useState<ResearchFeedSubscription[]>([]);
-  const [feedItems, setFeedItems] = useState<ResearchFeedItem[]>([]);
-  const [feedError, setFeedError] = useState<string | null>(null);
+type ResearchBrowserPanelProps = {
+  open: boolean;
+  onClose: () => void;
+  onImportMetadata: (metadata: CitationMetadata) => Promise<string | null>;
+};
 
-  const loadFeeds = useCallback(async () => {
-    try {
-      setFeedError(null);
-      const [nextFeeds, nextItems] = await Promise.all([
-        fetchJson<ResearchFeedSubscription[]>(
-          `/api/research/feeds?workspaceId=${encodeURIComponent(workspace.id)}`
-        ),
-        fetchJson<ResearchFeedItem[]>(
-          `/api/research/feed-items?workspaceId=${encodeURIComponent(
-            workspace.id
-          )}`
-        ),
-      ]);
-      setFeeds(nextFeeds);
-      setFeedItems(nextItems);
-    } catch (error) {
-      setFeedError(
-        error instanceof Error
-          ? error.message
-          : '订阅源加载失败，本地预览可以先使用手动添加。'
-      );
+type ElectronResearchBrowserApi = {
+  create: () => Promise<{ id: string } | null>;
+  navigate: (id: string, url: string) => Promise<{ url: string } | null>;
+  goBack: (id: string) => Promise<void>;
+  goForward: (id: string) => Promise<void>;
+  reload: (id: string) => Promise<void>;
+  stop: (id: string) => Promise<void>;
+  capture: (
+    id: string
+  ) => Promise<{ url: string; title: string; html: string } | null>;
+  setBounds: (
+    id: string,
+    bounds: { x: number; y: number; width: number; height: number }
+  ) => Promise<void>;
+  destroy: (id: string) => Promise<void>;
+};
+
+type ResearchBrowserIdentifyStatus =
+  | 'idle'
+  | 'capturing'
+  | 'translating'
+  | 'matched'
+  | 'no-match'
+  | 'backend-error'
+  | 'fallback-ready';
+
+type ResearchBrowserPage = {
+  title: string;
+  url: string;
+  capturedUrl?: string | null;
+};
+
+const getElectronResearchBrowserApi = () => {
+  if (!appInfo?.electron) return null;
+  const researchBrowser = apis?.researchBrowser as
+    | ElectronResearchBrowserApi
+    | undefined;
+  return researchBrowser?.create ? researchBrowser : null;
+};
+
+const hasTranslationResult = (
+  result: CitationTranslationResult | CitationMetadata | null
+) => {
+  if (!result) return false;
+  if ('kind' in result) {
+    return result.kind === 'multiple'
+      ? result.items.length > 0
+      : !!result.metadata.title;
+  }
+  return !!result.title;
+};
+
+const statusTextByIdentifyStatus: Record<
+  ResearchBrowserIdentifyStatus,
+  string
+> = {
+  idle: '等待网页识别',
+  capturing: '正在读取当前网页 HTML...',
+  translating: '正在用 Zotero 识别当前网页...',
+  matched: '已识别到可保存的论文条目',
+  'no-match': 'Zotero 暂未识别到论文条目',
+  'backend-error': '识别服务不可用，请确认 AFFiNE 后端已启动。',
+  'fallback-ready': '已保留当前网页作为可导入线索',
+};
+
+const makeFallbackMetadata = (
+  page: ResearchBrowserPage,
+  source: string
+): CitationMetadata | null => {
+  const url = page.capturedUrl || page.url;
+  if (!url) return null;
+  const arxivId = normalizeArxivId(url);
+  const title =
+    page.title && page.title !== '尚未加载网页' && page.title !== url
+      ? page.title
+      : arxivId
+        ? `arXiv ${arxivId}`
+        : url;
+  return {
+    title,
+    url,
+    source: arxivId ? 'arXiv' : source,
+    arxivId: arxivId || undefined,
+  };
+};
+
+const ResearchBrowserResults = ({
+  identifyStatus,
+  error,
+  result,
+  page,
+  onImportMetadata,
+}: {
+  identifyStatus: ResearchBrowserIdentifyStatus;
+  error: string | null;
+  result: CitationTranslationResult | CitationMetadata | null;
+  page: ResearchBrowserPage;
+  onImportMetadata: (metadata: CitationMetadata) => Promise<string | null>;
+}) => {
+  const importSingle = useCallback(
+    async (metadata: CitationMetadata) => {
+      const docId = await onImportMetadata(metadata);
+      if (docId) {
+        notify.success({ title: '已导入论文' });
+      }
+    },
+    [onImportMetadata]
+  );
+
+  const importAll = useCallback(
+    async (items: CitationTranslationCandidate[]) => {
+      let count = 0;
+      for (const item of items) {
+        const metadata = item.metadata ?? {
+          title: item.title,
+          url: item.url,
+          source: 'Zotero Translator',
+        };
+        if (await onImportMetadata(metadata)) count += 1;
+      }
+      notify.success({ title: `已导入 ${count} 篇论文` });
+    },
+    [onImportMetadata]
+  );
+
+  const singleMetadata =
+    result && !('kind' in result)
+      ? result
+      : result?.kind === 'single'
+        ? result.metadata
+        : null;
+  const candidates =
+    result && 'kind' in result && result.kind === 'multiple'
+      ? result.items
+      : [];
+  const translator =
+    result && 'kind' in result ? result.translator : singleMetadata?.source;
+  const fallbackMetadata = makeFallbackMetadata(page, '网页线索');
+  const arxivFallbackMetadata = fallbackMetadata?.arxivId
+    ? makeFallbackMetadata(page, 'arXiv')
+    : null;
+  const showFallbackActions =
+    identifyStatus === 'no-match' ||
+    identifyStatus === 'backend-error' ||
+    identifyStatus === 'fallback-ready';
+
+  const renderMetadataMeta = (metadata: CitationMetadata) => {
+    const parts = [
+      metadata.authors?.join('; '),
+      metadata.year,
+      metadata.source,
+      metadata.doi ? `DOI ${metadata.doi}` : null,
+      metadata.arxivId ? `arXiv ${metadata.arxivId}` : null,
+    ].filter(Boolean);
+    return parts.length ? parts.join(' · ') : '作者不详';
+  };
+
+  const getAttachmentInfo = (metadata?: CitationMetadata) => {
+    const attachments = metadata?.attachments ?? [];
+    const pdfCount = attachments.filter(
+      attachment =>
+        attachment.mimeType === 'application/pdf' ||
+        attachment.url?.toLowerCase().includes('.pdf') ||
+        /pdf/i.test(attachment.title ?? '')
+    ).length;
+
+    if (pdfCount) {
+      return {
+        label: `PDF ${pdfCount}`,
+        detail: `Zotero 已发现 ${pdfCount} 个 PDF 附件，导入时会尝试自动绑定。`,
+        status: 'ready',
+      } as const;
     }
-  }, [workspace.id]);
+    if (attachments.length) {
+      return {
+        label: `附件 ${attachments.length}`,
+        detail: `已发现 ${attachments.length} 个网页附件。`,
+        status: 'neutral',
+      } as const;
+    }
+    return {
+      label: '无 PDF',
+      detail: '未发现可自动绑定的 PDF，导入后仍可手动拖入 PDF。',
+      status: 'empty',
+    } as const;
+  };
+
+  const renderCandidateCard = (
+    metadata: CitationMetadata,
+    options: {
+      title?: string;
+      url?: string;
+      index?: number;
+    } = {}
+  ) => {
+    const attachmentInfo = getAttachmentInfo(metadata);
+    return (
+      <div className={styles.detectedPaperCard}>
+        <div className={styles.detectedPaperHeader}>
+          <span className={styles.detectedPaperType}>
+            {options.index ? `条目 ${options.index}` : '当前网页'}
+          </span>
+          <span
+            className={styles.detectedPaperAttachment}
+            data-status={attachmentInfo.status}
+          >
+            {attachmentInfo.label}
+          </span>
+        </div>
+        <div className={styles.detectedPaperTitle}>
+          {metadata.title || options.title || '未命名论文'}
+        </div>
+        <div className={styles.detectedPaperMeta}>
+          {renderMetadataMeta(metadata)}
+        </div>
+        {metadata.abstract ? (
+          <div className={styles.detectedPaperAbstract}>
+            {metadata.abstract}
+          </div>
+        ) : null}
+        <div className={styles.detectedPaperFooter}>
+          <span className={styles.detectedPaperHint}>
+            {attachmentInfo.detail}
+          </span>
+          <Button onClick={() => importSingle(metadata)}>保存为论文文档</Button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <section className={styles.browserDetectedPanel}>
+      <div className={styles.browserDetectedHeader}>
+        <div>
+          <div className={styles.panelTitle}>当前网页论文</div>
+          <div className={styles.panelDescription}>
+            使用 Zotero translator 检测当前页面，可保存单篇或多篇论文。
+          </div>
+        </div>
+        {translator ? (
+          <span className={styles.detectedTranslator}>{translator}</span>
+        ) : null}
+      </div>
+      <div className={styles.browserPageSummary}>
+        <div className={styles.detectedPaperTitle}>
+          {page.title || '尚未加载网页'}
+        </div>
+        <div className={styles.detectedPaperMeta}>
+          {page.capturedUrl || page.url || '等待打开论文网页'}
+        </div>
+      </div>
+      <div
+        className={styles.browserDetectedStatus}
+        data-status={identifyStatus}
+      >
+        {candidates.length
+          ? `识别到 ${candidates.length} 条论文线索`
+          : singleMetadata
+            ? '识别到 1 篇论文'
+            : statusTextByIdentifyStatus[identifyStatus]}
+      </div>
+      {page.capturedUrl ? (
+        <div className={styles.browserCaptureStep}>
+          已读取当前网页 HTML，来源：{page.capturedUrl}
+        </div>
+      ) : null}
+      {error ? (
+        <div className={styles.browserErrorBox}>
+          <div className={styles.importQueueLabel}>
+            {identifyStatus === 'backend-error'
+              ? '识别服务未连接或出错'
+              : '识别失败'}
+          </div>
+          <div className={styles.importQueueMessage}>{error}</div>
+        </div>
+      ) : null}
+      {singleMetadata ? renderCandidateCard(singleMetadata) : null}
+      {candidates.length ? (
+        <div className={styles.detectedPaperList}>
+          <div className={styles.detectedPaperBulk}>
+            <Button variant="primary" onClick={() => importAll(candidates)}>
+              全部保存 {candidates.length} 篇
+            </Button>
+          </div>
+          {candidates.map((candidate, index) => (
+            <div key={candidate.id}>
+              {renderCandidateCard(
+                candidate.metadata ?? {
+                  title: candidate.title,
+                  url: candidate.url,
+                  source: 'Zotero Translator',
+                },
+                {
+                  title: candidate.title,
+                  url: candidate.url,
+                  index: index + 1,
+                }
+              )}
+            </div>
+          ))}
+        </div>
+      ) : null}
+      {identifyStatus === 'no-match' ? (
+        <div className={styles.detectedEmpty}>
+          Zotero 暂未识别到论文条目，可以用当前 URL 创建论文线索。
+        </div>
+      ) : null}
+      {showFallbackActions && fallbackMetadata ? (
+        <div className={styles.browserFallbackActions}>
+          {arxivFallbackMetadata ? (
+            <Button onClick={() => importSingle(arxivFallbackMetadata)}>
+              按 arXiv ID 导入
+            </Button>
+          ) : null}
+          <Button onClick={() => importSingle(fallbackMetadata)}>
+            按当前 URL 导入
+          </Button>
+          <Button
+            onClick={() =>
+              importSingle({
+                ...fallbackMetadata,
+                source: '网页标题',
+              })
+            }
+          >
+            用网页标题创建论文线索
+          </Button>
+        </div>
+      ) : null}
+      {identifyStatus === 'idle' && !singleMetadata && !candidates.length ? (
+        <div className={styles.detectedEmpty}>
+          打开 arXiv、Google Scholar、CNKI、出版社页面或论文官网后，右侧会像
+          Zotero Connector 一样显示可保存的论文条目。
+        </div>
+      ) : null}
+    </section>
+  );
+};
+
+const WebResearchBrowserPanel = ({
+  open,
+  onClose,
+  onImportMetadata,
+}: ResearchBrowserPanelProps) => {
+  const [url, setUrl] = useState('https://arxiv.org/abs/1706.03762');
+  const [html, setHtml] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [identifyStatus, setIdentifyStatus] =
+    useState<ResearchBrowserIdentifyStatus>('idle');
+  const [result, setResult] = useState<
+    CitationTranslationResult | CitationMetadata | null
+  >(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const runUrl = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    setIdentifyStatus('translating');
+    try {
+      const translated = await translateCitationUrl(url);
+      setResult(translated);
+      setIdentifyStatus(
+        hasTranslationResult(translated) ? 'matched' : 'no-match'
+      );
+    } catch (error) {
+      setError(error instanceof Error ? error.message : String(error));
+      setIdentifyStatus('backend-error');
+    } finally {
+      setLoading(false);
+    }
+  }, [url]);
+
+  const runHtml = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    setIdentifyStatus('translating');
+    try {
+      const translated = await translateCitationHtml(url, html);
+      setResult(translated);
+      setIdentifyStatus(
+        hasTranslationResult(translated) ? 'matched' : 'no-match'
+      );
+    } catch (error) {
+      setError(error instanceof Error ? error.message : String(error));
+      setIdentifyStatus('backend-error');
+    } finally {
+      setLoading(false);
+    }
+  }, [html, url]);
+
+  if (!open) return null;
+
+  return (
+    <div className={styles.browserBackdrop}>
+      <section className={styles.browserPanel} data-testid="research-browser">
+        <div className={styles.browserHeader}>
+          <div>
+            <div className={styles.panelTitle}>研究浏览器</div>
+            <div className={styles.panelDescription}>
+              网页端使用降级模式：输入 URL 或粘贴网页 HTML，用 Zotero translator
+              抓取论文线索。桌面端支持完整内置浏览器。
+            </div>
+          </div>
+          <Button onClick={onClose}>关闭</Button>
+        </div>
+        <div className={styles.browserBody}>
+          <div className={styles.browserControls}>
+            <input
+              className={styles.input}
+              value={url}
+              placeholder="论文网页 URL"
+              onChange={event => setUrl(event.target.value)}
+            />
+            <Button loading={loading} variant="primary" onClick={runUrl}>
+              识别 URL
+            </Button>
+          </div>
+          <div className={styles.browserGrid}>
+            <div className={styles.browserPreview}>
+              <iframe
+                className={styles.browserPreviewFrame}
+                title="论文网页预览"
+                src={url}
+                sandbox="allow-forms allow-popups allow-same-origin allow-scripts"
+              />
+            </div>
+            <div className={styles.browserResult}>
+              <textarea
+                className={styles.textarea}
+                value={html}
+                placeholder="也可以粘贴本地网页 HTML，或把 .html 文件拖到这里"
+                onChange={event => setHtml(event.target.value)}
+                onDragOver={event => event.preventDefault()}
+                onDrop={event => {
+                  event.preventDefault();
+                  const file = event.dataTransfer.files?.[0];
+                  if (file) {
+                    file.text().then(setHtml).catch(console.error);
+                  }
+                }}
+              />
+              <Button
+                disabled={!html.trim()}
+                loading={loading}
+                onClick={runHtml}
+              >
+                识别 HTML
+              </Button>
+              <div className={styles.notice}>
+                有些网站会阻止内嵌预览；这不影响通过服务端 URL 或本地 HTML
+                识别。
+              </div>
+              <ResearchBrowserResults
+                identifyStatus={loading ? 'translating' : identifyStatus}
+                error={error}
+                result={result}
+                page={{
+                  title: url,
+                  url,
+                  capturedUrl: html.trim() ? url : null,
+                }}
+                onImportMetadata={onImportMetadata}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+const ElectronResearchBrowserPanel = ({
+  open,
+  onClose,
+  onImportMetadata,
+}: ResearchBrowserPanelProps) => {
+  const api = useMemo(() => getElectronResearchBrowserApi(), []);
+  const [url, setUrl] = useState('https://arxiv.org/abs/1706.03762');
+  const [browserId, setBrowserId] = useState<string | null>(null);
+  const [loadingPage, setLoadingPage] = useState(false);
+  const [identifying, setIdentifying] = useState(false);
+  const [identifyStatus, setIdentifyStatus] =
+    useState<ResearchBrowserIdentifyStatus>('idle');
+  const [pageTitle, setPageTitle] = useState('尚未加载网页');
+  const [status, setStatus] = useState('准备打开论文网页');
+  const [lastAutoCapturedUrl, setLastAutoCapturedUrl] = useState<string | null>(
+    null
+  );
+  const [result, setResult] = useState<
+    CitationTranslationResult | CitationMetadata | null
+  >(null);
+  const [error, setError] = useState<string | null>(null);
+  const placeholderRef = useRef<HTMLDivElement>(null);
+  const identifyingRef = useRef(false);
+  const lastAutoCapturedUrlRef = useRef<string | null>(null);
+
+  const updateBounds = useCallback(() => {
+    if (!api || !browserId || !placeholderRef.current) return;
+    const rect = placeholderRef.current.getBoundingClientRect();
+    api
+      .setBounds(browserId, {
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+      })
+      .catch(console.error);
+  }, [api, browserId]);
+
+  const captureAndIdentify = useCallback(
+    async (
+      options: {
+        fallbackToClue?: boolean;
+        skipIfUrlUnchanged?: boolean;
+      } = {}
+    ) => {
+      if (!api || !browserId) return;
+      if (identifyingRef.current) return;
+      identifyingRef.current = true;
+      setIdentifying(true);
+      setError(null);
+      setResult(null);
+      setIdentifyStatus('capturing');
+      try {
+        const captured = await api.capture(browserId);
+        if (!captured?.html) {
+          throw new Error('没有捕获到当前网页内容');
+        }
+
+        if (
+          options.skipIfUrlUnchanged &&
+          captured.url === lastAutoCapturedUrlRef.current
+        ) {
+          return;
+        }
+
+        setUrl(captured.url);
+        setPageTitle(captured.title || captured.url);
+        lastAutoCapturedUrlRef.current = captured.url;
+        setLastAutoCapturedUrl(captured.url);
+        setStatus('已读取当前网页 HTML，正在发送给识别服务。');
+        setIdentifyStatus('translating');
+        const translated = await translateCitationHtml(
+          captured.url,
+          captured.html
+        );
+        setResult(translated);
+        if (hasTranslationResult(translated)) {
+          setIdentifyStatus('matched');
+          setStatus('识别完成，可以保存为论文文档');
+        } else {
+          setIdentifyStatus('no-match');
+          setStatus('Zotero 暂未识别到论文条目');
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        setError(message);
+        if (options.fallbackToClue) {
+          setIdentifyStatus('fallback-ready');
+          setStatus('识别失败，已保留当前网页作为手动导入线索');
+        } else {
+          setIdentifyStatus('backend-error');
+          setStatus('识别服务不可用，请确认 AFFiNE 后端已启动。');
+        }
+      } finally {
+        identifyingRef.current = false;
+        setIdentifying(false);
+      }
+    },
+    [api, browserId, pageTitle, url]
+  );
+
+  const navigate = useCallback(
+    async (targetUrl = url) => {
+      if (!api || !browserId) return;
+      setLoadingPage(true);
+      setError(null);
+      setResult(null);
+      setIdentifyStatus('idle');
+      lastAutoCapturedUrlRef.current = null;
+      setLastAutoCapturedUrl(null);
+      try {
+        const loaded = await api.navigate(browserId, targetUrl);
+        if (loaded?.url) {
+          setUrl(loaded.url);
+        }
+        setStatus('网页已加载，正在自动识别当前页论文');
+        window.setTimeout(() => {
+          captureAndIdentify().catch(console.error);
+        }, 800);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : String(error));
+      } finally {
+        setLoadingPage(false);
+        window.setTimeout(updateBounds, 0);
+      }
+    },
+    [api, browserId, captureAndIdentify, updateBounds, url]
+  );
 
   useEffect(() => {
-    loadFeeds().catch(console.error);
-  }, [loadFeeds]);
+    if (!open || !api) return;
 
-  const handleManualAdd = useCallback(async () => {
-    const input = manualInput.trim();
-    if (!input) {
-      notify.error({ title: '请输入 DOI、arXiv、URL、BibTeX 或标题' });
-      return;
-    }
-    setManualState('loading');
-    try {
-      const metadata = await resolveCitation(input);
-      const docId = createPaperDoc(metadataToPaper(metadata, 'manual'));
-      if (docId) {
-        setManualInput('');
-      }
-    } catch (error) {
-      notify.error({
-        title: '添加论文失败',
-        message: error instanceof Error ? error.message : String(error),
-      });
-    } finally {
-      setManualState('idle');
-    }
-  }, [createPaperDoc, manualInput]);
+    let disposed = false;
+    let createdId: string | null = null;
 
-  const handlePdfFile = useCallback(
-    async (file: File) => {
-      if (file.type && file.type !== 'application/pdf') {
-        notify.error({ title: '请拖入 PDF 文件' });
-        return;
-      }
-      setPdfState('loading');
-      try {
-        const pdfBlobId = await workspace.docCollection.blobSync.set(file);
-        const formData = new FormData();
-        formData.append('file', file);
-        let metadata: CitationMetadata;
-        try {
-          metadata = await fetchJson<CitationMetadata>(
-            `/api/research/papers/recognize-pdf?workspaceId=${encodeURIComponent(
-              workspace.id
-            )}`,
-            {
-              method: 'POST',
-              body: formData,
-            }
-          );
-        } catch {
-          metadata = parseCitationInput(file.name.replace(/\.pdf$/i, ' '));
-          notify({
-            title: 'PDF 已保存，识别服务不可用',
-            message: '已用文件名生成论文草稿，稍后可以手动补全元数据。',
-          });
+    api
+      .create()
+      .then(created => {
+        if (!created?.id || disposed) {
+          if (created?.id) {
+            api.destroy(created.id).catch(console.error);
+          }
+          return;
         }
-        createPaperDoc(
-          metadataToPaper(metadata, 'pdf', {
-            pdfBlobId,
-            pdfName: file.name,
-          })
-        );
-      } catch (error) {
-        notify.error({
-          title: 'PDF 导入失败',
-          message: error instanceof Error ? error.message : String(error),
-        });
-      } finally {
-        setPdfState('idle');
-      }
-    },
-    [createPaperDoc, workspace.docCollection.blobSync, workspace.id]
-  );
+        createdId = created.id;
+        setBrowserId(created.id);
+      })
+      .catch(error => {
+        setError(error instanceof Error ? error.message : String(error));
+      });
 
-  const handleAddFeed = useCallback(
-    async (url: string, title?: string) => {
-      const nextUrl = url.trim();
-      if (!nextUrl) {
-        notify.error({ title: '请输入 RSS 或 Atom 订阅地址' });
-        return;
+    return () => {
+      disposed = true;
+      if (createdId) {
+        api.destroy(createdId).catch(console.error);
       }
-      setFeedState('loading');
+    };
+  }, [api, open]);
+
+  useEffect(() => {
+    if (!browserId) return;
+    updateBounds();
+    navigate(url).catch(console.error);
+    // Only auto-load once after the native view is created.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [browserId]);
+
+  useEffect(() => {
+    if (!open || !browserId) return;
+
+    const timer = window.setInterval(() => {
+      captureAndIdentify({ skipIfUrlUnchanged: true }).catch(console.error);
+    }, 3500);
+
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [browserId, captureAndIdentify, open]);
+
+  useEffect(() => {
+    if (!open || !browserId) return;
+    const target = placeholderRef.current;
+    const resizeObserver =
+      target && typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(updateBounds)
+        : null;
+
+    if (target) {
+      resizeObserver?.observe(target);
+    }
+
+    window.addEventListener('resize', updateBounds);
+    window.addEventListener('scroll', updateBounds, true);
+    window.setTimeout(updateBounds, 0);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', updateBounds);
+      window.removeEventListener('scroll', updateBounds, true);
+    };
+  }, [browserId, open, updateBounds]);
+
+  const callBrowser = useCallback(
+    async (action: 'goBack' | 'goForward' | 'reload' | 'stop') => {
+      if (!api || !browserId) return;
+      setError(null);
       try {
-        await fetchJson<ResearchFeedSubscription>('/api/research/feeds', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            workspaceId: workspace.id,
-            url: nextUrl,
-            title,
-          }),
-        });
-        setFeedUrl('');
-        notify.success({ title: '订阅源已添加' });
-        await loadFeeds();
+        await api[action](browserId);
+        window.setTimeout(updateBounds, 0);
       } catch (error) {
-        notify.error({
-          title: '添加订阅源失败',
-          message:
-            error instanceof Error
-              ? error.message
-              : '请确认已连接 AFFiNE 服务端并具备工作区写权限。',
-        });
-      } finally {
-        setFeedState('idle');
+        setError(error instanceof Error ? error.message : String(error));
       }
     },
-    [loadFeeds, workspace.id]
+    [api, browserId, updateBounds]
   );
 
-  const handleRefreshFeed = useCallback(
-    async (feedId: string) => {
-      setFeedState('loading');
-      try {
-        await fetchJson(`/api/research/feeds/${feedId}/refresh`, {
-          method: 'POST',
-        });
-        notify.success({ title: '订阅源已刷新' });
-        await loadFeeds();
-      } catch (error) {
-        notify.error({
-          title: '刷新订阅源失败',
-          message: error instanceof Error ? error.message : String(error),
-        });
-      } finally {
-        setFeedState('idle');
-      }
-    },
-    [loadFeeds]
-  );
+  if (!open || !api) return null;
 
-  const handleToggleFeed = useCallback(
-    async (feed: ResearchFeedSubscription) => {
-      try {
-        await fetchJson(`/api/research/feeds/${feed.id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ enabled: !feed.enabled }),
-        });
-        await loadFeeds();
-      } catch (error) {
-        notify.error({
-          title: '更新订阅源失败',
-          message: error instanceof Error ? error.message : String(error),
-        });
-      }
-    },
-    [loadFeeds]
+  return (
+    <div className={styles.browserBackdrop}>
+      <section className={styles.browserPanel} data-testid="research-browser">
+        <div className={styles.browserHeader}>
+          <div>
+            <div className={styles.panelTitle}>研究浏览器</div>
+            <div className={styles.panelDescription}>
+              桌面端内置浏览器：打开真实论文网页后，保存为论文文档时会捕获当前
+              HTML，并交给 Zotero translator 识别。
+            </div>
+          </div>
+          <Button onClick={onClose}>关闭</Button>
+        </div>
+        <div className={styles.browserBody}>
+          <div className={styles.browserControls}>
+            <input
+              className={styles.input}
+              value={url}
+              placeholder="论文网页 URL"
+              onChange={event => setUrl(event.target.value)}
+              onKeyDown={event => {
+                if (event.key === 'Enter') {
+                  navigate().catch(console.error);
+                }
+              }}
+            />
+            <div className={styles.browserToolbar}>
+              <Button onClick={() => callBrowser('goBack')}>后退</Button>
+              <Button onClick={() => callBrowser('goForward')}>前进</Button>
+              <Button onClick={() => callBrowser('reload')}>刷新</Button>
+              <Button onClick={() => callBrowser('stop')}>停止</Button>
+              <Button loading={loadingPage} onClick={() => navigate()}>
+                打开
+              </Button>
+              <Button
+                loading={identifying}
+                variant="primary"
+                onClick={() => captureAndIdentify({ fallbackToClue: true })}
+              >
+                重新识别
+              </Button>
+            </div>
+          </div>
+          <div className={styles.browserGrid}>
+            <div className={styles.browserPreview}>
+              <div ref={placeholderRef} className={styles.nativeBrowserView}>
+                {!browserId ? '正在创建内置浏览器...' : null}
+              </div>
+            </div>
+            <div className={styles.browserResult}>
+              <div className={styles.browserPageInfo}>
+                <div className={styles.importQueueLabel}>{pageTitle}</div>
+                <div className={styles.importQueueMessage}>{status}</div>
+              </div>
+              <div className={styles.notice}>
+                远程网页不会获得 AFFiNE 的桌面 API；导航仅允许 http/https。
+              </div>
+              <ResearchBrowserResults
+                identifyStatus={identifyStatus}
+                error={error}
+                result={result}
+                page={{
+                  title: pageTitle,
+                  url,
+                  capturedUrl: lastAutoCapturedUrl,
+                }}
+                onImportMetadata={onImportMetadata}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
+};
 
-  const handleImportFeedItem = useCallback(
-    (item: ResearchFeedItem) => {
-      createPaperDoc(feedItemToPaper(item));
-    },
-    [createPaperDoc]
-  );
+const ResearchBrowserPanel = (props: ResearchBrowserPanelProps) => {
+  if (getElectronResearchBrowserApi()) {
+    return <ElectronResearchBrowserPanel {...props} />;
+  }
+
+  return <WebResearchBrowserPanel {...props} />;
+};
+
+export const PaperImportButton = () => {
+  const { importPaperFromMetadata } = usePaperLibraryCore();
+  const appSidebar = useService(AppSidebarService).sidebar;
+  const [browserOpen, setBrowserOpen] = useState(false);
+
+  const openResearchBrowser = useCallback(() => {
+    if (window.innerWidth <= 720) {
+      appSidebar.setOpen(false);
+    }
+    setBrowserOpen(true);
+  }, [appSidebar]);
 
   return (
     <>
-      <SettingHeader
-        title="论文库"
-        subtitle="管理论文导入、PDF 识别和 arXiv / RSS 订阅。"
+      <Button data-testid="add-paper-button" onClick={openResearchBrowser}>
+        添加论文
+      </Button>
+      <ResearchBrowserPanel
+        open={browserOpen}
+        onClose={() => setBrowserOpen(false)}
+        onImportMetadata={metadata =>
+          importPaperFromMetadata(metadata, 'manual')
+        }
       />
-      <SettingWrapper title="添加论文">
-        <div className={styles.settingsStack}>
-          <div className={styles.formRow}>
-            <label className={styles.field}>
-              <span className={styles.label}>论文线索</span>
-              <textarea
-                className={styles.textarea}
-                value={manualInput}
-                placeholder="例如：arXiv:1706.03762、10.1145/...、BibTeX 或论文标题"
-                onChange={event => setManualInput(event.target.value)}
-              />
-            </label>
-            <Button
-              className={styles.formActionButton}
-              variant="primary"
-              disabled={manualState === 'loading'}
-              onClick={handleManualAdd}
-            >
-              {manualState === 'loading' ? '解析中' : '添加论文'}
-            </Button>
-          </div>
-          <div
-            className={styles.dropZone}
-            data-dragging={dragging}
-            onDragEnter={event => {
-              event.preventDefault();
-              setDragging(true);
-            }}
-            onDragOver={event => event.preventDefault()}
-            onDragLeave={() => setDragging(false)}
-            onDrop={event => {
-              event.preventDefault();
-              setDragging(false);
-              const file = event.dataTransfer.files[0];
-              if (file) {
-                handlePdfFile(file).catch(console.error);
-              }
-            }}
-          >
-            <div className={styles.dropTitle}>
-              {pdfState === 'loading' ? '正在识别 PDF' : '拖拽 PDF 到这里'}
-            </div>
-            <div className={styles.dropHint}>
-              PDF 会保存到当前工作区 Blob，并尝试识别 DOI、arXiv
-              或标题；识别失败也会保留可编辑草稿。
-            </div>
-          </div>
-        </div>
-      </SettingWrapper>
-
-      <SettingWrapper title="arXiv / RSS 订阅">
-        <div className={styles.settingsStack}>
-          {feedError ? (
-            <div className={styles.notice}>订阅服务暂不可用：{feedError}</div>
-          ) : null}
-          <div className={styles.quickFeeds}>
-            {QUICK_FEEDS.map(feed => (
-              <Button
-                key={feed.url}
-                disabled={feedState === 'loading'}
-                onClick={() => handleAddFeed(feed.url, feed.title)}
-              >
-                添加 {feed.title}
-              </Button>
-            ))}
-            <Button disabled={feedState === 'loading'} onClick={loadFeeds}>
-              刷新列表
-            </Button>
-          </div>
-          <div className={styles.formRow}>
-            <label className={styles.field}>
-              <span className={styles.label}>自定义订阅地址</span>
-              <input
-                className={styles.input}
-                value={feedUrl}
-                placeholder="https://example.com/feed.xml"
-                onChange={event => setFeedUrl(event.target.value)}
-              />
-            </label>
-            <Button
-              className={styles.formActionButton}
-              variant="primary"
-              disabled={feedState === 'loading'}
-              onClick={() => handleAddFeed(feedUrl)}
-            >
-              添加订阅
-            </Button>
-          </div>
-        </div>
-      </SettingWrapper>
-
-      <SettingWrapper title="订阅新论文">
-        {feeds.length ? (
-          <div className={styles.feedRows}>
-            {feeds.map(feed => (
-              <div className={styles.feedRow} key={feed.id}>
-                <div>
-                  <div className={styles.feedTitle}>
-                    {feed.title || feed.url}
-                  </div>
-                  <div className={styles.feedMeta}>
-                    {feed.enabled ? '已启用' : '已停用'} · 上次同步：
-                    {feed.lastSyncAt
-                      ? new Date(feed.lastSyncAt).toLocaleString()
-                      : '尚未同步'}
-                    {feed.lastError ? ` · 错误：${feed.lastError}` : ''}
-                  </div>
-                </div>
-                <div className={styles.rowActions}>
-                  <Button onClick={() => handleToggleFeed(feed)}>
-                    {feed.enabled ? '停用' : '启用'}
-                  </Button>
-                  <Button onClick={() => handleRefreshFeed(feed.id)}>
-                    立即刷新
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className={styles.empty}>
-            暂无订阅源。可以先添加 arXiv cs.CV、cs.RO 或自定义 RSS。
-          </div>
-        )}
-        {feedItems.length ? (
-          <div className={styles.feedRows}>
-            {feedItems.slice(0, 12).map(item => (
-              <div className={styles.feedRow} key={item.id}>
-                <div>
-                  <div className={styles.feedTitle}>{item.title}</div>
-                  <div className={styles.feedMeta}>
-                    {item.authors?.join('; ') || '作者不详'}
-                    {item.publishedAt
-                      ? ` · ${new Date(item.publishedAt).getFullYear()}`
-                      : ''}
-                    {item.arxivId ? ` · arXiv ${item.arxivId}` : ''}
-                  </div>
-                </div>
-                <Button onClick={() => handleImportFeedItem(item)}>
-                  导入论文页
-                </Button>
-              </div>
-            ))}
-          </div>
-        ) : null}
-      </SettingWrapper>
-
-      <SettingWrapper title="当前论文">
-        <div className={styles.settingsSummary}>
-          已收录 {papers.length}{' '}
-          篇论文。浏览和阅读状态管理请回到侧边栏的论文库页面。
-          {papers.length ? (
-            <Button
-              variant="secondary"
-              onClick={() => openDoc(papers[0].docId)}
-            >
-              打开最近论文
-            </Button>
-          ) : null}
-        </div>
-      </SettingWrapper>
     </>
+  );
+};
+
+export const PaperLibraryView = () => {
+  const {
+    workspace,
+    papers,
+    openPaper,
+    handleStatusChange,
+    saveTags,
+    copyCitation,
+    importPaperFromPdf,
+    importPaperFromText,
+    importPaperFromMetadata,
+  } = usePaperLibraryCore();
+  const [dragging, setDragging] = useState(false);
+  const [browserOpen, setBrowserOpen] = useState(false);
+  const [importQueue, setImportQueue] = useState<ImportQueueItem[]>([]);
+
+  const updateQueueItem = useCallback(
+    (id: string, patch: Partial<ImportQueueItem>) => {
+      setImportQueue(items =>
+        items.map(item => (item.id === id ? { ...item, ...patch } : item))
+      );
+    },
+    []
+  );
+
+  const importText = useCallback(
+    async (text: string, label = text) => {
+      const id = makeQueueId();
+      setImportQueue(items => [
+        { id, label: label.slice(0, 120), status: 'loading' },
+        ...items,
+      ]);
+      try {
+        const result = await importPaperFromText(text);
+        if (result.kind === 'multiple') {
+          updateQueueItem(id, {
+            status: 'multiple',
+            message: `从 ${result.translator} 识别到 ${result.items.length} 条论文线索`,
+            candidates: result.items,
+          });
+          return;
+        }
+        updateQueueItem(id, {
+          status: result.docId ? 'done' : 'failed',
+          message: result.docId ? '已创建论文文档' : '该论文可能已存在',
+        });
+      } catch (error) {
+        updateQueueItem(id, {
+          status: 'failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+    },
+    [importPaperFromText, updateQueueItem]
+  );
+
+  const importPdf = useCallback(
+    async (file: File) => {
+      const id = makeQueueId();
+      setImportQueue(items => [
+        { id, label: file.name, status: 'loading' },
+        ...items,
+      ]);
+      try {
+        const docId = await importPaperFromPdf(file);
+        updateQueueItem(id, {
+          status: docId ? 'done' : 'failed',
+          message: docId ? 'PDF 已识别并添加' : '该论文可能已存在',
+        });
+      } catch (error) {
+        updateQueueItem(id, {
+          status: 'failed',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+    },
+    [importPaperFromPdf, updateQueueItem]
+  );
+
+  const handleImportCandidate = useCallback(
+    async (candidate: CitationTranslationCandidate, queueId: string) => {
+      const metadata: CitationMetadata = candidate.metadata ?? {
+        title: candidate.title,
+        url: candidate.url,
+        source: 'Zotero Translator',
+      };
+      const docId = await importPaperFromMetadata(metadata, 'manual');
+      updateQueueItem(queueId, {
+        status: docId ? 'done' : 'failed',
+        message: docId ? `已导入：${candidate.title}` : '该论文可能已存在',
+      });
+    },
+    [importPaperFromMetadata, updateQueueItem]
+  );
+
+  const handleImportAllCandidates = useCallback(
+    async (candidates: CitationTranslationCandidate[], queueId: string) => {
+      let imported = 0;
+      for (const candidate of candidates) {
+        const metadata: CitationMetadata = candidate.metadata ?? {
+          title: candidate.title,
+          url: candidate.url,
+          source: 'Zotero Translator',
+        };
+        if (await importPaperFromMetadata(metadata, 'manual')) {
+          imported += 1;
+        }
+      }
+      updateQueueItem(queueId, {
+        status: imported > 0 ? 'done' : 'failed',
+        message:
+          imported > 0 ? `已导入 ${imported} 篇论文` : '这些论文可能都已存在',
+      });
+    },
+    [importPaperFromMetadata, updateQueueItem]
+  );
+
+  const handleDrop = useCallback(
+    (event: DragEvent<HTMLElement>) => {
+      event.preventDefault();
+      setDragging(false);
+      const files = Array.from(event.dataTransfer.files ?? []);
+      if (files.length) {
+        files.forEach(file => {
+          if (file.type === 'application/pdf' || /\.pdf$/i.test(file.name)) {
+            importPdf(file).catch(console.error);
+          } else if (isCitationTextFile(file)) {
+            file
+              .text()
+              .then(text => importText(text, file.name))
+              .catch(console.error);
+          } else if (/\.html?$/i.test(file.name)) {
+            file
+              .text()
+              .then(text => {
+                setBrowserOpen(true);
+                return importText(text, file.name);
+              })
+              .catch(console.error);
+          } else {
+            setImportQueue(items => [
+              {
+                id: makeQueueId(),
+                label: file.name,
+                status: 'failed',
+                message:
+                  '暂时只支持直接拖入 PDF、BibTeX、RIS、NBIB、CSL JSON、HTML 或文本文件。',
+              },
+              ...items,
+            ]);
+          }
+        });
+        return;
+      }
+
+      const text =
+        event.dataTransfer.getData('text/uri-list') ||
+        event.dataTransfer.getData('text/plain');
+      text
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => line && !line.startsWith('#'))
+        .forEach(line => {
+          importText(line).catch(console.error);
+        });
+    },
+    [importPdf, importText]
+  );
+
+  const handleAddFromClipboard = useCallback(() => {
+    const input = window.prompt('粘贴 DOI、arXiv、URL、BibTeX、RIS 或论文标题');
+    if (input?.trim()) {
+      importText(input).catch(console.error);
+    }
+  }, [importText]);
+
+  return (
+    <main
+      className={styles.body}
+      data-dragging={dragging}
+      data-testid="papers-library-page"
+      onDragEnter={event => {
+        event.preventDefault();
+        setDragging(true);
+      }}
+      onDragOver={event => {
+        event.preventDefault();
+        setDragging(true);
+      }}
+      onDragLeave={event => {
+        if (event.currentTarget === event.target) {
+          setDragging(false);
+        }
+      }}
+      onDrop={handleDrop}
+    >
+      {dragging ? (
+        <div className={styles.pageDropOverlay}>
+          <div className={styles.pageDropCard}>
+            <div className={styles.pageDropTitle}>拖入后创建论文文档</div>
+            <div className={styles.pageDropHint}>
+              支持 PDF、论文链接、DOI、arXiv、BibTeX、RIS、HTML 和普通文本线索
+            </div>
+          </div>
+        </div>
+      ) : null}
+      <div className={styles.shelfContent}>
+        <div className={styles.shelfQuickActions}>
+          <Button onClick={handleAddFromClipboard}>添加论文</Button>
+          <Button variant="primary" onClick={() => setBrowserOpen(true)}>
+            研究浏览器
+          </Button>
+        </div>
+        {importQueue.length ? (
+          <section className={styles.importQueue}>
+            <div className={styles.importQueueTitle}>导入队列</div>
+            {importQueue.map(item => (
+              <div className={styles.importQueueItem} key={item.id}>
+                <div className={styles.importQueueMain}>
+                  <div className={styles.importQueueLabel}>{item.label}</div>
+                  <div className={styles.importQueueMessage}>
+                    {item.status === 'loading'
+                      ? '正在识别论文线索'
+                      : item.message}
+                  </div>
+                  {item.status === 'multiple' && item.candidates?.length ? (
+                    <div className={styles.importCandidates}>
+                      <button
+                        className={styles.importCandidatePrimary}
+                        onClick={() =>
+                          handleImportAllCandidates(
+                            item.candidates ?? [],
+                            item.id
+                          )
+                        }
+                      >
+                        全部导入 {item.candidates.length} 篇
+                      </button>
+                      {item.candidates.map(candidate => (
+                        <button
+                          className={styles.importCandidate}
+                          key={candidate.id}
+                          onClick={() =>
+                            handleImportCandidate(candidate, item.id)
+                          }
+                        >
+                          {candidate.title}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+                <span
+                  className={styles.importQueueStatus}
+                  data-status={item.status}
+                >
+                  {item.status === 'loading'
+                    ? '识别中'
+                    : item.status === 'done'
+                      ? '完成'
+                      : item.status === 'multiple'
+                        ? '可选择'
+                        : '失败'}
+                </span>
+              </div>
+            ))}
+          </section>
+        ) : null}
+        <PaperShelf
+          papers={papers}
+          workspaceId={workspace.id}
+          onOpenPaper={openPaper}
+          onStatusChange={handleStatusChange}
+          onSaveTags={saveTags}
+          onCopyCitation={copyCitation}
+          emptyAction={
+            <Button variant="primary" onClick={() => setBrowserOpen(true)}>
+              用研究浏览器添加第一篇论文
+            </Button>
+          }
+        />
+      </div>
+      <ResearchBrowserPanel
+        open={browserOpen}
+        onClose={() => setBrowserOpen(false)}
+        onImportMetadata={metadata =>
+          importPaperFromMetadata(metadata, 'manual')
+        }
+      />
+    </main>
   );
 };

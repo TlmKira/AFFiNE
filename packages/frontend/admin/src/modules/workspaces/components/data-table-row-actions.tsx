@@ -107,7 +107,7 @@ export function DataTableRowActions({
           onClick={handleEdit}
         >
           <EditIcon fontSize={18} />
-          <span>Edit</span>
+          <span>编辑</span>
         </Button>
         <Button
           variant="ghost"
@@ -116,7 +116,7 @@ export function DataTableRowActions({
           onClick={handleSharedLinks}
         >
           <LinkIcon fontSize={18} />
-          <span>Shared links</span>
+          <span>分享链接</span>
         </Button>
       </div>
       <DiscardChanges
@@ -127,7 +127,7 @@ export function DataTableRowActions({
           setPendingAction(null);
         }}
         onConfirm={handleDiscardConfirm}
-        description="Changes to this workspace will not be saved."
+        description="对该工作区的修改不会被保存。"
       />
     </>
   );

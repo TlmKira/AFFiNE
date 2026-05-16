@@ -25,6 +25,7 @@ import {
 import { useLiveData, useService } from '@toeverything/infra';
 import { useMemo, useState } from 'react';
 
+import { PaperImportButton } from '../papers/library';
 import * as styles from './pinned-collections.css';
 
 export const PinnedCollectionItem = ({
@@ -43,8 +44,12 @@ export const PinnedCollectionItem = ({
   const collection = useLiveData(
     collectionService.collection$(record.collectionId)
   );
+  const collectionMetas = useLiveData(collectionService.collectionMetas$);
+  const collectionMeta = collectionMetas.find(
+    meta => meta.id === record.collectionId
+  );
   const name = useLiveData(collection?.name$);
-  if (!collection) {
+  if (!collection && !collectionMeta) {
     return null;
   }
   return (
@@ -54,7 +59,9 @@ export const PinnedCollectionItem = ({
       data-active={isActive ? 'true' : undefined}
       onClick={onClick}
     >
-      <span className={styles.itemContent}>{name ?? t['Untitled']()}</span>
+      <span className={styles.itemContent}>
+        {name ?? collectionMeta?.name ?? t['Untitled']()}
+      </span>
       {isActive && (
         <IconButton
           className={styles.closeButton}
@@ -116,6 +123,7 @@ export const PinnedCollections = ({
       >
         {t['com.affine.all-docs.pinned-collection.all']()}
       </div>
+      <PaperImportButton />
       {pinnedCollections.map((record, index) => (
         <PinnedCollectionItem
           key={record.collectionId}

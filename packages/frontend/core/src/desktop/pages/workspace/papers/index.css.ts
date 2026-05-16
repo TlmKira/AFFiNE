@@ -195,9 +195,10 @@ export const importCandidates = style({
 });
 
 export const importCandidate = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 3,
   overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
   width: '100%',
   border: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
   borderRadius: 8,
@@ -213,6 +214,21 @@ export const importCandidate = style({
       color: cssVarV2('button/primary'),
     },
   },
+});
+
+export const importCandidateTitle = style({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+});
+
+export const importCandidateMeta = style({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  fontSize: 11,
+  lineHeight: '16px',
+  color: cssVarV2('text/secondary'),
 });
 
 export const importCandidatePrimary = style([
@@ -862,6 +878,347 @@ export const quickFeeds = style({
 });
 
 export const smallButtonGroup = style({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: 8,
+});
+
+export const browserBackdrop = style({
+  position: 'fixed',
+  inset: 0,
+  zIndex: 10000,
+  display: 'flex',
+  justifyContent: 'flex-end',
+  background: 'rgba(0, 0, 0, 0.26)',
+});
+
+export const browserPanel = style({
+  display: 'flex',
+  flexDirection: 'column',
+  width: 'min(1080px, calc(100vw - 48px))',
+  height: '100%',
+  background: cssVarV2('layer/background/primary'),
+  boxShadow: '-16px 0 40px rgba(0, 0, 0, 0.14)',
+  '@media': {
+    '(max-width: 720px)': {
+      width: '100vw',
+    },
+  },
+});
+
+export const browserHeader = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 12,
+  minHeight: 64,
+  padding: '14px 16px',
+  borderBottom: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
+});
+
+export const browserBody = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 12,
+  minHeight: 0,
+  flex: 1,
+  padding: 16,
+});
+
+export const browserControls = style({
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr) auto',
+  gap: 10,
+  alignItems: 'center',
+  '@media': {
+    '(max-width: 980px)': {
+      gridTemplateColumns: '1fr',
+    },
+  },
+});
+
+export const browserToolbar = style({
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: 'flex-end',
+  gap: 8,
+  '@media': {
+    '(max-width: 980px)': {
+      justifyContent: 'flex-start',
+    },
+  },
+});
+
+export const browserGrid = style({
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr) 360px',
+  gap: 12,
+  minHeight: 0,
+  flex: 1,
+  '@media': {
+    '(max-width: 900px)': {
+      gridTemplateColumns: '1fr',
+      overflow: 'auto',
+    },
+  },
+});
+
+export const browserPreview = style({
+  minHeight: 360,
+  overflow: 'hidden',
+  border: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
+  borderRadius: 8,
+  background: cssVarV2('layer/background/secondary'),
+});
+
+export const browserPreviewFrame = style({
+  width: '100%',
+  height: '100%',
+  minHeight: 360,
+  border: 0,
+  background: '#fff',
+});
+
+export const nativeBrowserView = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
+  height: '100%',
+  minHeight: 360,
+  color: cssVarV2('text/secondary'),
+  background: '#fff',
+});
+
+export const browserResult = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 10,
+  minWidth: 0,
+  minHeight: 0,
+  overflow: 'auto',
+});
+
+export const browserPageInfo = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 4,
+  padding: '10px 12px',
+  border: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
+  borderRadius: 8,
+  background: cssVarV2('layer/background/secondary'),
+});
+
+export const browserDetectedPanel = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 10,
+  minHeight: 0,
+  border: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
+  borderRadius: 8,
+  padding: 12,
+  background: cssVarV2('layer/background/primary'),
+});
+
+export const browserDetectedHeader = style({
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr) auto',
+  gap: 10,
+  alignItems: 'start',
+});
+
+export const browserDetectedStatus = style({
+  borderRadius: 6,
+  padding: '7px 9px',
+  fontSize: cssVar('fontXs'),
+  lineHeight: '18px',
+  color: cssVarV2('text/secondary'),
+  background: cssVarV2('layer/background/secondary'),
+  selectors: {
+    '&[data-status="matched"]': {
+      color: '#147a3d',
+      background: '#e8f7ee',
+    },
+    '&[data-status="backend-error"]': {
+      color: '#9a3412',
+      background: '#fff0e8',
+    },
+    '&[data-status="fallback-ready"]': {
+      color: '#7c5a00',
+      background: '#fff7df',
+    },
+  },
+});
+
+export const browserPageSummary = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 4,
+  minWidth: 0,
+  borderRadius: 8,
+  padding: '9px 10px',
+  background: cssVarV2('layer/background/secondary'),
+});
+
+export const browserCaptureStep = style({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  borderRadius: 6,
+  padding: '6px 8px',
+  fontSize: 11,
+  lineHeight: '16px',
+  color: cssVarV2('text/tertiary'),
+  background: cssVarV2('layer/background/secondary'),
+});
+
+export const browserErrorBox = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 4,
+  borderRadius: 8,
+  border: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
+  padding: 10,
+  color: '#9a3412',
+  background: '#fff8f3',
+});
+
+export const detectedTranslator = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  maxWidth: 132,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  borderRadius: 999,
+  padding: '2px 8px',
+  fontSize: 11,
+  lineHeight: '16px',
+  color: cssVarV2('button/primary'),
+  background: cssVarV2('layer/background/secondary'),
+});
+
+export const detectedPaperList = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 8,
+  minWidth: 0,
+});
+
+export const detectedPaperBulk = style({
+  display: 'flex',
+  justifyContent: 'flex-end',
+});
+
+export const detectedPaperCard = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 7,
+  minWidth: 0,
+  border: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
+  borderRadius: 8,
+  padding: 10,
+  background: cssVarV2('layer/background/secondary'),
+});
+
+export const detectedPaperHeader = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 8,
+});
+
+export const detectedPaperType = style({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  fontSize: 11,
+  lineHeight: '16px',
+  color: cssVarV2('text/tertiary'),
+});
+
+export const detectedPaperAttachment = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  flexShrink: 0,
+  borderRadius: 999,
+  padding: '2px 7px',
+  fontSize: 11,
+  lineHeight: '16px',
+  color: cssVarV2('text/secondary'),
+  background: cssVarV2('layer/background/primary'),
+  selectors: {
+    '&[data-status="ready"]': {
+      color: '#147a3d',
+      background: '#e8f7ee',
+    },
+    '&[data-status="empty"]': {
+      color: cssVarV2('text/tertiary'),
+    },
+  },
+});
+
+export const detectedPaperTitle = style({
+  display: '-webkit-box',
+  overflow: 'hidden',
+  WebkitBoxOrient: 'vertical',
+  WebkitLineClamp: 2,
+  fontSize: cssVar('fontSm'),
+  lineHeight: '20px',
+  fontWeight: 600,
+  color: cssVarV2('text/primary'),
+});
+
+export const detectedPaperMeta = style({
+  display: '-webkit-box',
+  overflow: 'hidden',
+  WebkitBoxOrient: 'vertical',
+  WebkitLineClamp: 2,
+  fontSize: cssVar('fontXs'),
+  lineHeight: '18px',
+  color: cssVarV2('text/secondary'),
+});
+
+export const detectedPaperAbstract = style({
+  display: '-webkit-box',
+  overflow: 'hidden',
+  WebkitBoxOrient: 'vertical',
+  WebkitLineClamp: 3,
+  fontSize: cssVar('fontXs'),
+  lineHeight: '18px',
+  color: cssVarV2('text/secondary'),
+});
+
+export const detectedPaperFooter = style({
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr) auto',
+  gap: 8,
+  alignItems: 'center',
+  '@media': {
+    '(max-width: 520px)': {
+      gridTemplateColumns: '1fr',
+    },
+  },
+});
+
+export const detectedPaperHint = style({
+  minWidth: 0,
+  fontSize: 11,
+  lineHeight: '16px',
+  color: cssVarV2('text/tertiary'),
+});
+
+export const detectedEmpty = style({
+  borderRadius: 8,
+  border: `1px dashed ${cssVarV2('layer/insideBorder/border')}`,
+  padding: '18px 12px',
+  textAlign: 'center',
+  fontSize: cssVar('fontXs'),
+  lineHeight: '18px',
+  color: cssVarV2('text/secondary'),
+});
+
+export const browserFallbackActions = style({
   display: 'flex',
   flexWrap: 'wrap',
   gap: 8,

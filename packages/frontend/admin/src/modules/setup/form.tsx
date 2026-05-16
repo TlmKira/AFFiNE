@@ -28,10 +28,10 @@ const Welcome = () => {
       style={{ minHeight: '300px' }}
     >
       <h1 className="text-5xl font-extrabold max-lg:text-3xl max-lg:font-bold">
-        Welcome to AFFiNE
+        欢迎使用 AFFiNE
       </h1>
       <p className="mt-5 font-semibold text-xl max-lg:px-4 max-lg:text-lg">
-        Configure your Self Host AFFiNE with a few simple settings.
+        只需几步即可完成自托管 AFFiNE 的初始化配置。
       </p>
     </div>
   );
@@ -44,10 +44,10 @@ const SettingsDone = () => {
       style={{ minHeight: '300px' }}
     >
       <h1 className="text-5xl font-extrabold max-lg:text-3xl max-lg:font-bold">
-        All Settings Done
+        配置完成
       </h1>
       <p className="mt-5 font-semibold text-xl max-lg:px-4 max-lg:text-lg">
-        AFFiNE is ready to use.
+        AFFiNE 已准备就绪。
       </p>
     </div>
   );
@@ -110,12 +110,12 @@ export const Form = () => {
 
       if (!createResponse.ok) {
         const errorData = await createResponse.json();
-        throw new Error(errorData.message || 'Failed to create admin');
+        throw new Error(errorData.message || '创建管理员失败');
       }
 
       await createResponse.json();
       await refreshServerConfig();
-      toast.success('Admin account created successfully.');
+      toast.success('管理员账号创建成功。');
     } catch (err) {
       toast.error((err as Error).message);
       console.error(err);
@@ -171,7 +171,7 @@ export const Form = () => {
       if (serverConfig.initialized === true) {
         return navigate('/admin', { replace: true });
       }
-      toast.error('Goto Admin Panel failed, please try again.');
+      toast.error('进入管理员面板失败，请重试。');
       return;
     }
     api?.scrollPrev();
@@ -205,11 +205,11 @@ export const Form = () => {
       <div>
         {current > 1 && (
           <Button className="mr-3" onClick={onPrevious} variant="outline">
-            {current === count ? 'Goto Admin Panel' : 'Back'}
+            {current === count ? '进入管理员面板' : '上一步'}
           </Button>
         )}
         <Button onClick={onNext} disabled={disableContinue}>
-          {current === count ? 'Open AFFiNE' : 'Continue'}
+          {current === count ? '打开 AFFiNE' : '继续'}
         </Button>
       </div>
 

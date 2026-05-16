@@ -2,14 +2,36 @@ import { app } from 'electron';
 
 import { isInternalUrl } from '../shared/internal-origin';
 import { logger } from './logger';
+import {
+  isAllowedResearchBrowserUrl,
+  isResearchBrowserWebContents,
+} from './research-browser/web-contents';
 import { openExternalSafely } from './security/open-external';
 import { validateRedirectProxyUrl } from './security/redirect-proxy';
+
+const devServerBase = process.env.DEV_SERVER_URL;
+
+function isAllowedAppUrl(url: string) {
+  if (isInternalUrl(url)) {
+    return true;
+  }
+
+  if (!devServerBase) {
+    return false;
+  }
+
+  try {
+    return new URL(url).origin === new URL(devServerBase).origin;
+  } catch {
+    return false;
+  }
+}
 
 export const checkSource = (
   e: Electron.IpcMainInvokeEvent | Electron.IpcMainEvent
 ) => {
   const url = e.senderFrame?.url || e.sender.getURL();
-  const result = isInternalUrl(url);
+  const result = isAllowedAppUrl(url);
   if (!result) logger.error('invalid source', url);
   return result;
 };
@@ -25,7 +47,15 @@ export const registerSecurityRestrictions = () => {
      * @see https://www.electronjs.org/docs/latest/tutorial/security#13-disable-or-limit-navigation
      */
     contents.on('will-navigate', (event, url) => {
-      if (isInternalUrl(url)) {
+      if (isResearchBrowserWebContents(contents.id)) {
+        if (isAllowedResearchBrowserUrl(url)) {
+          return;
+        }
+        event.preventDefault();
+        return;
+      }
+
+      if (isAllowedAppUrl(url)) {
         return;
       }
       // Prevent navigation
@@ -46,7 +76,19 @@ export const registerSecurityRestrictions = () => {
      * @see https://www.electronjs.org/docs/latest/tutorial/security#15-do-not-use-openexternal-with-untrusted-content
      */
     contents.setWindowOpenHandler(({ url }) => {
-      if (!isInternalUrl(url)) {
+      if (isResearchBrowserWebContents(contents.id)) {
+        if (isAllowedResearchBrowserUrl(url)) {
+          contents.loadURL(url).catch(error => {
+            console.error(
+              '[security] Failed to open research browser URL:',
+              error
+            );
+          });
+        }
+        return { action: 'deny' };
+      }
+
+      if (!isAllowedAppUrl(url)) {
         openExternalSafely(url).catch(error => {
           console.error('[security] Failed to open external URL:', error);
         });

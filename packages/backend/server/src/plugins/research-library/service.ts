@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
+import { basename } from 'node:path';
 
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
@@ -8,6 +9,7 @@ import { PDFParse } from 'pdf-parse';
 
 import { BadRequest, ResponseTooLargeError, safeFetch } from '../../base';
 import { AccessController } from '../../core/permission';
+import { WorkspaceBlobStorage } from '../../core/storage';
 import { ResearchCitationService } from '../research-citation/service';
 import type { CitationMetadata } from '../research-citation/types';
 import type {
@@ -24,6 +26,7 @@ const ARXIV_PATTERN =
 const FETCH_TIMEOUT_MS = 12000;
 const MAX_FEED_BYTES = 2 * 1024 * 1024;
 const MAX_PDF_SCAN_BYTES = 5 * 1024 * 1024;
+const MAX_REMOTE_PDF_BYTES = 50 * 1024 * 1024;
 const DEFAULT_REFRESH_INTERVAL_MINUTES = 360;
 const DUE_FEED_LIMIT = 50;
 
@@ -89,6 +92,7 @@ export class ResearchLibraryService {
   constructor(
     private readonly db: PrismaClient,
     private readonly ac: AccessController,
+    private readonly storage: WorkspaceBlobStorage,
     private readonly citation: ResearchCitationService
   ) {}
 
@@ -136,6 +140,75 @@ export class ResearchLibraryService {
             fallbackTitle
           )}`
         : undefined,
+    };
+  }
+
+  async importPdfUrl(
+    userId: string,
+    input: { workspaceId?: string; url?: string; filename?: string }
+  ) {
+    const workspaceId = input.workspaceId?.trim();
+    const rawUrl = input.url?.trim();
+    if (!workspaceId || !rawUrl) {
+      throw new BadRequest('workspaceId and url are required.');
+    }
+    await this.ac
+      .user(userId)
+      .workspace(workspaceId)
+      .assert('Workspace.CreateDoc');
+
+    let url: URL;
+    try {
+      url = new URL(rawUrl);
+    } catch {
+      throw new BadRequest('Invalid PDF URL.');
+    }
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+      throw new BadRequest('Only http/https PDF URLs are supported.');
+    }
+
+    const response = await safeFetch(
+      url,
+      {
+        headers: {
+          Accept: 'application/pdf,*/*;q=0.8',
+          'User-Agent': 'Mozilla/5.0 AFFiNE Research PDF Importer',
+        },
+      },
+      {
+        timeoutMs: FETCH_TIMEOUT_MS,
+        maxRedirects: 4,
+        maxBytes: MAX_REMOTE_PDF_BYTES,
+      }
+    );
+    if (!response.ok) {
+      throw new BadRequest(`Failed to download PDF: ${response.status}`);
+    }
+
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const contentType = response.headers.get('content-type') ?? '';
+    const looksLikePdf = buffer.subarray(0, 5).toString('utf8') === '%PDF-';
+    if (!/application\/pdf/i.test(contentType) && !looksLikePdf) {
+      throw new BadRequest('The URL did not return a PDF file.');
+    }
+
+    const blobId = createHash('sha256').update(buffer).digest('base64url');
+    await this.storage.put(workspaceId, blobId, buffer);
+
+    const pdfName =
+      clean(input.filename) ||
+      this.filenameFromDisposition(
+        response.headers.get('content-disposition')
+      ) ||
+      basename(decodeURIComponent(url.pathname)) ||
+      'paper.pdf';
+
+    return {
+      pdfBlobId: blobId,
+      pdfName: /\.pdf$/i.test(pdfName) ? pdfName : `${pdfName}.pdf`,
+      pdfSize: buffer.length,
+      mimeType: 'application/pdf',
+      sourceUrl: response.url || url.toString(),
     };
   }
 
@@ -631,6 +704,19 @@ export class ResearchLibraryService {
       entry.url ||
       `${entry.title}:${entry.authors[0] ?? ''}:${entry.publishedAt?.getFullYear() ?? ''}`;
     return createHash('sha256').update(key.toLowerCase()).digest('hex');
+  }
+
+  private filenameFromDisposition(disposition?: string | null) {
+    if (!disposition) return '';
+    const utf8 = disposition.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
+    if (utf8) {
+      try {
+        return decodeURIComponent(utf8);
+      } catch {
+        return utf8;
+      }
+    }
+    return disposition.match(/filename="?([^";]+)"?/i)?.[1]?.trim() ?? '';
   }
 
   private async extractPdfText(buffer: Buffer) {

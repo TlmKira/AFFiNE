@@ -19,6 +19,7 @@ import { IntegrationTypeFilterProvider } from './impls/filters/integration-type'
 import { JournalFilterProvider } from './impls/filters/journal';
 import { NumberPropertyFilterProvider } from './impls/filters/number';
 import { PageWidthFilterProvider } from './impls/filters/page-width';
+import { PaperFilterProvider } from './impls/filters/paper';
 import { PropertyFilterProvider } from './impls/filters/property';
 import { SharedFilterProvider } from './impls/filters/shared';
 import { SystemFilterProvider } from './impls/filters/system';
@@ -179,6 +180,7 @@ export function configureCollectionRulesModule(framework: Framework) {
     .impl(FilterProvider('system:pageWidth'), PageWidthFilterProvider, [
       DocsService,
     ])
+    .impl(FilterProvider('system:paper'), PaperFilterProvider, [DocsService])
     // --------------- Group By ---------------
     .impl(GroupByProvider('system'), SystemGroupByProvider)
     .impl(GroupByProvider('property'), PropertyGroupByProvider, [

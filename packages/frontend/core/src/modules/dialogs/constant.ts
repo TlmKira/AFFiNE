@@ -8,7 +8,6 @@ export type SettingTab =
   | 'shortcuts'
   | 'notifications'
   | 'ai'
-  | 'papers'
   | 'appearance'
   | 'about'
   | 'plans'
