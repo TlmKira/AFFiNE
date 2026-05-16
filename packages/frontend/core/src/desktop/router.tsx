@@ -117,6 +117,10 @@ export const topLevelRoutes = [
         lazy: () => import('./pages/import-clipper'),
       },
       {
+        path: '/papers',
+        lazy: () => import('./pages/papers-redirect'),
+      },
+      {
         path: '/template/import',
         lazy: () => import('./pages/import-template'),
       },
