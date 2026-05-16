@@ -8,14 +8,10 @@ export const Component = () => {
   const navigate = useNavigate();
   const workspacesService = useService(WorkspacesService);
   const workspaces = useLiveData(workspacesService.list.workspaces$);
-  const isRevalidating = useLiveData(workspacesService.list.isRevalidating$);
 
   const targetWorkspaceId = useMemo(() => {
     const lastWorkspaceId = localStorage.getItem('last_workspace_id');
-    if (
-      lastWorkspaceId &&
-      workspaces.some(({ id }) => id === lastWorkspaceId)
-    ) {
+    if (lastWorkspaceId) {
       return lastWorkspaceId;
     }
     return workspaces[0]?.id ?? null;
@@ -28,10 +24,8 @@ export const Component = () => {
   useEffect(() => {
     if (targetWorkspaceId) {
       navigate(`/workspace/${targetWorkspaceId}/all`, { replace: true });
-    } else if (isRevalidating === false) {
-      navigate('/', { replace: true });
     }
-  }, [isRevalidating, navigate, targetWorkspaceId]);
+  }, [navigate, targetWorkspaceId]);
 
   return <AppContainer fallback />;
 };
